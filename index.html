@@ -235,4 +235,543 @@
             <div class="menu-item" onclick="toggleMenu(); openModal('topup-modal');">🧧 เติมเงินอั่งเปา</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('inventory-modal');">📦 กระเป๋าของฉัน</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('history-modal');">📜 ประวัติการทำรายการ</div>
-            <div class="menu-item" onclick="toggleMenu(); openModal('backup
+            <div class="menu-item" onclick="toggleMenu(); openModal('backup-modal');">☁️ สำรองข้อมูล (Backup)</div>
+            <div class="menu-item" onclick="toggleMenu(); openModal('settings-modal');">⚙️ การตั้งค่าเว็บ</div>
+            <div class="menu-item" style="color: #e74c3c; border-bottom: none; margin-top: 20px;" onclick="logoutUser()">🚪 ออกจากระบบ</div>
+        </div>
+
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0;">⚙️ การตั้งค่าเว็บ</h3>
+                    <button class="close-btn" onclick="closeModal('settings-modal')">✖</button>
+                </div>
+                <div class="scroll-box" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <p style="color: #666; font-size: 0.85rem; text-align: center; margin-bottom: 20px;">ปรับแต่งการแสดงผลของเว็บไซต์</p>
+                    <button id="dark-mode-btn" class="btn" style="border-color:#555; color:#555; background-color:#f5f5f5;" onclick="toggleDarkMode()">🌙 สลับเป็นโหมดมืด</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="topup-modal" class="modal-overlay">
+            <div class="modal-content" style="height: 65%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #e74c3c;">🧧 เติมเงินด้วยซองอั่งเปา</h3>
+                    <button class="close-btn" onclick="closeModal('topup-modal')">✖</button>
+                </div>
+                <div class="scroll-box" style="text-align: center;">
+                    <p style="font-size: 0.85rem; color: #666; text-align: left; margin-bottom: 15px;">สร้างซองแบบ <b>"ส่งให้คนเดียว"</b> แล้ววางลิงก์ซองด้านล่างนี้</p>
+                    <input type="text" id="topup-link-input" placeholder="วางลิงก์ซองอั่งเปาตรงนี้...">
+                    <button class="btn" style="border-color:#e74c3c; color:#e74c3c; background-color:rgba(231,76,60,0.1);" onclick="processTopUp()">ยืนยันการเติมเงิน</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="inventory-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #27AE60;">📦 กระเป๋าเก็บไอดีของฉัน</h3>
+                    <button class="close-btn" onclick="closeModal('inventory-modal')">✖</button>
+                </div>
+                <div id="inventory-list" class="scroll-box"></div>
+            </div>
+        </div>
+
+        <div id="confirm-modal" class="modal-overlay" style="z-index: 300;">
+            <div class="modal-content" style="height: auto; border-radius: 20px; align-items: center;">
+                <h3>ยืนยันการซื้อ?</h3>
+                <p id="confirm-msg" style="text-align: center; font-size:0.9rem;"></p>
+                <div style="width: 100%; display: flex; gap: 10px;">
+                    <button class="btn" style="background:#2ECC71; color:#fff;" onclick="processPurchase()">ตกลงซื้อ</button>
+                    <button class="btn" onclick="closeModal('confirm-modal')">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="shop-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #145A32;">🎮 BAS SHOP ไอดีเกม</h3>
+                    <button class="close-btn" onclick="closeModal('shop-modal')">✖</button>
+                </div>
+                <input type="text" class="search-input" id="shop-search" placeholder="🔍 ค้นหาไอดี..." onkeyup="searchItems()">
+                <div class="shop-items scroll-box" id="shop-items-list">
+                    <div class="item-box" data-name="ไอดี Free Fire เซ็ตแรร์ (VIP)">
+                        <div><p class="item-name">ไอดี Free Fire เซ็ตแรร์ (VIP)</p><p class="item-price">💰 50 เหรียญ</p></div>
+                        <button class="buy-btn" onclick="confirmPurchase('ไอดี Free Fire เซ็ตแรร์ (VIP)', 50)">ซื้อ</button>
+                    </div>
+                    <div class="item-box" data-name="บัตรเติมเงินเกมในเครือ Garena">
+                        <div><p class="item-name">บัตรเติมเงินเกมในเครือ Garena</p><p class="item-price">💰 120 เหรียญ</p></div>
+                        <button class="buy-btn" onclick="confirmPurchase('บัตรเติมเงินเกมในเครือ Garena', 120)">ซื้อ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #27AE60;">🧩 เกมเลือกช้อยส์ประจำวัน</h3>
+                    <button class="close-btn" onclick="closeModal('game-modal')">✖</button>
+                </div>
+                <div class="scroll-box">
+                    <div class="quiz-box">
+                        <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #7f8c8d;">คำใบ้ปริศนาวันนี้</p>
+                        <p id="quiz-question" class="hint-text">กำลังโหลดคำถาม...</p>
+                    </div>
+                    <div id="choices-container"></div>
+                    <p id="game-status-msg" style="text-align: center; font-weight: 600; font-size: 0.95rem; margin-top: 15px; line-height: 1.4;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="gacha-modal" class="modal-overlay">
+            <div class="modal-content" style="align-items: center; text-align: center;">
+                <div style="width:100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #e67e22;">🎁 สุ่มกาชาลุ้นแรร์</h3>
+                    <button class="close-btn" onclick="closeModal('gacha-modal')">✖</button>
+                </div>
+                <p style="font-size:0.85rem; color:#666; margin-top:15px;">ใช้ 10 เหรียญ เพื่อลุ้นรับไอดีระดับ Normal จนถึง VIP</p>
+                <div id="gacha-box-icon" class="gacha-box">📦</div>
+                <button id="gacha-btn" class="btn" style="background:#e67e22; color:#fff; border-color:#d35400;" onclick="rollGacha()">สุ่มเลย (10 เหรียญ)</button>
+            </div>
+        </div>
+
+        <div id="history-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #34495e;">📜 ประวัติการทำรายการ</h3>
+                    <button class="close-btn" onclick="closeModal('history-modal')">✖</button>
+                </div>
+                <div id="history-list" class="scroll-box"></div>
+            </div>
+        </div>
+
+        <div id="backup-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #2980b9;">☁️ Cloud Backup (จำลอง)</h3>
+                    <button class="close-btn" onclick="closeModal('backup-modal')">✖</button>
+                </div>
+                <div class="scroll-box">
+                    <p style="font-size:0.8rem; color:#666;">เนื่องจากระบบนี้ไม่ได้ต่อ Database จริง คุณสามารถคัดลอกรหัสด้านล่างเพื่อสำรองข้อมูล หรือวางรหัสเดิมเพื่อกู้คืนข้อมูล</p>
+                    <textarea id="backup-data" rows="5" placeholder="รหัสสำรองข้อมูลจะแสดงที่นี่..."></textarea>
+                    <button class="btn" style="background:#3498db; color:#fff; border:none;" onclick="exportData()">📤 สร้างรหัสสำรองข้อมูล (Export)</button>
+                    <button class="btn" style="background:#e67e22; color:#fff; border:none;" onclick="importData()">📥 กู้คืนข้อมูล (Import)</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let globalUsers = [];
+        let currentUser = null; 
+        let adsTimer = null; 
+        let usedTopupLinks = [];
+        let toastTimer = null; 
+        let pendingPurchase = null;
+
+        function doVibrate(pattern) {
+            if ("vibrate" in navigator) { navigator.vibrate(pattern); }
+        }
+
+        // --- ระบบอัปเดต: สลับโหมดและเปลี่ยนข้อความปุ่ม ---
+        function toggleDarkMode() { 
+            document.body.classList.toggle('dark-mode'); 
+            const btn = document.getElementById('dark-mode-btn');
+            if (document.body.classList.contains('dark-mode')) {
+                btn.innerText = "☀️ สลับเป็นโหมดสว่าง";
+            } else {
+                btn.innerText = "🌙 สลับเป็นโหมดมืด";
+            }
+        }
+
+        function addHistory(actionText, amountStr) {
+            if(!currentUser.history) currentUser.history = [];
+            const now = new Date();
+            const timeStr = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
+            currentUser.history.unshift({ action: actionText, amount: amountStr, time: timeStr, date: getCurrentDateString() });
+            if(currentUser.history.length > 30) currentUser.history.pop(); 
+        }
+
+        function updateHistoryUI() {
+            const container = document.getElementById('history-list');
+            if(!currentUser || !currentUser.history || currentUser.history.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">ยังไม่มีประวัติการทำรายการ</p>`;
+                return;
+            }
+            container.innerHTML = "";
+            currentUser.history.forEach(h => {
+                let color = h.amount.includes('+') ? '#27AE60' : (h.amount.includes('-') ? '#e74c3c' : '#555');
+                container.innerHTML += `
+                    <div class="history-card">
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>${h.action}</span>
+                            <span style="color:${color};">${h.amount}</span>
+                        </div>
+                        <div style="font-size:0.7rem; color:#888; margin-top:4px;">📅 ${h.date} | ⏱️ ${h.time}</div>
+                    </div>`;
+            });
+        }
+
+        function dailyCheckIn() {
+            const today = getCurrentDateString();
+            if(!currentUser.dailyCheckinDate) currentUser.dailyCheckinDate = "";
+            
+            if(currentUser.dailyCheckinDate === today) {
+                showAppToast("❌ วันนี้คุณรับเหรียญไปแล้ว พรุ่งนี้มาใหม่นะ!");
+            } else {
+                currentUser.coins += 5;
+                currentUser.dailyCheckinDate = today;
+                addHistory("เช็คอินรายวัน", "+5 เหรียญ");
+                saveToDatabase();
+                updateDashboardUI();
+                showAppToast("🎉 เช็คอินสำเร็จ! ได้รับ +5 เหรียญ");
+                triggerFireworks();
+                doVibrate([100, 50, 100]); 
+            }
+        }
+
+        function rollGacha() {
+            if(currentUser.coins < 10) { showAppToast("❌ เหรียญไม่พอสุ่มกาชา (ใช้ 10 เหรียญ)"); return; }
+            
+            const btn = document.getElementById('gacha-btn');
+            const box = document.getElementById('gacha-box-icon');
+            
+            btn.disabled = true;
+            box.classList.add('shake');
+            doVibrate(50);
+
+            setTimeout(() => {
+                box.classList.remove('shake');
+                btn.disabled = false;
+                
+                currentUser.coins -= 10;
+                
+                const roll = Math.floor(Math.random() * 100) + 1;
+                let resultName = "";
+                
+                if(roll <= 5) { resultName = "👑 ไอดีระดับ VIP สุดยอดแรร์"; } 
+                else if(roll <= 30) { resultName = "💎 ไอดีระดับ Rare (หายาก)"; } 
+                else { resultName = "📦 ไอดีระดับ Normal (ทั่วไป)"; } 
+
+                const mockDetails = `GCH-${Math.floor(1000 + Math.random() * 9000)}`;
+                if(!currentUser.inventory) currentUser.inventory = [];
+                const now = new Date();
+                currentUser.inventory.push({ name: resultName, details: mockDetails, date: now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0') + " น." });
+                
+                addHistory("สุ่มกาชา", "-10 เหรียญ");
+                saveToDatabase();
+                updateDashboardUI();
+                
+                doVibrate([200, 100, 200]);
+                triggerEdgeFlash();
+                showAppToast(`🎉 ยินดีด้วย! คุณเกลือรึเปล่า?<br>ได้รับ: <b>${resultName}</b>`);
+                
+            }, 1000); 
+        }
+
+        function exportData() {
+            const dataStr = btoa(encodeURIComponent(JSON.stringify(currentUser))); 
+            document.getElementById('backup-data').value = dataStr;
+            showAppToast("✅ สร้างรหัสสำรองข้อมูลสำเร็จ! (กรุณาคัดลอกเก็บไว้)");
+        }
+
+        function importData() {
+            const dataStr = document.getElementById('backup-data').value.trim();
+            if(dataStr === "") { showAppToast("❌ กรุณาวางรหัสสำรองข้อมูลก่อน"); return; }
+            try {
+                const importedUser = JSON.parse(decodeURIComponent(atob(dataStr)));
+                if(importedUser && importedUser.username) {
+                    const index = globalUsers.findIndex(u => u.username === importedUser.username);
+                    if(index !== -1) { globalUsers[index] = importedUser; } 
+                    else { globalUsers.push(importedUser); }
+                    
+                    currentUser = importedUser;
+                    saveToDatabase();
+                    updateDashboardUI();
+                    closeModal('backup-modal');
+                    showAppToast("🎉 กู้คืนข้อมูลสำเร็จ!");
+                    doVibrate(100);
+                }
+            } catch(e) {
+                showAppToast("❌ รหัสไม่ถูกต้อง หรือข้อมูลเสียหาย");
+            }
+        }
+
+        function searchItems() {
+            const input = document.getElementById('shop-search').value.toLowerCase();
+            const items = document.getElementsByClassName('item-box');
+            for (let i = 0; i < items.length; i++) {
+                const name = items[i].getAttribute('data-name').toLowerCase();
+                items[i].style.display = name.includes(input) ? 'flex' : 'none';
+            }
+        }
+
+        function confirmPurchase(name, price) {
+            pendingPurchase = { name, price };
+            document.getElementById('confirm-msg').innerText = `คุณต้องการซื้อ "${name}" ในราคา ${price} เหรียญ ใช่หรือไม่?`;
+            openModal('confirm-modal');
+            doVibrate(50);
+        }
+
+        function processPurchase() {
+            buyItem(pendingPurchase.name, pendingPurchase.price);
+            closeModal('confirm-modal');
+            pendingPurchase = null;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAppToast("✅ คัดลอกรหัสแล้ว!");
+                doVibrate(30);
+            });
+        }
+
+        const toastEl = document.getElementById('app-toast');
+        let startY = 0, currentY = 0, isDragging = false;
+
+        function handleDragStart(clientY) { if (!toastEl.classList.contains('show')) return; startY = clientY; isDragging = true; toastEl.style.transition = 'none'; }
+        function handleDragMove(clientY) { if (!isDragging) return; currentY = clientY; const diffY = currentY - startY; if (diffY < 0) { toastEl.style.transform = `translateX(-50%) translateY(${diffY}px)`; } }
+        function handleDragEnd() { if (!isDragging) return; isDragging = false; toastEl.style.transition = 'all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)'; const diffY = currentY - startY; if (diffY < -30) { hideAppToast(); } else { toastEl.style.transform = 'translateX(-50%) translateY(0)'; } }
+
+        toastEl.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientY), {passive: true});
+        toastEl.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientY), {passive: true});
+        toastEl.addEventListener('touchend', handleDragEnd);
+        toastEl.addEventListener('mousedown', (e) => handleDragStart(e.clientY));
+        window.addEventListener('mousemove', (e) => handleDragMove(e.clientY));
+        window.addEventListener('mouseup', handleDragEnd);
+
+        function hideAppToast() { toastEl.classList.remove('show'); if (toastTimer) clearTimeout(toastTimer); setTimeout(() => { toastEl.style.transform = 'translateX(-50%) translateY(0)'; }, 400); }
+        function showAppToast(htmlContent) { toastEl.innerHTML = '<div class="drag-indicator"></div>' + htmlContent; toastEl.classList.add('show'); toastEl.style.transform = 'translateX(-50%) translateY(0)'; if (toastTimer) clearTimeout(toastTimer); toastTimer = setTimeout(() => { hideAppToast(); }, 5000); }
+
+        function triggerEdgeFlash() {
+            const edgeFlashEl = document.getElementById('screen-edge-flash');
+            edgeFlashEl.classList.remove('active');
+            void edgeFlashEl.offsetWidth; 
+            edgeFlashEl.classList.add('active');
+        }
+
+        const quizBank = [
+            { question: "อะไรเอ่ย? พลิกคว่ำมีน้ำ พลิกหงายไม่มีน้ำ", answer: "ส้วม", choices: ["ส้วม", "แก้วน้ำ", "เรือ", "กะลา"] },
+            { question: "อะไรเอ่ย? เดินมาสี่ขา ก้มหน้ากินหญ้า ร้องมอๆ", answer: "วัว", choices: ["วัว", "ควาย", "ม้า", "แพะ"] },
+            { question: "อะไรเอ่ย? อยู่บนท้องฟ้า มีสีสัน 7 สี เกิดหลังฝนตก", answer: "รุ้งกินน้ำ", choices: ["รุ้งกินน้ำ", "ก้อนเมฆ", "พระอาทิตย์", "ดาวตก"] }
+        ];
+
+        window.onload = function() {
+            const savedDB = localStorage.getItem('fixedUsersDB');
+            if (savedDB) { globalUsers = JSON.parse(savedDB); }
+            const savedLinks = localStorage.getItem('usedTopupLinks');
+            if (savedLinks) { usedTopupLinks = JSON.parse(savedLinks); }
+
+            const sessionUser = sessionStorage.getItem('activeUser');
+            if (sessionUser) {
+                currentUser = globalUsers.find(u => u.username === sessionUser);
+                if(currentUser) {
+                    if(currentUser.coins === undefined) currentUser.coins = 0;
+                    if(!currentUser.history) currentUser.history = [];
+                    // Ensure the button state matches the initial body mode if it was preserved
+                    const btn = document.getElementById('dark-mode-btn');
+                    if (document.body.classList.contains('dark-mode')) {
+                        btn.innerText = "☀️ สลับเป็นโหมดสว่าง";
+                    }
+                    updateDashboardUI();
+                    showPage('dashboard-page');
+                }
+            } else {
+                showPage('welcome-page');
+            }
+            startClock();
+        }
+
+        function triggerLoginAds() { const adsModal = document.getElementById('login-ads-modal'); adsModal.classList.add('active'); if (adsTimer) clearTimeout(adsTimer); adsTimer = setTimeout(() => { adsModal.classList.remove('active'); }, 5000); }
+        function closeAdsImmediate() { document.getElementById('login-ads-modal').classList.remove('active'); if (adsTimer) clearTimeout(adsTimer); }
+
+        function startClock() {
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('realtime-clock').innerText = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
+            }
+            updateTime(); setInterval(updateTime, 1000);
+        }
+
+        function updateDashboardUI() {
+            if(currentUser) {
+                document.getElementById('user-greeting').innerText = "สวัสดี, " + currentUser.username;
+                document.getElementById('user-coins').innerText = "💰 " + currentUser.coins + " เหรียญ";
+                generateInventoryUI();
+                updateHistoryUI(); 
+            }
+        }
+
+        function generateInventoryUI() {
+            const container = document.getElementById('inventory-list');
+            if(!currentUser || !currentUser.inventory || currentUser.inventory.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">คุณยังไม่มีสินค้าในกระเป๋า</p>`;
+                return;
+            }
+            container.innerHTML = "";
+            currentUser.inventory.forEach(item => {
+                const box = document.createElement('div');
+                box.classList.add('inventory-card');
+                box.innerHTML = `
+                    <div style="font-weight: 600; color: #145A32; font-size:0.9rem;">🎮 ${item.name}</div>
+                    <div style="font-size: 0.7rem; color: #888;">⏱️ วันที่: ${item.date}</div>
+                    <div class="inv-details">${item.details} <button class="copy-btn" onclick="copyToClipboard('${item.details}')">Copy</button></div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function showPage(pageId) {
+            const pages = ['welcome-page', 'register-page', 'login-page', 'dashboard-page'];
+            const container = document.getElementById('app-container');
+            if (['welcome-page', 'login-page', 'register-page'].includes(pageId)) { container.classList.add('rainbow-mode'); } else { container.classList.remove('rainbow-mode'); }
+            pages.forEach(p => { const el = document.getElementById(p); el.classList.add('hidden'); el.classList.remove('fade-in'); });
+            const activeEl = document.getElementById(pageId);
+            activeEl.classList.remove('hidden');
+            void activeEl.offsetWidth; activeEl.classList.add('fade-in');
+            if(pageId === 'dashboard-page'){ activeEl.style.display = 'flex'; }
+        }
+
+        function processTopUp() {
+            const linkInput = document.getElementById('topup-link-input').value.trim();
+            if (linkInput === "") { showAppToast("❌ กรุณากรอกลิงก์ซองอั่งเปา!"); return; }
+            const walletPattern = /^https:\/\/gift\.truemoney\.com\/campaign\/\?v=.+$/;
+            if (!walletPattern.test(linkInput)) { showAppToast("❌ ลิงก์อั่งเปาไม่ถูกต้อง!"); return; }
+            if (usedTopupLinks.includes(linkInput)) { showAppToast("❌ ลิงก์นี้ถูกใช้งานไปแล้ว!"); return; }
+
+            const urlParams = new URLSearchParams(linkInput.substring(linkInput.indexOf('?')));
+            const vParam = urlParams.get('v');
+            let actualAmount = parseInt(vParam.replace(/[^0-9]/g, ''), 10);
+            
+            if (isNaN(actualAmount) || actualAmount <= 0) { showAppToast("❌ ลิงก์ทดสอบต้องระบุตัวเลขยอดเงิน เช่น ?v=100"); return; }
+            
+            currentUser.coins += actualAmount;
+            usedTopupLinks.push(linkInput); 
+            addHistory("เติมเงินอั่งเปา", `+${actualAmount} เหรียญ`); 
+            saveToDatabase();
+            localStorage.setItem('usedTopupLinks', JSON.stringify(usedTopupLinks));
+            updateDashboardUI();
+            document.getElementById('topup-link-input').value = "";
+            
+            doVibrate([100, 100, 100]);
+            showAppToast(`🎉 เติมเงินสำเร็จ! ได้รับ +${actualAmount} เหรียญ 💰`);
+            closeModal('topup-modal');
+            triggerFireworks();
+        }
+
+        function buyItem(itemName, price) {
+            if(currentUser.coins < price) { showAppToast("❌ เหรียญของคุณไม่พอ!"); doVibrate(100); return; }
+            
+            currentUser.coins -= price; 
+            let mockDetails = `CODE-${Math.floor(100000 + Math.random() * 900000)}`;
+            
+            if(!currentUser.inventory) { currentUser.inventory = []; }
+            const today = new Date();
+            currentUser.inventory.push({ name: itemName, details: mockDetails, date: today.getHours() + ":" + String(today.getMinutes()).padStart(2, '0') + " น." });
+
+            addHistory(`ซื้อ ${itemName}`, `-${price} เหรียญ`); 
+            saveToDatabase(); updateDashboardUI(); closeModal('shop-modal');
+            
+            triggerEdgeFlash();
+            doVibrate([100, 50, 100]);
+            showAppToast(`🎉 ซื้อสำเร็จ! <br>ไอดีเกมถูกจัดเก็บในกระเป๋าของคุณแล้ว`);
+        }
+
+        function registerUser() {
+            const name = document.getElementById('reg-name').value.trim();
+            const pass = document.getElementById('reg-pass').value;
+            const email = document.getElementById('reg-email').value.trim();
+
+            if (name === "" || pass === "" || email === "") { showAppToast("❌ กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
+            if (pass.length < 4) { showAppToast("❌ รหัสผ่านต้องมีอย่างน้อย 4 ตัว"); return; }
+            if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) { showAppToast("❌ รูปแบบ Gmail ไม่ถูกต้อง!"); return; }
+            if (globalUsers.some(u => u.username.toLowerCase() === name.toLowerCase())) { showAppToast("❌ ชื่อนี้มีคนใช้แล้ว"); return; }
+
+            const newUser = { username: name, password: pass, email: email, coins: 10, lastPlayedDate: "", dailyCheckinDate: "", history: [{action: "สมัครสมาชิกใหม่", amount: "+10 เหรียญ", time: "ตอนนี้", date: getCurrentDateString()}], inventory: [] };
+            globalUsers.push(newUser); saveToDatabase();
+            
+            currentUser = newUser; sessionStorage.setItem('activeUser', name); updateDashboardUI();
+            clearInputs(['reg-name', 'reg-pass', 'reg-email']);
+            showPage('dashboard-page');
+            showAppToast("🎉 สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!");
+            doVibrate(50);
+            triggerLoginAds();
+        }
+
+        function loginUser() {
+            const name = document.getElementById('login-name').value.trim();
+            const pass = document.getElementById('login-pass').value;
+
+            if (name === "" || pass === "") { showAppToast("❌ กรุณากรอกชื่อและรหัสผ่าน"); return; }
+            const matchedUser = globalUsers.find(u => u.username === name && u.password === pass);
+
+            if (matchedUser) {
+                currentUser = matchedUser;
+                if(currentUser.coins === undefined) currentUser.coins = 0;
+                if(!currentUser.inventory) currentUser.inventory = [];
+                if(!currentUser.history) currentUser.history = [];
+                sessionStorage.setItem('activeUser', name); updateDashboardUI();
+                clearInputs(['login-name', 'login-pass']);
+                showPage('dashboard-page');
+                showAppToast(`👋 ยินดีต้อนรับกลับ, ${name}!`);
+                doVibrate(50);
+                triggerLoginAds();
+            } else {
+                showAppToast("❌ ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง");
+                doVibrate(100);
+            }
+        }
+
+        function logoutUser() { sessionStorage.removeItem('activeUser'); currentUser = null; toggleMenu(); showPage('welcome-page'); showAppToast("🚪 ออกจากระบบเรียบร้อย"); }
+        function saveToDatabase() { localStorage.setItem('fixedUsersDB', JSON.stringify(globalUsers)); }
+        function clearInputs(ids) { ids.forEach(id => document.getElementById(id).value = ""); }
+        function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
+        function closeMenuAndOpenTopup() { toggleMenu(); openModal('topup-modal'); }
+        function closeMenuAndOpenInventory() { toggleMenu(); openModal('inventory-modal'); }
+        function getCurrentDateString() { const today = new Date(); return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(); }
+        function getTodayQuiz() { const today = new Date(); return quizBank[today.getDate() % quizBank.length]; }
+        
+        function openModal(modalId) { 
+            document.getElementById(modalId).classList.add('active'); 
+            if(modalId === 'game-modal') { 
+                document.getElementById('game-status-msg').innerText = ""; 
+                const todayQuiz = getTodayQuiz(); 
+                document.getElementById('quiz-question').innerText = todayQuiz.question; 
+                generateChoiceButtons(todayQuiz); 
+                if(currentUser.lastPlayedDate === getCurrentDateString()) { 
+                    disableAllChoices(); 
+                    document.getElementById('game-status-msg').style.color = "#e74c3c"; 
+                    document.getElementById('game-status-msg').innerText = "🔒 คุณตอบคำถามของวันนี้ไปแล้ว!"; 
+                } 
+            } 
+        }
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+        function shuffleArray(array) { let currentIndex = array.length, randomIndex; const newArray = [...array]; while (currentIndex != 0) { randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--; [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]]; } return newArray; }
+        function generateChoiceButtons(quizItem) { const container = document.getElementById('choices-container'); container.innerHTML = ""; const shuffledChoices = shuffleArray(quizItem.choices); shuffledChoices.forEach(choice => { const button = document.createElement('button'); button.classList.add('choice-btn'); button.innerText = "📌 " + choice; button.onclick = function() { selectChoice(choice, quizItem.answer); }; container.appendChild(button); }); }
+        
+        function selectChoice(selectedAnswer, correctAnswer) { 
+            disableAllChoices(); const msgElement = document.getElementById('game-status-msg'); 
+            if(selectedAnswer === correctAnswer) { 
+                currentUser.coins += 1; 
+                currentUser.lastPlayedDate = getCurrentDateString(); 
+                addHistory("เล่นมินิเกมชนะ", "+1 เหรียญ");
+                saveToDatabase(); updateDashboardUI(); 
+                msgElement.style.color = "#27ae60"; msgElement.innerText = "🏆 คุณชนะ! ได้รับ 1 เหรียญ 💰"; 
+                triggerFireworks(); doVibrate([50, 50, 50]);
+            } else { 
+                currentUser.lastPlayedDate = getCurrentDateString(); saveToDatabase(); 
+                msgElement.style.color = "#c0392b"; msgElement.innerText = "❌ ผิดน้า! ไว้แก้ตัวใหม่พรุ่งนี้!"; 
+                doVibrate(150);
+            } 
+        }
+        function disableAllChoices() { const buttons = document.getElementsByClassName('choice-btn'); for(let i = 0; i < buttons.length; i++) { buttons[i].disabled = true; } }
+        
+        function triggerFireworks() { const container = document.getElementById('app-container'); const colors = ['#2ECC71', '#27AE60', '#A9DFBF', '#F1C40F']; for (let f = 0; f < 3; f++) { setTimeout(() => { const originX = 50 + Math.random() * 300; const originY = 100 + Math.random() * 200; for (let i = 0; i < 30; i++) { const particle = document.createElement('div'); particle.classList.add('firework-particle'); const angle = Math.random() * Math.PI * 2; const distance = 30 + Math.random() * 90; const x = Math.cos(angle) * distance; const y = Math.sin(angle) * distance; particle.style.setProperty('--x', `${x}px`); particle.style.setProperty('--y', `${y}px`); particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; particle.style.left = `${originX}px`; particle.style.top = `${originY}px`; container.appendChild(particle); setTimeout(() => particle.remove(), 850); } }, f * 250); } }
+        
+        function testAddCoin() { currentUser.coins += 50; addHistory("เสกเหรียญ (ปุ่มเทส)", "+50 เหรียญ"); saveToDatabase(); updateDashboardUI(); showAppToast("🛠️ ระบบเติมเงินทดสอบสำเร็จ! +50 เหรียญ"); doVibrate(50); }
+    </script>
+</body>
+</html>
