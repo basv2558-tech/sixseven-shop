@@ -456,9 +456,27 @@
 
     </div>
 
+    <!-- 🔥 Firebase SDK (compat version - ใช้งานง่ายกับโค้ดแบบ global function) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
     <script>
+        // ================= 🔥 Firebase Config & Init =================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVEkHBL91dWgyg4PKfVj4EzehFpwJ7mVc",
+            authDomain: "scip-a8e02.firebaseapp.com",
+            projectId: "scip-a8e02",
+            storageBucket: "scip-a8e02.firebasestorage.app",
+            messagingSenderId: "475489289357",
+            appId: "1:475489289357:web:cc8df306c061e671860ec4",
+            measurementId: "G-PLTTZ1DZ3Q"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         // ================= ตัวแปรหลัก =================
         let globalUsers = [];
+        let currentUserUnsub = null; // 🔥 ตัวยกเลิก realtime listener ของ currentUser
         let currentUser = null; 
         let adsTimer = null; 
         let usedTopupLinks = [];
@@ -490,9 +508,9 @@
                 return;
             }
 
-            // เตือนถ้าไฟล์ใหญ่มาก (เก็บใน localStorage มีขีดจำกัดประมาณ 5MB)
-            if (file.size > 3 * 1024 * 1024) {
-                showAppToast("⚠️ ไฟล์รูปมีขนาดใหญ่ อาจบันทึกไม่สำเร็จ แนะนำให้ใช้รูปที่เล็กกว่า 3MB");
+            // เตือนถ้าไฟล์ใหญ่มาก (Firestore จำกัดขนาดเอกสารที่ ~1MB ต่อชิ้น)
+            if (file.size > 700 * 1024) {
+                showAppToast("⚠️ ไฟล์รูปมีขนาดใหญ่ อาจบันทึกไม่สำเร็จ แนะนำให้ใช้รูปที่เล็กกว่า 700KB");
             }
 
             const reader = new FileReader();
@@ -510,25 +528,25 @@
             reader.readAsDataURL(file);
         }
 
-        // บันทึกรูปที่เลือกไว้ ให้มีผลใช้งานจริงทันที (เก็บลง localStorage เพื่อให้ใช้ได้ทุกคน/ทุกครั้งที่เข้าเว็บ)
-        function saveAdsImage() {
+        // 🔥 บันทึกรูปที่เลือกไว้ลง Firestore ให้มีผลกับทุกเครื่องทันที
+        async function saveAdsImage() {
             if (!tempAdsImageData) {
                 showAppToast("❌ กรุณาเลือกรูปภาพจากเครื่องก่อนกดบันทึก");
                 return;
             }
             try {
-                localStorage.setItem('customAdsImage', tempAdsImageData);
+                await db.collection('config').doc('ads').set({ image: tempAdsImageData });
                 document.getElementById('ads-image').src = tempAdsImageData; // อัปเดตรูปโฆษณาจริงทันที
-                showAppToast("✅ บันทึกรูปโฆษณาใหม่สำเร็จ! มีผลใช้งานทันที");
+                showAppToast("✅ บันทึกรูปโฆษณาใหม่สำเร็จ! มีผลใช้งานทันทีกับทุกเครื่อง");
                 doVibrate([50, 50, 50]);
             } catch (e) {
-                showAppToast("❌ บันทึกไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป");
+                showAppToast("❌ บันทึกไม่สำเร็จ: " + e.message + " (ไฟล์อาจใหญ่เกินไป แนะนำเล็กกว่า 700KB)");
             }
         }
 
-        // คืนค่ารูปโฆษณากลับเป็นค่าเริ่มต้นของระบบ
-        function resetAdsImage() {
-            localStorage.removeItem('customAdsImage');
+        // 🔥 คืนค่ารูปโฆษณากลับเป็นค่าเริ่มต้นของระบบ (ลบออกจาก Firestore)
+        async function resetAdsImage() {
+            try { await db.collection('config').doc('ads').delete(); } catch (e) {}
             tempAdsImageData = null;
             document.getElementById('ads-image').src = DEFAULT_ADS_IMAGE;
             document.getElementById('ads-preview-img').style.display = 'none';
@@ -538,28 +556,37 @@
             showAppToast("♻️ คืนค่ารูปโฆษณาเริ่มต้นเรียบร้อย");
         }
 
-        // โหลดรูปโฆษณาที่เคยบันทึกไว้ (เรียกตอนเปิดเว็บ และตอนเข้าหน้า Admin)
-        function loadCustomAdsImage() {
-            const saved = localStorage.getItem('customAdsImage');
+        // 🔥 โหลดรูปโฆษณาที่เคยบันทึกไว้จาก Firestore (เรียกตอนเปิดเว็บ)
+        async function loadCustomAdsImage() {
             const adsImgEl = document.getElementById('ads-image');
-            if (saved) {
-                adsImgEl.src = saved;
-            } else {
+            try {
+                const docSnap = await db.collection('config').doc('ads').get();
+                if (docSnap.exists && docSnap.data().image) {
+                    adsImgEl.src = docSnap.data().image;
+                } else {
+                    adsImgEl.src = DEFAULT_ADS_IMAGE;
+                }
+            } catch (e) {
                 adsImgEl.src = DEFAULT_ADS_IMAGE;
             }
         }
 
-        // เติมรูป preview ในหน้า Admin ให้ตรงกับรูปที่ใช้งานอยู่จริง ณ ปัจจุบัน
-        function syncAdsPreviewToCurrent() {
-            const saved = localStorage.getItem('customAdsImage');
+        // 🔥 เติมรูป preview ในหน้า Admin ให้ตรงกับรูปที่ใช้งานอยู่จริง ณ ปัจจุบัน (จาก Firestore)
+        async function syncAdsPreviewToCurrent() {
             const previewImg = document.getElementById('ads-preview-img');
             const previewEmpty = document.getElementById('ads-preview-empty');
-            if (saved) {
-                tempAdsImageData = saved;
-                previewImg.src = saved;
-                previewImg.style.display = 'block';
-                previewEmpty.style.display = 'none';
-            } else {
+            try {
+                const docSnap = await db.collection('config').doc('ads').get();
+                if (docSnap.exists && docSnap.data().image) {
+                    tempAdsImageData = docSnap.data().image;
+                    previewImg.src = tempAdsImageData;
+                    previewImg.style.display = 'block';
+                    previewEmpty.style.display = 'none';
+                } else {
+                    previewImg.style.display = 'none';
+                    previewEmpty.style.display = 'block';
+                }
+            } catch (e) {
                 previewImg.style.display = 'none';
                 previewEmpty.style.display = 'block';
             }
@@ -643,7 +670,8 @@
             openModal('admin-msg-modal');
         }
 
-        function confirmSendMessage() {
+        // 🔥 ส่งข้อความ - เขียนลง Firestore ตรงๆ ของแต่ละคน ทำให้ทุกเครื่องเห็นข้อความทันที
+        async function confirmSendMessage() {
             const text = document.getElementById('admin-msg-text').value.trim();
             if(text === "") {
                 showAppToast("❌ กรุณาพิมพ์ข้อความก่อนกดส่ง!");
@@ -654,33 +682,34 @@
             const now = new Date();
             const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
             const dateStr = getCurrentDateString();
-            
             const newMsgObj = { sender: 'Admin', text: text, read: false, time: timeStr, date: dateStr };
 
-            if(currentMessageTarget === 'ALL') {
-                // ส่งให้ทุกคน (วนลูปทุกคน ยกเว้น admin)
-                for(let i = 0; i < globalUsers.length; i++) {
-                    if(globalUsers[i].username !== 'admin') {
-                        if(!globalUsers[i].messages) globalUsers[i].messages = [];
-                        // ต้องสร้าง Object ใหม่ให้แต่ละคน ไม่ให้ทับซ้อนกัน
-                        globalUsers[i].messages.push({ sender: 'Admin', text: text, read: false, time: timeStr, date: dateStr });
-                    }
+            try {
+                if (currentMessageTarget === 'ALL') {
+                    // ส่งให้ทุกคน (ดึงรายชื่อผู้ใช้ทั้งหมดจาก Firestore แล้วอัปเดตทีละคนแบบ batch)
+                    const snapshot = await db.collection('users').get();
+                    const batch = db.batch();
+                    snapshot.forEach(docSnap => {
+                        if (docSnap.id !== 'admin') {
+                            batch.update(docSnap.ref, {
+                                messages: firebase.firestore.FieldValue.arrayUnion(newMsgObj)
+                            });
+                        }
+                    });
+                    await batch.commit();
+                } else {
+                    // ส่งให้รายบุคคล
+                    await db.collection('users').doc(currentMessageTarget).update({
+                        messages: firebase.firestore.FieldValue.arrayUnion(newMsgObj)
+                    });
                 }
-            } else {
-                // ส่งให้รายบุคคล
-                const user = globalUsers.find(u => u.username === currentMessageTarget);
-                if(user) {
-                    if(!user.messages) user.messages = [];
-                    user.messages.push(newMsgObj);
-                }
-            }
 
-            saveToDatabase();
-            closeModal('admin-msg-modal');
-            
-            // แสดง Toast ความสำเร็จ
-            showAppToast("✅ ส่งข้อความสำเร็จ!");
-            doVibrate([50, 50, 50]);
+                closeModal('admin-msg-modal');
+                showAppToast("✅ ส่งข้อความสำเร็จ! (ทุกเครื่องจะเห็นทันที)");
+                doVibrate([50, 50, 50]);
+            } catch (e) {
+                showAppToast("❌ ส่งข้อความไม่สำเร็จ: " + e.message);
+            }
         }
 
         // สลับสถานะแบน/ปลดแบนผู้ใช้ (มีการยืนยันก่อนเสมอ)
@@ -691,34 +720,40 @@
             toggleBanUser(username);
         }
 
-        function toggleBanUser(username) {
-            const user = globalUsers.find(u => u.username === username);
-            if (!user) return;
-            user.banned = !user.banned;
-            saveToDatabase();
-            loadAdminData();
-            showAppToast(user.banned ? `🚫 แบนผู้ใช้ "${username}" แล้ว` : `✅ ปลดแบนผู้ใช้ "${username}" แล้ว`);
-            doVibrate(user.banned ? [150, 80, 150] : [80, 50, 80]);
-        }
-
-        // เช็คทุกวินาทีว่าผู้ใช้ที่ล็อกอินอยู่ถูกแบนระหว่างใช้งานหรือไม่ (เผื่อแอดมินกดแบนขณะผู้ใช้ยังอยู่ในระบบ)
-        function checkBanStatus() {
-            if (!currentUser) return;
-            const savedDB = localStorage.getItem('fixedUsersDB');
-            if (!savedDB) return;
-            const freshUsers = JSON.parse(savedDB);
-            const freshUser = freshUsers.find(u => u.username === currentUser.username);
-            if (freshUser && freshUser.banned === true) {
-                sessionStorage.removeItem('activeUser');
-                currentUser = null;
-                showPage('welcome-page');
-                showAppToast("🚫 บัญชีของคุณถูกระงับการใช้งานโดยแอดมิน");
-                doVibrate([200, 100, 200]);
+        // 🔥 สลับสถานะแบนใน Firestore โดยตรง
+        async function toggleBanUser(username) {
+            try {
+                const userRef = db.collection('users').doc(username);
+                const docSnap = await userRef.get();
+                if (!docSnap.exists) return;
+                const newBanned = !docSnap.data().banned;
+                await userRef.update({ banned: newBanned });
+                showAppToast(newBanned ? `🚫 แบนผู้ใช้ "${username}" แล้ว` : `✅ ปลดแบนผู้ใช้ "${username}" แล้ว`);
+                doVibrate(newBanned ? [150, 80, 150] : [80, 50, 80]);
+                loadAdminData();
+            } catch (e) {
+                showAppToast("❌ ดำเนินการไม่สำเร็จ: " + e.message);
             }
         }
 
-        function loadAdminData() {
+        // 🔥 ระบบเช็คแบนแบบเรียลไทม์ - ใช้ onSnapshot แทนการ polling ทุกวินาที (ดูฟังก์ชัน subscribeToCurrentUser ด้านล่าง)
+
+        // 🔥 ดึงรายชื่อผู้ใช้ทั้งหมดจาก Firestore มาแสดงในหน้า Admin
+        async function loadAdminData() {
             const container = document.getElementById('admin-users-list');
+            container.innerHTML = `<p style="text-align: center; color: #888;">⏳ กำลังโหลดข้อมูล...</p>`;
+
+            try {
+                const snapshot = await db.collection('users').get();
+                globalUsers = [];
+                snapshot.forEach(docSnap => {
+                    globalUsers.push({ username: docSnap.id, ...docSnap.data() });
+                });
+            } catch (e) {
+                container.innerHTML = `<p style="text-align: center; color: #e74c3c;">❌ โหลดข้อมูลไม่สำเร็จ: ${e.message}</p>`;
+                return;
+            }
+
             container.innerHTML = "";
             if(globalUsers.length === 0) { container.innerHTML = `<p style="text-align: center; color: #888;">ยังไม่มีสมาชิกสมัครเข้ามาเลย</p>`; return; }
             
@@ -833,19 +868,21 @@
             showAppToast("✅ สร้างรหัสสำรองข้อมูลสำเร็จ!");
         }
 
-        function importData() {
+        // 🔥 กู้คืนข้อมูล - เขียนกลับเข้า Firestore ของบัญชีนั้นๆ
+        async function importData() {
             const dataStr = document.getElementById('backup-data').value.trim();
             if(dataStr === "") { showAppToast("❌ กรุณาวางรหัสสำรองข้อมูลก่อน"); return; }
             try {
                 const importedUser = JSON.parse(decodeURIComponent(atob(dataStr)));
                 if(importedUser && importedUser.username) {
-                    const index = globalUsers.findIndex(u => u.username === importedUser.username);
-                    if(index !== -1) { globalUsers[index] = importedUser; } else { globalUsers.push(importedUser); }
+                    await db.collection('users').doc(importedUser.username).set(importedUser, { merge: true });
                     currentUser = importedUser;
-                    saveToDatabase(); updateDashboardUI(); closeModal('backup-modal');
+                    sessionStorage.setItem('activeUser', importedUser.username);
+                    subscribeToCurrentUser(importedUser.username);
+                    updateDashboardUI(); closeModal('backup-modal');
                     showAppToast("🎉 กู้คืนข้อมูลสำเร็จ!"); doVibrate(100);
                 }
-            } catch(e) { showAppToast("❌ รหัสไม่ถูกต้อง หรือข้อมูลเสียหาย"); }
+            } catch(e) { showAppToast("❌ รหัสไม่ถูกต้อง หรือข้อมูลเสียหาย: " + e.message); }
         }
 
         function searchItems() {
@@ -890,31 +927,40 @@
         ];
 
         // ================= เริ่มระบบ =================
-        window.onload = function() {
-            const savedDB = localStorage.getItem('fixedUsersDB');
-            if (savedDB) { globalUsers = JSON.parse(savedDB); }
+        window.onload = async function() {
             const savedLinks = localStorage.getItem('usedTopupLinks');
             if (savedLinks) { usedTopupLinks = JSON.parse(savedLinks); }
 
-            loadCustomAdsImage(); // 🆕 โหลดรูปโฆษณาที่แอดมินเคยตั้งไว้ (ถ้ามี)
+            loadCustomAdsImage(); // 🔥 โหลดรูปโฆษณาจาก Firestore (ใช้ร่วมกันทุกเครื่อง)
 
             const sessionUser = sessionStorage.getItem('activeUser');
             if (sessionUser) {
-                if(sessionUser === "admin") {
-                    showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent(); // 🆕
+                if (sessionUser === "admin") {
+                    showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent();
                 } else {
-                    currentUser = globalUsers.find(u => u.username === sessionUser);
-                    if(currentUser) {
-                        if(currentUser.coins === undefined) currentUser.coins = 0;
-                        if(!currentUser.history) currentUser.history = [];
-                        if(!currentUser.messages) currentUser.messages = [];
-                        if(currentUser.banned === undefined) currentUser.banned = false;
-                        const btn = document.getElementById('dark-mode-btn');
-                        if (document.body.classList.contains('dark-mode')) { btn.innerText = "☀️ สลับเป็นโหมดสว่าง"; }
-                        updateDashboardUI(); 
-                        showPage('dashboard-page');
-                        updateNotificationUI();
-                    } else { showPage('welcome-page'); }
+                    try {
+                        const docSnap = await db.collection('users').doc(sessionUser).get();
+                        if (docSnap.exists) {
+                            const data = docSnap.data();
+                            currentUser = { username: sessionUser, ...data };
+                            if(currentUser.coins === undefined) currentUser.coins = 0;
+                            if(!currentUser.history) currentUser.history = [];
+                            if(!currentUser.messages) currentUser.messages = [];
+                            if(currentUser.banned === undefined) currentUser.banned = false;
+                            const btn = document.getElementById('dark-mode-btn');
+                            if (document.body.classList.contains('dark-mode')) { btn.innerText = "☀️ สลับเป็นโหมดสว่าง"; }
+                            subscribeToCurrentUser(sessionUser);
+                            updateDashboardUI();
+                            showPage('dashboard-page');
+                            updateNotificationUI();
+                        } else {
+                            sessionStorage.removeItem('activeUser');
+                            showPage('welcome-page');
+                        }
+                    } catch (e) {
+                        showAppToast("❌ โหลดข้อมูลไม่สำเร็จ กรุณาเช็คอินเทอร์เน็ต");
+                        showPage('welcome-page');
+                    }
                 }
             } else { showPage('welcome-page'); }
             startClock();
@@ -927,7 +973,7 @@
             function updateTime() {
                 const now = new Date();
                 document.getElementById('realtime-clock').innerText = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
-                checkBanStatus(); // 🆕 เช็คสถานะแบนทุกวินาที
+                // 🔥 ไม่ต้องเช็คแบนทุกวินาทีแล้ว เพราะใช้ realtime listener (subscribeToCurrentUser) แทน ประหยัดโควต้า Firestore
             }
             updateTime(); setInterval(updateTime, 1000);
         }
@@ -1001,7 +1047,8 @@
             triggerEdgeFlash(); doVibrate([100, 50, 100]); showAppToast(`🎉 ซื้อสำเร็จ!`);
         }
 
-        function registerUser() {
+        // 🔥 สมัครสมาชิก - เช็คชื่อซ้ำและสร้างบัญชีใน Firestore โดยตรง (ใช้ username เป็น document ID)
+        async function registerUser() {
             const name = document.getElementById('reg-name').value.trim();
             const pass = document.getElementById('reg-pass').value;
             const email = document.getElementById('reg-email').value.trim();
@@ -1009,18 +1056,32 @@
             if (name === "" || pass === "" || email === "") { showAppToast("❌ กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
             if (pass.length < 4) { showAppToast("❌ รหัสผ่านต้องมีอย่างน้อย 4 ตัว"); return; }
             if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) { showAppToast("❌ รูปแบบ Gmail ไม่ถูกต้อง!"); return; }
-            if (globalUsers.some(u => u.username.toLowerCase() === name.toLowerCase())) { showAppToast("❌ ชื่อนี้มีคนใช้แล้ว"); return; }
             if (name.toLowerCase() === "admin") { showAppToast("❌ ไม่อนุญาตให้ใช้ชื่อนี้"); return; }
 
-            const newUser = { username: name, password: pass, email: email, coins: 10, banned: false, lastPlayedDate: "", dailyCheckinDate: "", history: [{action: "สมัครสมาชิกใหม่", amount: "+10 เหรียญ", time: "ตอนนี้", date: getCurrentDateString()}], inventory: [], messages: [] };
-            globalUsers.push(newUser); saveToDatabase();
-            currentUser = newUser; sessionStorage.setItem('activeUser', name); updateDashboardUI();
-            clearInputs(['reg-name', 'reg-pass', 'reg-email']);
-            showPage('dashboard-page'); showAppToast("🎉 สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!"); doVibrate(50); triggerLoginAds();
-            updateNotificationUI();
+            showAppToast("⏳ กำลังสมัครสมาชิก...");
+
+            try {
+                const userRef = db.collection('users').doc(name);
+                const docSnap = await userRef.get();
+                if (docSnap.exists) { showAppToast("❌ ชื่อนี้มีคนใช้แล้ว"); return; }
+
+                const newUser = { password: pass, email: email, coins: 10, banned: false, lastPlayedDate: "", dailyCheckinDate: "", history: [{action: "สมัครสมาชิกใหม่", amount: "+10 เหรียญ", time: "ตอนนี้", date: getCurrentDateString()}], inventory: [], messages: [] };
+                await userRef.set(newUser);
+
+                currentUser = { username: name, ...newUser };
+                sessionStorage.setItem('activeUser', name);
+                subscribeToCurrentUser(name);
+                updateDashboardUI();
+                clearInputs(['reg-name', 'reg-pass', 'reg-email']);
+                showPage('dashboard-page'); showAppToast("🎉 สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!"); doVibrate(50); triggerLoginAds();
+                updateNotificationUI();
+            } catch (e) {
+                showAppToast("❌ สมัครสมาชิกไม่สำเร็จ: " + e.message);
+            }
         }
 
-        function loginUser() {
+        // 🔥 เข้าสู่ระบบ - ดึงข้อมูลจาก Firestore ตรงๆ (ใช้ได้ทุกเครื่อง เพราะข้อมูลอยู่บนคลาวด์)
+        async function loginUser() {
             const name = document.getElementById('login-name').value.trim();
             const pass = document.getElementById('login-pass').value;
             if (name === "" || pass === "") { showAppToast("❌ กรุณากรอกชื่อและรหัสผ่าน"); return; }
@@ -1028,33 +1089,79 @@
             if (name === "admin" && pass === "2342") {
                 sessionStorage.setItem('activeUser', 'admin');
                 clearInputs(['login-name', 'login-pass']);
-                showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent(); // 🆕
+                showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent();
                 showAppToast("👑 ยินดีต้อนรับท่านเจ้าของเว็บ!"); doVibrate([100, 100, 200]); return; 
             }
-            
-            const matchedUser = globalUsers.find(u => u.username === name && u.password === pass);
-            if (matchedUser) {
-                if (matchedUser.banned) {
+
+            try {
+                const docSnap = await db.collection('users').doc(name).get();
+                if (!docSnap.exists || docSnap.data().password !== pass) {
+                    showAppToast("❌ ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง"); doVibrate(100);
+                    return;
+                }
+                const data = docSnap.data();
+                if (data.banned) {
                     showAppToast("🚫 บัญชีนี้ถูกระงับการใช้งาน กรุณาติดต่อแอดมิน");
                     doVibrate([150, 80, 150]);
                     return;
                 }
-                currentUser = matchedUser;
+
+                currentUser = { username: name, ...data };
                 if(currentUser.coins === undefined) currentUser.coins = 0;
                 if(!currentUser.inventory) currentUser.inventory = [];
                 if(!currentUser.history) currentUser.history = [];
                 if(!currentUser.messages) currentUser.messages = [];
                 if(currentUser.banned === undefined) currentUser.banned = false;
-                sessionStorage.setItem('activeUser', name); updateDashboardUI();
+
+                sessionStorage.setItem('activeUser', name);
+                subscribeToCurrentUser(name);
+                updateDashboardUI();
                 clearInputs(['login-name', 'login-pass']);
                 showPage('dashboard-page');
                 showAppToast(`👋 ยินดีต้อนรับกลับ, ${name}!`); doVibrate(50); triggerLoginAds();
                 updateNotificationUI();
-            } else { showAppToast("❌ ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง"); doVibrate(100); }
+            } catch (e) {
+                showAppToast("❌ เข้าสู่ระบบไม่สำเร็จ: " + e.message); doVibrate(100);
+            }
         }
 
-        function logoutUser() { sessionStorage.removeItem('activeUser'); currentUser = null; toggleMenu(); showPage('welcome-page'); showAppToast("🚪 ออกจากระบบเรียบร้อย"); }
-        function saveToDatabase() { localStorage.setItem('fixedUsersDB', JSON.stringify(globalUsers)); }
+        function logoutUser() {
+            if (currentUserUnsub) { currentUserUnsub(); currentUserUnsub = null; } // 🔥 ยกเลิก realtime listener ก่อนออกจากระบบ
+            sessionStorage.removeItem('activeUser'); currentUser = null; toggleMenu(); showPage('welcome-page'); showAppToast("🚪 ออกจากระบบเรียบร้อย");
+        }
+
+        // 🔥 บันทึกข้อมูล currentUser ลง Firestore (แทนที่ localStorage เดิม) - เขียนแบบ fire-and-forget ไม่บล็อก UI
+        function saveToDatabase() {
+            if (!currentUser || !currentUser.username) return;
+            db.collection('users').doc(currentUser.username).set(currentUser, { merge: true }).catch(e => {
+                showAppToast("❌ บันทึกข้อมูลไม่สำเร็จ (เช็คอินเทอร์เน็ต): " + e.message);
+            });
+        }
+
+        // 🔥 ติดตามข้อมูลผู้ใช้แบบเรียลไทม์ - อัปเดตเหรียญ/ข้อความ/สถานะแบนทันทีที่มีการเปลี่ยนแปลงจากเครื่องอื่นหรือแอดมิน
+        function subscribeToCurrentUser(username) {
+            if (currentUserUnsub) currentUserUnsub();
+            currentUserUnsub = db.collection('users').doc(username).onSnapshot((docSnap) => {
+                if (!docSnap.exists) return;
+                const data = docSnap.data();
+
+                if (data.banned === true) {
+                    if (currentUserUnsub) { currentUserUnsub(); currentUserUnsub = null; }
+                    sessionStorage.removeItem('activeUser');
+                    currentUser = null;
+                    showPage('welcome-page');
+                    showAppToast("🚫 บัญชีของคุณถูกระงับการใช้งานโดยแอดมิน");
+                    doVibrate([200, 100, 200]);
+                    return;
+                }
+
+                currentUser = { username: username, ...data };
+                updateDashboardUI();
+                updateNotificationUI();
+            }, (err) => {
+                showAppToast("⚠️ การเชื่อมต่อขาดหาย: " + err.message);
+            });
+        }
         function clearInputs(ids) { ids.forEach(id => document.getElementById(id).value = ""); }
         function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
         function getCurrentDateString() { const today = new Date(); return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(); }
