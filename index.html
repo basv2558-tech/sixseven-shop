@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAS SHOP - Premium Edge Flash & Hologram Toast</title>
+    <title>BAS SHOP - Full System Pro (Ultimate Edition)</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         /* ================= โครงสร้างหลัก & แอนิเมชันสมูท ================= */
@@ -19,9 +19,13 @@
         body.dark-mode .container { background: #1e1e1e !important; box-shadow: 0 15px 35px rgba(0,0,0,0.5) !important; }
         body.dark-mode .modal-content, body.dark-mode .side-menu, body.dark-mode .ads-box { background: #252525 !important; color: #fff !important; }
         body.dark-mode .item-box { background: #2c2c2c !important; border-color: #444 !important; }
-        body.dark-mode .inventory-card, body.dark-mode .history-card { background: #333 !important; border-color: #555 !important; }
+        body.dark-mode .inventory-card, body.dark-mode .history-card, body.dark-mode .admin-user-card { background: #333 !important; border-color: #555 !important; }
         body.dark-mode input, body.dark-mode textarea { background-color: #2c2c2c !important; color: #fff !important; border: 1px solid #444 !important; }
         body.dark-mode h3 { color: #81C784 !important; }
+        
+        body.dark-mode .message-card { background: #2c2c2c !important; border-color: #444 !important; }
+        body.dark-mode .message-card .msg-text { color: #e0e0e0 !important; }
+        body.dark-mode .message-card .msg-sender { color: #bb86fc !important; }
 
         .container {
             background: #ffffff; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(39, 174, 96, 0.12);
@@ -33,7 +37,7 @@
         h2 { margin-top: 0; color: #27AE60; font-size: 1.5rem; transition: color 0.3s; text-align: center; }
         p { font-size: 0.95rem; }
 
-        /* ================= 🌈 แอนิเมชันรุ้งพรีเมียม (Hologram Rainbow) ================= */
+        /* ================= 🌈 แอนิเมชันรุ้งพรีเมียม ================= */
         @keyframes premium-rainbow-fluid { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .container.rainbow-mode {
@@ -49,12 +53,12 @@
         .fade-in { animation: smoothFadeUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         @keyframes smoothFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ================= ⚡ เอฟเฟกต์แสงรุ้งวาบขอบจอ (Edge Flash) ⚡ ================= */
+        /* ================= ⚡ เอฟเฟกต์แสงรุ้งวาบขอบจอ ⚡ ================= */
         .edge-flash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 9990; box-shadow: inset 0 0 0px transparent; opacity: 0; }
         .edge-flash.active { animation: flash-screen-edge 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
-        @keyframes flash-screen-edge { 0% { opacity: 0; box-shadow: inset 0 0 0px transparent; } 15% { opacity: 1; box-shadow: inset 0 0 40px 10px rgba(255, 0, 122, 0.7), inset 0 0 80px 20px rgba(0, 229, 255, 0.5), inset 0 0 120px 40px rgba(213, 0, 249, 0.3); } 100% { opacity: 0; box-shadow: inset 0 0 0px transparent; } }
+        @keyframes flash-screen-edge { 0% { opacity: 0; } 15% { opacity: 1; box-shadow: inset 0 0 40px 10px rgba(255, 0, 122, 0.7), inset 0 0 80px 20px rgba(0, 229, 255, 0.5), inset 0 0 120px 40px rgba(213, 0, 249, 0.3); } 100% { opacity: 0; } }
 
-        /* ================= ⚡ กล่องแจ้งเตือน (Premium Toast) ⚡ ================= */
+        /* ================= ⚡ กล่องแจ้งเตือน (Toast) ⚡ ================= */
         .custom-toast {
             position: absolute; top: -150px; left: 50%; transform: translateX(-50%) translateY(0); width: 88%; padding: 14px 15px; border-radius: 18px; font-size: 0.95rem; font-weight: 600; text-align: center; z-index: 9999; box-shadow: 0 12px 35px rgba(0,0,0,0.15); opacity: 0; visibility: hidden; transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; align-items: center; gap: 8px; border: 3.5px solid transparent;
             background: linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #ff007a, #ffc400, #00e676, #00e5ff, #d500f9) border-box; background-size: 100% 100%, 300% 300%; animation: premium-rainbow-fluid 4s ease infinite; color: #333; cursor: grab; touch-action: none; 
@@ -62,15 +66,19 @@
         .custom-toast:active { cursor: grabbing; }
         .custom-toast.show { top: 25px; opacity: 1; visibility: visible; }
         .drag-indicator { width: 40px; height: 5px; background: #ddd; border-radius: 10px; margin-bottom: 2px; }
-        .toast-btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; background: linear-gradient(135deg, #ff007a, #ffc400, #00e676, #00e5ff); background-size: 300% 300%; animation: premium-rainbow-fluid 4s ease infinite; color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-top: 4px; }
-        .toast-btn:hover { transform: scale(1.05); filter: brightness(1.1); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
 
-        /* ================= 🌈 ปุ่มหน้าสมัคร & ล็อกอิน ================= */
+        /* ================= 🔴 จุดแจ้งเตือน (Red Dot) ================= */
+        .notification-dot { display: none; width: 13px; height: 13px; background-color: #e74c3c; border-radius: 50%; position: absolute; border: 2px solid #fff; box-shadow: 0 0 5px rgba(231,76,60,0.5); z-index: 10; }
+        .dot-menu { top: -2px; right: -8px; } 
+        .dot-item { top: 12px; right: 15px; } 
+        .dot-card { top: -2px; right: -2px; }
+        .hamburger-container { position: relative; display: inline-block; }
+
+        /* ================= 🌈 ปุ่ม ================= */
         .btn-rainbow { width: 100%; padding: 12px; margin: 8px 0; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: center; border-radius: 30px; color: #1E8449; border: 3px solid transparent; background: linear-gradient(rgba(46, 204, 113, 0.12), rgba(46, 204, 113, 0.12)) padding-box, linear-gradient(124deg, #ff3333, #ff9933, #ffff33, #33ff33, #33ffff, #3333ff, #9933ff, #ff33ff) border-box; background-size: 100% 100%, 400% 400%; animation: premium-rainbow-fluid 6s ease infinite; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.08); transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); }
         .btn-rainbow:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(39, 174, 96, 0.25); }
 
-        /* UI ปุ่มทั่วไป */
-        .btn { width: 100%; padding: 12px; margin: 8px 0; border: 2.5px solid #2ECC71; background-color: rgba(46, 204, 113, 0.12); color: #1E8449; border-radius: 30px; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: center; display: inline-block; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.08); transition: all 0.3s; }
+        .btn { width: 100%; padding: 12px; margin: 8px 0; border: 2.5px solid #2ECC71; background-color: rgba(46, 204, 113, 0.12); color: #1E8449; border-radius: 30px; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: center; display: inline-block; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.08); transition: all 0.3s; position: relative;}
         .btn:hover { background-color: rgba(46, 204, 113, 0.28); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(39, 174, 96, 0.25); }
         .btn-outline { background-color: transparent; border: 2.5px dashed #2ECC71; }
         .btn-outline:hover { background-color: rgba(46, 204, 113, 0.1); }
@@ -87,7 +95,6 @@
         .user-info-box { display: flex; flex-direction: column; gap: 4px; }
         .coin-badge { background: #E8F5E9; color: #1E8449; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; border: 1px solid #2ECC71; display: inline-block; width: fit-content; }
         .mini-clock-box { font-size: 0.8rem; color: #1E8449; font-weight: 500; background-color: #E8F5E9; padding: 3px 10px; border-radius: 8px; border: 1px solid #A9DFBF; display: inline-block; width: fit-content; margin-top: 2px; }
-        .mini-clock-box span { font-weight: 600; color: #27AE60; }
         .header-actions { display: flex; align-items: center; gap: 5px; }
 
         .topup-nav-btn { background-color: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 2px solid #e74c3c; padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
@@ -97,13 +104,13 @@
         /* เมนูด้านข้าง */
         .side-menu { position: absolute; top: 0; right: -100%; width: 65%; height: 100%; background: #fff; box-shadow: -5px 0 25px rgba(0,0,0,0.08); padding: 30px 20px; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; border-radius: 24px 0 0 24px; }
         .side-menu.active { right: 0; }
-        .menu-item { padding: 15px 0; border-bottom: 1px solid #f0f0f0; font-weight: 600; color: #555; cursor: pointer; display: flex; align-items: center; gap: 10px;}
+        .menu-item { padding: 15px 0; border-bottom: 1px solid #f0f0f0; font-weight: 600; color: #555; cursor: pointer; display: flex; align-items: center; gap: 10px; position: relative;}
         .menu-item:hover { color: #27AE60; }
 
         /* การ์ดหมวดหมู่ */
         .category-card { background: linear-gradient(135deg, #E8F5E9, #2ECC71); border-radius: 14px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; transition: all 0.3s; }
         .category-card:hover { transform: translateY(-4px); box-shadow: 0 8px 22px rgba(39, 174, 96, 0.25); }
-        .card-icon { font-size: 20px; margin-right: 15px; background: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; }
+        .card-icon { font-size: 20px; margin-right: 15px; background: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; position: relative;}
         .card-title { font-size: 0.95rem; font-weight: 600; color: #145A32; margin: 0; }
         .card-desc { font-size: 0.7rem; color: #1E6F3D; margin: 2px 0 0 0; font-weight: 300; }
 
@@ -150,6 +157,22 @@
         .gacha-box { font-size: 60px; text-align: center; margin: 20px 0; }
         .shake { animation: shakeGacha 0.5s ease-in-out infinite; }
         @keyframes shakeGacha { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-15deg) scale(1.1); } 50% { transform: rotate(15deg) scale(1.1); } 75% { transform: rotate(-15deg) scale(1.1); } 100% { transform: rotate(0deg) scale(1); } }
+        
+        /* Admin Panel */
+        .admin-user-card { border: 1px solid #ccc; border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fafafa; color: #333; text-align: left; }
+
+        /* ================= 🆕 กล่องปรับแต่งรูปโฆษณา (Admin) ================= */
+        .ads-editor-box { border: 2px dashed #3498db; background: #eaf4fc; border-radius: 16px; padding: 14px; margin-bottom: 18px; }
+        .ads-editor-box h4 { margin: 0 0 10px 0; color: #2980b9; font-size: 1rem; }
+        .ads-preview-wrap { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 10px; background: #dfe9f2; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+        .ads-preview-wrap img { width: 100%; height: auto; display: block; }
+        .ads-preview-empty { font-size: 0.8rem; color: #7f9bb3; padding: 20px 0; }
+        .file-input-label { display: block; width: 100%; padding: 10px; text-align: center; border: 2px dashed #3498db; border-radius: 12px; color: #2980b9; font-weight: 600; font-size: 0.85rem; cursor: pointer; background: #fff; margin-bottom: 8px; }
+        .file-input-label:hover { background: #eaf4fc; }
+        /* ซ่อน input file แบบที่เบราว์เซอร์ยังยอมให้เปิด file picker ได้ (ห้ามใช้ display:none เพราะบาง webview บล็อก) */
+        .visually-hidden-file { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+        body.dark-mode .ads-editor-box { background: #1e2b36 !important; border-color: #2980b9 !important; }
+        body.dark-mode .file-input-label { background: #252525 !important; }
     </style>
 </head>
 <body>
@@ -202,8 +225,18 @@
                 </div>
                 <div class="header-actions">
                     <button class="topup-nav-btn" onclick="openModal('topup-modal')">🧧 เติมเงิน</button>
-                    <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
+                    <div class="hamburger-container">
+                        <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
+                        <span class="notification-dot dot-menu"></span>
+                    </div>
                 </div>
+            </div>
+
+            <div class="category-card" style="background: linear-gradient(135deg, #fdf2e9, #e67e22); border: 2px solid #d35400;" onclick="openModal('inbox-modal')">
+                <div class="card-icon" style="background: #fff; color: #d35400;">
+                    ✉️<span class="notification-dot dot-card"></span>
+                </div>
+                <div><p class="card-title" style="color: #a04000;">กล่องข้อความ (Inbox)</p><p class="card-desc" style="color: #873600;">ประกาศและข้อความจากแอดมิน</p></div>
             </div>
 
             <div class="category-card" onclick="dailyCheckIn()">
@@ -225,19 +258,78 @@
                 <div class="card-icon">🎮</div>
                 <div><p class="card-title">BAS SHOP ร้านค้าไอดีเกม</p><p class="card-desc">เลือกซื้อไอดีเกม & ของขวัญราคาถูก</p></div>
             </div>
-            
-            <button class="btn btn-outline" style="margin-top: auto; font-size: 0.85rem;" onclick="testAddCoin()">🛠️ ปุ่มเทส: กดรับเงินฟรี +50 เหรียญ</button>
+        </div>
+
+        <div id="admin-page" class="hidden" style="height: 100%; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                <h2 style="margin: 0; color: #e74c3c;">🛠️ ระบบจัดการ (Admin)</h2>
+                <button class="btn" style="width: auto; padding: 5px 15px; margin: 0; border-color:#e74c3c; color:#e74c3c; background:none;" onclick="logoutUser()">ออกจากระบบ</button>
+            </div>
+
+            <div class="scroll-box" style="margin-top:0;">
+
+                <!-- 🆕 กล่องปรับแต่งรูปโฆษณา -->
+                <div class="ads-editor-box">
+                    <h4>🖼️ ปรับแต่งรูปโฆษณา (Ads Banner)</h4>
+                    <div class="ads-preview-wrap" id="ads-preview-wrap">
+                        <span class="ads-preview-empty" id="ads-preview-empty">ยังไม่มีรูปที่เลือก (แสดงรูปปัจจุบันของระบบ)</span>
+                        <img id="ads-preview-img" src="" style="display:none;">
+                    </div>
+                    <button type="button" class="file-input-label" onclick="triggerAdsFilePicker()" style="border:2px dashed #3498db;">📂 เลือกรูปภาพจากเครื่อง...</button>
+                    <input type="file" id="ads-image-upload" accept="image/*" class="visually-hidden-file" onchange="previewAdsImage(event)">
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn" style="background:#3498db; color:#fff; border:none; margin:0;" onclick="saveAdsImage()">💾 บันทึกใช้รูปนี้</button>
+                        <button class="btn" style="border-color:#e74c3c; color:#e74c3c; background:none; margin:0;" onclick="resetAdsImage()">♻️ คืนค่าเริ่มต้น</button>
+                    </div>
+                    <p style="font-size:0.7rem; color:#7f9bb3; margin:8px 0 0 0;">* รูปจะถูกบันทึกไว้ในเบราว์เซอร์นี้ และแสดงผลทันทีกับผู้ใช้ทุกคนที่ล็อกอินเข้ามา</p>
+                </div>
+
+                <button class="btn-rainbow" style="margin-bottom: 15px; background-image: linear-gradient(124deg, #e74c3c, #f39c12, #e74c3c); color:#fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);" onclick="openAdminMessageModal('ALL')">📢 ส่งข้อความหาทุกคน</button>
+
+                <div class="coin-badge" style="margin-bottom: 15px; background: #fdf2e9; color: #d35400; border-color: #e67e22; width: 100%; text-align: center;">📊 ข้อมูลสมาชิกรวมทั้งหมด</div>
+                <div id="admin-users-list"></div>
+            </div>
         </div>
 
         <div id="side-menu" class="side-menu">
             <h3 style="color: #27AE60; margin-top: 0;">เมนูหลัก</h3>
             <div class="menu-item" onclick="toggleMenu(); openModal('dashboard-page');">🏠 หน้าแรก</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('topup-modal');">🧧 เติมเงินอั่งเปา</div>
+            <div class="menu-item" onclick="toggleMenu(); openModal('inbox-modal');">
+                ✉️ กล่องข้อความ <span class="notification-dot dot-item"></span>
+            </div>
             <div class="menu-item" onclick="toggleMenu(); openModal('inventory-modal');">📦 กระเป๋าของฉัน</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('history-modal');">📜 ประวัติการทำรายการ</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('backup-modal');">☁️ สำรองข้อมูล (Backup)</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('settings-modal');">⚙️ การตั้งค่าเว็บ</div>
             <div class="menu-item" style="color: #e74c3c; border-bottom: none; margin-top: 20px;" onclick="logoutUser()">🚪 ออกจากระบบ</div>
+        </div>
+
+        <div id="admin-msg-modal" class="modal-overlay" style="z-index: 300;">
+            <div class="modal-content" style="height: auto; border-radius: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 id="admin-msg-title" style="margin: 0; color: #8e44ad;">✉️ ส่งข้อความ</h3>
+                    <button class="close-btn" onclick="closeModal('admin-msg-modal')">✖</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <textarea id="admin-msg-text" rows="4" placeholder="พิมพ์ข้อความแจ้งเตือนที่ต้องการส่ง..." style="resize: none;"></textarea>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn" style="background:#8e44ad; color:#fff; border-color:#8e44ad;" onclick="confirmSendMessage()">🚀 ส่งข้อความ</button>
+                        <button class="btn" onclick="closeModal('admin-msg-modal')">ยกเลิก</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="inbox-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #d35400;">✉️ กล่องข้อความ</h3>
+                    <button class="close-btn" onclick="closeModal('inbox-modal')">✖</button>
+                </div>
+                <div id="message-list" class="scroll-box" style="padding: 10px 5px;">
+                    </div>
+            </div>
         </div>
 
         <div id="settings-modal" class="modal-overlay">
@@ -350,11 +442,11 @@
         <div id="backup-modal" class="modal-overlay">
             <div class="modal-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #2980b9;">☁️ Cloud Backup (จำลอง)</h3>
+                    <h3 style="margin: 0; color: #2980b9;">☁️ Cloud Backup</h3>
                     <button class="close-btn" onclick="closeModal('backup-modal')">✖</button>
                 </div>
                 <div class="scroll-box">
-                    <p style="font-size:0.8rem; color:#666;">เนื่องจากระบบนี้ไม่ได้ต่อ Database จริง คุณสามารถคัดลอกรหัสด้านล่างเพื่อสำรองข้อมูล หรือวางรหัสเดิมเพื่อกู้คืนข้อมูล</p>
+                    <p style="font-size:0.8rem; color:#666;">คัดลอกรหัสด้านล่างเพื่อสำรองข้อมูล หรือวางรหัสเดิมเพื่อกู้คืนข้อมูล</p>
                     <textarea id="backup-data" rows="5" placeholder="รหัสสำรองข้อมูลจะแสดงที่นี่..."></textarea>
                     <button class="btn" style="background:#3498db; color:#fff; border:none;" onclick="exportData()">📤 สร้างรหัสสำรองข้อมูล (Export)</button>
                     <button class="btn" style="background:#e67e22; color:#fff; border:none;" onclick="importData()">📥 กู้คืนข้อมูล (Import)</button>
@@ -365,32 +457,312 @@
     </div>
 
     <script>
+        // ================= ตัวแปรหลัก =================
         let globalUsers = [];
         let currentUser = null; 
         let adsTimer = null; 
         let usedTopupLinks = [];
         let toastTimer = null; 
         let pendingPurchase = null;
+        let currentMessageTarget = ""; // ตัวแปรเก็บว่ากำลังจะส่งข้อความหาใคร
+        let tempAdsImageData = null; // 🆕 ข้อมูลรูปโฆษณาที่เลือกไว้ชั่วคราว (ยังไม่กดบันทึก)
 
-        function doVibrate(pattern) {
-            if ("vibrate" in navigator) { navigator.vibrate(pattern); }
+        const DEFAULT_ADS_IMAGE = "https://picsum.photos/400/250?random=8"; // 🆕 รูปเริ่มต้นของระบบ
+
+        function doVibrate(pattern) { if ("vibrate" in navigator) { navigator.vibrate(pattern); } }
+
+        // ================= 🆕 ระบบปรับแต่งรูปโฆษณา (Admin) =================
+
+        // สั่งเปิดหน้าต่างเลือกไฟล์จากเครื่องโดยตรง (แก้ปัญหา label ไม่เด้ง file picker ในบาง webview เช่น preview ของ CodePen)
+        function triggerAdsFilePicker() {
+            const input = document.getElementById('ads-image-upload');
+            if (input) input.click();
         }
 
-        // --- ระบบอัปเดต: สลับโหมดและเปลี่ยนข้อความปุ่ม ---
+        // อ่านไฟล์รูปที่แอดมินเลือกจากเครื่อง แล้วแสดงตัวอย่างทันที (ยังไม่บันทึก)
+        function previewAdsImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showAppToast("❌ กรุณาเลือกไฟล์รูปภาพเท่านั้น (jpg, png, gif ฯลฯ)");
+                doVibrate(100);
+                return;
+            }
+
+            // เตือนถ้าไฟล์ใหญ่มาก (เก็บใน localStorage มีขีดจำกัดประมาณ 5MB)
+            if (file.size > 3 * 1024 * 1024) {
+                showAppToast("⚠️ ไฟล์รูปมีขนาดใหญ่ อาจบันทึกไม่สำเร็จ แนะนำให้ใช้รูปที่เล็กกว่า 3MB");
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                tempAdsImageData = e.target.result; // base64 data URL
+                const previewImg = document.getElementById('ads-preview-img');
+                const previewEmpty = document.getElementById('ads-preview-empty');
+                previewImg.src = tempAdsImageData;
+                previewImg.style.display = 'block';
+                previewEmpty.style.display = 'none';
+            };
+            reader.onerror = function() {
+                showAppToast("❌ ไม่สามารถอ่านไฟล์รูปนี้ได้");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // บันทึกรูปที่เลือกไว้ ให้มีผลใช้งานจริงทันที (เก็บลง localStorage เพื่อให้ใช้ได้ทุกคน/ทุกครั้งที่เข้าเว็บ)
+        function saveAdsImage() {
+            if (!tempAdsImageData) {
+                showAppToast("❌ กรุณาเลือกรูปภาพจากเครื่องก่อนกดบันทึก");
+                return;
+            }
+            try {
+                localStorage.setItem('customAdsImage', tempAdsImageData);
+                document.getElementById('ads-image').src = tempAdsImageData; // อัปเดตรูปโฆษณาจริงทันที
+                showAppToast("✅ บันทึกรูปโฆษณาใหม่สำเร็จ! มีผลใช้งานทันที");
+                doVibrate([50, 50, 50]);
+            } catch (e) {
+                showAppToast("❌ บันทึกไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป");
+            }
+        }
+
+        // คืนค่ารูปโฆษณากลับเป็นค่าเริ่มต้นของระบบ
+        function resetAdsImage() {
+            localStorage.removeItem('customAdsImage');
+            tempAdsImageData = null;
+            document.getElementById('ads-image').src = DEFAULT_ADS_IMAGE;
+            document.getElementById('ads-preview-img').style.display = 'none';
+            document.getElementById('ads-preview-empty').style.display = 'block';
+            const fileInputEl = document.getElementById('ads-image-upload');
+            if (fileInputEl) fileInputEl.value = "";
+            showAppToast("♻️ คืนค่ารูปโฆษณาเริ่มต้นเรียบร้อย");
+        }
+
+        // โหลดรูปโฆษณาที่เคยบันทึกไว้ (เรียกตอนเปิดเว็บ และตอนเข้าหน้า Admin)
+        function loadCustomAdsImage() {
+            const saved = localStorage.getItem('customAdsImage');
+            const adsImgEl = document.getElementById('ads-image');
+            if (saved) {
+                adsImgEl.src = saved;
+            } else {
+                adsImgEl.src = DEFAULT_ADS_IMAGE;
+            }
+        }
+
+        // เติมรูป preview ในหน้า Admin ให้ตรงกับรูปที่ใช้งานอยู่จริง ณ ปัจจุบัน
+        function syncAdsPreviewToCurrent() {
+            const saved = localStorage.getItem('customAdsImage');
+            const previewImg = document.getElementById('ads-preview-img');
+            const previewEmpty = document.getElementById('ads-preview-empty');
+            if (saved) {
+                tempAdsImageData = saved;
+                previewImg.src = saved;
+                previewImg.style.display = 'block';
+                previewEmpty.style.display = 'none';
+            } else {
+                previewImg.style.display = 'none';
+                previewEmpty.style.display = 'block';
+            }
+        }
+
+        // ================= ระบบแจ้งเตือนข้อความ (แก้ไขบั๊ก 100%) =================
+        
+        function updateNotificationUI() {
+            if(!currentUser) return;
+            // เช็คว่ามีข้อความไหนที่ยังไม่ได้อ่านไหม (read === false)
+            let hasUnread = false;
+            if(currentUser.messages) {
+                for(let i = 0; i < currentUser.messages.length; i++) {
+                    if(currentUser.messages[i].read === false) {
+                        hasUnread = true;
+                        break;
+                    }
+                }
+            }
+            
+            const dots = document.querySelectorAll('.notification-dot');
+            dots.forEach(d => {
+                d.style.display = hasUnread ? 'block' : 'none';
+            });
+        }
+
+        function viewMessages() {
+            if(!currentUser) return;
+
+            // 1. บังคับซ่อนจุดแดงทุกจุดทันทีที่กดดู (Force Hide)
+            document.querySelectorAll('.notification-dot').forEach(d => d.style.display = 'none');
+
+            // 2. เคลียร์สถานะเป็นอ่านแล้ว
+            if(!currentUser.messages) currentUser.messages = [];
+            let isUpdated = false;
+            for(let i = 0; i < currentUser.messages.length; i++) {
+                if(currentUser.messages[i].read === false) {
+                    currentUser.messages[i].read = true;
+                    isUpdated = true;
+                }
+            }
+            if(isUpdated) saveToDatabase();
+
+            // 3. แสดงผลข้อความ (เขียน Loop แบบดิบๆ เพื่อป้องกันบั๊กการประมวลผลบนมือถือ)
+            const list = document.getElementById('message-list');
+            if(!list) return;
+
+            if(currentUser.messages.length === 0) {
+                list.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">คุณยังไม่มีข้อความ</p>`;
+                return;
+            }
+            
+            let htmlContent = "";
+            // ลูปถอยหลัง เอาข้อความใหม่สุดขึ้นบน
+            for (let i = currentUser.messages.length - 1; i >= 0; i--) {
+                let m = currentUser.messages[i];
+                htmlContent += `
+                    <div class="message-card" style="border: 1px solid #ddd; background: #fafafa; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div style="font-size: 0.75rem; color: #888; text-align: right; margin-bottom: 4px;">📅 ${m.date} | ⏱️ ${m.time}</div>
+                        <div class="msg-sender" style="font-weight: 600; color: #d35400; font-size: 1rem; margin-bottom: 6px;">👑 ${m.sender}</div>
+                        <div class="msg-text" style="font-size: 0.95rem; color: #333; line-height: 1.4;">${m.text}</div>
+                    </div>
+                `;
+            }
+            list.innerHTML = htmlContent;
+        }
+
+        // ================= ระบบ Admin Panel (สร้าง Modal พรีเมียมแทน Prompt) =================
+        
+        function openAdminMessageModal(username) {
+            currentMessageTarget = username; // บันทึกเป้าหมาย (ALL หรือ ชื่อคน)
+            const titleEl = document.getElementById('admin-msg-title');
+            document.getElementById('admin-msg-text').value = ""; // เคลียร์ช่องพิมพ์
+            
+            if(username === 'ALL') {
+                titleEl.innerHTML = "📢 ส่งข้อความหาทุกคน";
+            } else {
+                titleEl.innerHTML = "✉️ แจ้งเตือน: " + username;
+            }
+            
+            openModal('admin-msg-modal');
+        }
+
+        function confirmSendMessage() {
+            const text = document.getElementById('admin-msg-text').value.trim();
+            if(text === "") {
+                showAppToast("❌ กรุณาพิมพ์ข้อความก่อนกดส่ง!");
+                doVibrate(100);
+                return;
+            }
+
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+            const dateStr = getCurrentDateString();
+            
+            const newMsgObj = { sender: 'Admin', text: text, read: false, time: timeStr, date: dateStr };
+
+            if(currentMessageTarget === 'ALL') {
+                // ส่งให้ทุกคน (วนลูปทุกคน ยกเว้น admin)
+                for(let i = 0; i < globalUsers.length; i++) {
+                    if(globalUsers[i].username !== 'admin') {
+                        if(!globalUsers[i].messages) globalUsers[i].messages = [];
+                        // ต้องสร้าง Object ใหม่ให้แต่ละคน ไม่ให้ทับซ้อนกัน
+                        globalUsers[i].messages.push({ sender: 'Admin', text: text, read: false, time: timeStr, date: dateStr });
+                    }
+                }
+            } else {
+                // ส่งให้รายบุคคล
+                const user = globalUsers.find(u => u.username === currentMessageTarget);
+                if(user) {
+                    if(!user.messages) user.messages = [];
+                    user.messages.push(newMsgObj);
+                }
+            }
+
+            saveToDatabase();
+            closeModal('admin-msg-modal');
+            
+            // แสดง Toast ความสำเร็จ
+            showAppToast("✅ ส่งข้อความสำเร็จ!");
+            doVibrate([50, 50, 50]);
+        }
+
+        // สลับสถานะแบน/ปลดแบนผู้ใช้ (มีการยืนยันก่อนเสมอ)
+        function confirmToggleBan(username, isBanned) {
+            const actionText = isBanned ? "ปลดแบน" : "แบน";
+            const ok = confirm(`ต้องการ${actionText}ผู้ใช้ "${username}" ใช่หรือไม่?`);
+            if (!ok) return;
+            toggleBanUser(username);
+        }
+
+        function toggleBanUser(username) {
+            const user = globalUsers.find(u => u.username === username);
+            if (!user) return;
+            user.banned = !user.banned;
+            saveToDatabase();
+            loadAdminData();
+            showAppToast(user.banned ? `🚫 แบนผู้ใช้ "${username}" แล้ว` : `✅ ปลดแบนผู้ใช้ "${username}" แล้ว`);
+            doVibrate(user.banned ? [150, 80, 150] : [80, 50, 80]);
+        }
+
+        // เช็คทุกวินาทีว่าผู้ใช้ที่ล็อกอินอยู่ถูกแบนระหว่างใช้งานหรือไม่ (เผื่อแอดมินกดแบนขณะผู้ใช้ยังอยู่ในระบบ)
+        function checkBanStatus() {
+            if (!currentUser) return;
+            const savedDB = localStorage.getItem('fixedUsersDB');
+            if (!savedDB) return;
+            const freshUsers = JSON.parse(savedDB);
+            const freshUser = freshUsers.find(u => u.username === currentUser.username);
+            if (freshUser && freshUser.banned === true) {
+                sessionStorage.removeItem('activeUser');
+                currentUser = null;
+                showPage('welcome-page');
+                showAppToast("🚫 บัญชีของคุณถูกระงับการใช้งานโดยแอดมิน");
+                doVibrate([200, 100, 200]);
+            }
+        }
+
+        function loadAdminData() {
+            const container = document.getElementById('admin-users-list');
+            container.innerHTML = "";
+            if(globalUsers.length === 0) { container.innerHTML = `<p style="text-align: center; color: #888;">ยังไม่มีสมาชิกสมัครเข้ามาเลย</p>`; return; }
+            
+            let userCount = 0;
+            for(let i = 0; i < globalUsers.length; i++) {
+                let user = globalUsers[i];
+                if(user.username === 'admin') continue; // ข้ามแอดมิน
+                
+                userCount++;
+                let inventoryHtml = user.inventory && user.inventory.length > 0 ? user.inventory.map(item => `<li>${item.name}</li>`).join('') : "<span style='color:#aaa;'>ยังไม่เคยซื้อของ</span>";
+                let isBanned = user.banned === true;
+                let banBadge = isBanned ? `<span style="background:#e74c3c; color:#fff; font-size:0.7rem; font-weight:600; padding:2px 8px; border-radius:8px; margin-left:6px;">🚫 ถูกแบน</span>` : "";
+                let banBtnLabel = isBanned ? "✅ ปลดแบน" : "🚫 แบน";
+                let banBtnStyle = isBanned ? "border-color:#27AE60; color:#27AE60;" : "border-color:#e74c3c; color:#e74c3c;";
+
+                container.innerHTML += `
+                    <div class="admin-user-card" style="${isBanned ? 'opacity:0.7; border-color:#e74c3c;' : ''}">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight: 600; font-size: 1.1rem; color: #2980b9;">👤 ${userCount}: ${user.username} ${banBadge}</div>
+                        </div>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">📧 อีเมล: ${user.email}</div>
+                        <div style="font-size: 0.85rem;">💰 เหรียญคงเหลือ: ${user.coins}</div>
+                        <div style="margin-top: 8px; font-size: 0.85rem; font-weight: 600;">📦 ของที่ซื้อไปแล้ว:</div>
+                        <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 0.8rem; color: #e67e22;">${inventoryHtml}</ul>
+                        <div style="display:flex; gap:8px; margin-top:10px;">
+                            <button class="btn" style="width:auto; padding:5px 12px; margin:0; font-size:0.8rem; border-color:#e74c3c; color:#e74c3c; background:none; flex:1;" onclick="openAdminMessageModal('${user.username}')">✉️ แจ้งเตือน</button>
+                            <button class="btn" style="width:auto; padding:5px 12px; margin:0; font-size:0.8rem; ${banBtnStyle} background:none; flex:1;" onclick="confirmToggleBan('${user.username}', ${isBanned})">${banBtnLabel}</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ================= ระบบอื่นๆ พื้นฐาน =================
         function toggleDarkMode() { 
             document.body.classList.toggle('dark-mode'); 
             const btn = document.getElementById('dark-mode-btn');
-            if (document.body.classList.contains('dark-mode')) {
-                btn.innerText = "☀️ สลับเป็นโหมดสว่าง";
-            } else {
-                btn.innerText = "🌙 สลับเป็นโหมดมืด";
-            }
+            btn.innerText = document.body.classList.contains('dark-mode') ? "☀️ สลับเป็นโหมดสว่าง" : "🌙 สลับเป็นโหมดมืด";
         }
 
         function addHistory(actionText, amountStr) {
             if(!currentUser.history) currentUser.history = [];
             const now = new Date();
-            const timeStr = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
+            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
             currentUser.history.unshift({ action: actionText, amount: amountStr, time: timeStr, date: getCurrentDateString() });
             if(currentUser.history.length > 30) currentUser.history.pop(); 
         }
@@ -418,40 +790,27 @@
         function dailyCheckIn() {
             const today = getCurrentDateString();
             if(!currentUser.dailyCheckinDate) currentUser.dailyCheckinDate = "";
-            
             if(currentUser.dailyCheckinDate === today) {
                 showAppToast("❌ วันนี้คุณรับเหรียญไปแล้ว พรุ่งนี้มาใหม่นะ!");
             } else {
                 currentUser.coins += 5;
                 currentUser.dailyCheckinDate = today;
                 addHistory("เช็คอินรายวัน", "+5 เหรียญ");
-                saveToDatabase();
-                updateDashboardUI();
+                saveToDatabase(); updateDashboardUI();
                 showAppToast("🎉 เช็คอินสำเร็จ! ได้รับ +5 เหรียญ");
-                triggerFireworks();
-                doVibrate([100, 50, 100]); 
+                triggerFireworks(); doVibrate([100, 50, 100]); 
             }
         }
 
         function rollGacha() {
             if(currentUser.coins < 10) { showAppToast("❌ เหรียญไม่พอสุ่มกาชา (ใช้ 10 เหรียญ)"); return; }
-            
             const btn = document.getElementById('gacha-btn');
             const box = document.getElementById('gacha-box-icon');
-            
-            btn.disabled = true;
-            box.classList.add('shake');
-            doVibrate(50);
-
+            btn.disabled = true; box.classList.add('shake'); doVibrate(50);
             setTimeout(() => {
-                box.classList.remove('shake');
-                btn.disabled = false;
-                
-                currentUser.coins -= 10;
-                
+                box.classList.remove('shake'); btn.disabled = false; currentUser.coins -= 10;
                 const roll = Math.floor(Math.random() * 100) + 1;
                 let resultName = "";
-                
                 if(roll <= 5) { resultName = "👑 ไอดีระดับ VIP สุดยอดแรร์"; } 
                 else if(roll <= 30) { resultName = "💎 ไอดีระดับ Rare (หายาก)"; } 
                 else { resultName = "📦 ไอดีระดับ Normal (ทั่วไป)"; } 
@@ -459,23 +818,19 @@
                 const mockDetails = `GCH-${Math.floor(1000 + Math.random() * 9000)}`;
                 if(!currentUser.inventory) currentUser.inventory = [];
                 const now = new Date();
-                currentUser.inventory.push({ name: resultName, details: mockDetails, date: now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0') + " น." });
+                currentUser.inventory.push({ name: resultName, details: mockDetails, date: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น." });
                 
                 addHistory("สุ่มกาชา", "-10 เหรียญ");
-                saveToDatabase();
-                updateDashboardUI();
-                
-                doVibrate([200, 100, 200]);
-                triggerEdgeFlash();
-                showAppToast(`🎉 ยินดีด้วย! คุณเกลือรึเปล่า?<br>ได้รับ: <b>${resultName}</b>`);
-                
+                saveToDatabase(); updateDashboardUI();
+                doVibrate([200, 100, 200]); triggerEdgeFlash();
+                showAppToast(`🎉 ยินดีด้วย! <br>ได้รับ: <b>${resultName}</b>`);
             }, 1000); 
         }
 
         function exportData() {
             const dataStr = btoa(encodeURIComponent(JSON.stringify(currentUser))); 
             document.getElementById('backup-data').value = dataStr;
-            showAppToast("✅ สร้างรหัสสำรองข้อมูลสำเร็จ! (กรุณาคัดลอกเก็บไว้)");
+            showAppToast("✅ สร้างรหัสสำรองข้อมูลสำเร็จ!");
         }
 
         function importData() {
@@ -485,19 +840,12 @@
                 const importedUser = JSON.parse(decodeURIComponent(atob(dataStr)));
                 if(importedUser && importedUser.username) {
                     const index = globalUsers.findIndex(u => u.username === importedUser.username);
-                    if(index !== -1) { globalUsers[index] = importedUser; } 
-                    else { globalUsers.push(importedUser); }
-                    
+                    if(index !== -1) { globalUsers[index] = importedUser; } else { globalUsers.push(importedUser); }
                     currentUser = importedUser;
-                    saveToDatabase();
-                    updateDashboardUI();
-                    closeModal('backup-modal');
-                    showAppToast("🎉 กู้คืนข้อมูลสำเร็จ!");
-                    doVibrate(100);
+                    saveToDatabase(); updateDashboardUI(); closeModal('backup-modal');
+                    showAppToast("🎉 กู้คืนข้อมูลสำเร็จ!"); doVibrate(100);
                 }
-            } catch(e) {
-                showAppToast("❌ รหัสไม่ถูกต้อง หรือข้อมูลเสียหาย");
-            }
+            } catch(e) { showAppToast("❌ รหัสไม่ถูกต้อง หรือข้อมูลเสียหาย"); }
         }
 
         function searchItems() {
@@ -512,30 +860,18 @@
         function confirmPurchase(name, price) {
             pendingPurchase = { name, price };
             document.getElementById('confirm-msg').innerText = `คุณต้องการซื้อ "${name}" ในราคา ${price} เหรียญ ใช่หรือไม่?`;
-            openModal('confirm-modal');
-            doVibrate(50);
+            openModal('confirm-modal'); doVibrate(50);
         }
 
-        function processPurchase() {
-            buyItem(pendingPurchase.name, pendingPurchase.price);
-            closeModal('confirm-modal');
-            pendingPurchase = null;
-        }
+        function processPurchase() { buyItem(pendingPurchase.name, pendingPurchase.price); closeModal('confirm-modal'); pendingPurchase = null; }
+        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { showAppToast("✅ คัดลอกรหัสแล้ว!"); doVibrate(30); }); }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showAppToast("✅ คัดลอกรหัสแล้ว!");
-                doVibrate(30);
-            });
-        }
-
+        // ================= Toast UI Drag & Drop =================
         const toastEl = document.getElementById('app-toast');
         let startY = 0, currentY = 0, isDragging = false;
-
         function handleDragStart(clientY) { if (!toastEl.classList.contains('show')) return; startY = clientY; isDragging = true; toastEl.style.transition = 'none'; }
         function handleDragMove(clientY) { if (!isDragging) return; currentY = clientY; const diffY = currentY - startY; if (diffY < 0) { toastEl.style.transform = `translateX(-50%) translateY(${diffY}px)`; } }
         function handleDragEnd() { if (!isDragging) return; isDragging = false; toastEl.style.transition = 'all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)'; const diffY = currentY - startY; if (diffY < -30) { hideAppToast(); } else { toastEl.style.transform = 'translateX(-50%) translateY(0)'; } }
-
         toastEl.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientY), {passive: true});
         toastEl.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientY), {passive: true});
         toastEl.addEventListener('touchend', handleDragEnd);
@@ -545,13 +881,7 @@
 
         function hideAppToast() { toastEl.classList.remove('show'); if (toastTimer) clearTimeout(toastTimer); setTimeout(() => { toastEl.style.transform = 'translateX(-50%) translateY(0)'; }, 400); }
         function showAppToast(htmlContent) { toastEl.innerHTML = '<div class="drag-indicator"></div>' + htmlContent; toastEl.classList.add('show'); toastEl.style.transform = 'translateX(-50%) translateY(0)'; if (toastTimer) clearTimeout(toastTimer); toastTimer = setTimeout(() => { hideAppToast(); }, 5000); }
-
-        function triggerEdgeFlash() {
-            const edgeFlashEl = document.getElementById('screen-edge-flash');
-            edgeFlashEl.classList.remove('active');
-            void edgeFlashEl.offsetWidth; 
-            edgeFlashEl.classList.add('active');
-        }
+        function triggerEdgeFlash() { const edgeFlashEl = document.getElementById('screen-edge-flash'); edgeFlashEl.classList.remove('active'); void edgeFlashEl.offsetWidth; edgeFlashEl.classList.add('active'); }
 
         const quizBank = [
             { question: "อะไรเอ่ย? พลิกคว่ำมีน้ำ พลิกหงายไม่มีน้ำ", answer: "ส้วม", choices: ["ส้วม", "แก้วน้ำ", "เรือ", "กะลา"] },
@@ -559,29 +889,34 @@
             { question: "อะไรเอ่ย? อยู่บนท้องฟ้า มีสีสัน 7 สี เกิดหลังฝนตก", answer: "รุ้งกินน้ำ", choices: ["รุ้งกินน้ำ", "ก้อนเมฆ", "พระอาทิตย์", "ดาวตก"] }
         ];
 
+        // ================= เริ่มระบบ =================
         window.onload = function() {
             const savedDB = localStorage.getItem('fixedUsersDB');
             if (savedDB) { globalUsers = JSON.parse(savedDB); }
             const savedLinks = localStorage.getItem('usedTopupLinks');
             if (savedLinks) { usedTopupLinks = JSON.parse(savedLinks); }
 
+            loadCustomAdsImage(); // 🆕 โหลดรูปโฆษณาที่แอดมินเคยตั้งไว้ (ถ้ามี)
+
             const sessionUser = sessionStorage.getItem('activeUser');
             if (sessionUser) {
-                currentUser = globalUsers.find(u => u.username === sessionUser);
-                if(currentUser) {
-                    if(currentUser.coins === undefined) currentUser.coins = 0;
-                    if(!currentUser.history) currentUser.history = [];
-                    // Ensure the button state matches the initial body mode if it was preserved
-                    const btn = document.getElementById('dark-mode-btn');
-                    if (document.body.classList.contains('dark-mode')) {
-                        btn.innerText = "☀️ สลับเป็นโหมดสว่าง";
-                    }
-                    updateDashboardUI();
-                    showPage('dashboard-page');
+                if(sessionUser === "admin") {
+                    showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent(); // 🆕
+                } else {
+                    currentUser = globalUsers.find(u => u.username === sessionUser);
+                    if(currentUser) {
+                        if(currentUser.coins === undefined) currentUser.coins = 0;
+                        if(!currentUser.history) currentUser.history = [];
+                        if(!currentUser.messages) currentUser.messages = [];
+                        if(currentUser.banned === undefined) currentUser.banned = false;
+                        const btn = document.getElementById('dark-mode-btn');
+                        if (document.body.classList.contains('dark-mode')) { btn.innerText = "☀️ สลับเป็นโหมดสว่าง"; }
+                        updateDashboardUI(); 
+                        showPage('dashboard-page');
+                        updateNotificationUI();
+                    } else { showPage('welcome-page'); }
                 }
-            } else {
-                showPage('welcome-page');
-            }
+            } else { showPage('welcome-page'); }
             startClock();
         }
 
@@ -592,6 +927,7 @@
             function updateTime() {
                 const now = new Date();
                 document.getElementById('realtime-clock').innerText = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
+                checkBanStatus(); // 🆕 เช็คสถานะแบนทุกวินาที
             }
             updateTime(); setInterval(updateTime, 1000);
         }
@@ -600,8 +936,7 @@
             if(currentUser) {
                 document.getElementById('user-greeting').innerText = "สวัสดี, " + currentUser.username;
                 document.getElementById('user-coins').innerText = "💰 " + currentUser.coins + " เหรียญ";
-                generateInventoryUI();
-                updateHistoryUI(); 
+                generateInventoryUI(); updateHistoryUI(); 
             }
         }
 
@@ -625,14 +960,14 @@
         }
 
         function showPage(pageId) {
-            const pages = ['welcome-page', 'register-page', 'login-page', 'dashboard-page'];
+            const pages = ['welcome-page', 'register-page', 'login-page', 'dashboard-page', 'admin-page'];
             const container = document.getElementById('app-container');
             if (['welcome-page', 'login-page', 'register-page'].includes(pageId)) { container.classList.add('rainbow-mode'); } else { container.classList.remove('rainbow-mode'); }
             pages.forEach(p => { const el = document.getElementById(p); el.classList.add('hidden'); el.classList.remove('fade-in'); });
             const activeEl = document.getElementById(pageId);
             activeEl.classList.remove('hidden');
             void activeEl.offsetWidth; activeEl.classList.add('fade-in');
-            if(pageId === 'dashboard-page'){ activeEl.style.display = 'flex'; }
+            if(pageId === 'dashboard-page' || pageId === 'admin-page'){ activeEl.style.display = 'flex'; }
         }
 
         function processTopUp() {
@@ -641,43 +976,29 @@
             const walletPattern = /^https:\/\/gift\.truemoney\.com\/campaign\/\?v=.+$/;
             if (!walletPattern.test(linkInput)) { showAppToast("❌ ลิงก์อั่งเปาไม่ถูกต้อง!"); return; }
             if (usedTopupLinks.includes(linkInput)) { showAppToast("❌ ลิงก์นี้ถูกใช้งานไปแล้ว!"); return; }
-
             const urlParams = new URLSearchParams(linkInput.substring(linkInput.indexOf('?')));
             const vParam = urlParams.get('v');
             let actualAmount = parseInt(vParam.replace(/[^0-9]/g, ''), 10);
             
             if (isNaN(actualAmount) || actualAmount <= 0) { showAppToast("❌ ลิงก์ทดสอบต้องระบุตัวเลขยอดเงิน เช่น ?v=100"); return; }
-            
-            currentUser.coins += actualAmount;
-            usedTopupLinks.push(linkInput); 
+            currentUser.coins += actualAmount; usedTopupLinks.push(linkInput); 
             addHistory("เติมเงินอั่งเปา", `+${actualAmount} เหรียญ`); 
-            saveToDatabase();
-            localStorage.setItem('usedTopupLinks', JSON.stringify(usedTopupLinks));
-            updateDashboardUI();
+            saveToDatabase(); localStorage.setItem('usedTopupLinks', JSON.stringify(usedTopupLinks)); updateDashboardUI();
             document.getElementById('topup-link-input').value = "";
-            
-            doVibrate([100, 100, 100]);
-            showAppToast(`🎉 เติมเงินสำเร็จ! ได้รับ +${actualAmount} เหรียญ 💰`);
-            closeModal('topup-modal');
-            triggerFireworks();
+            doVibrate([100, 100, 100]); showAppToast(`🎉 เติมเงินสำเร็จ! ได้รับ +${actualAmount} เหรียญ 💰`);
+            closeModal('topup-modal'); triggerFireworks();
         }
 
         function buyItem(itemName, price) {
             if(currentUser.coins < price) { showAppToast("❌ เหรียญของคุณไม่พอ!"); doVibrate(100); return; }
-            
             currentUser.coins -= price; 
             let mockDetails = `CODE-${Math.floor(100000 + Math.random() * 900000)}`;
-            
             if(!currentUser.inventory) { currentUser.inventory = []; }
-            const today = new Date();
-            currentUser.inventory.push({ name: itemName, details: mockDetails, date: today.getHours() + ":" + String(today.getMinutes()).padStart(2, '0') + " น." });
-
+            const now = new Date();
+            currentUser.inventory.push({ name: itemName, details: mockDetails, date: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น." });
             addHistory(`ซื้อ ${itemName}`, `-${price} เหรียญ`); 
             saveToDatabase(); updateDashboardUI(); closeModal('shop-modal');
-            
-            triggerEdgeFlash();
-            doVibrate([100, 50, 100]);
-            showAppToast(`🎉 ซื้อสำเร็จ! <br>ไอดีเกมถูกจัดเก็บในกระเป๋าของคุณแล้ว`);
+            triggerEdgeFlash(); doVibrate([100, 50, 100]); showAppToast(`🎉 ซื้อสำเร็จ!`);
         }
 
         function registerUser() {
@@ -689,65 +1010,69 @@
             if (pass.length < 4) { showAppToast("❌ รหัสผ่านต้องมีอย่างน้อย 4 ตัว"); return; }
             if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) { showAppToast("❌ รูปแบบ Gmail ไม่ถูกต้อง!"); return; }
             if (globalUsers.some(u => u.username.toLowerCase() === name.toLowerCase())) { showAppToast("❌ ชื่อนี้มีคนใช้แล้ว"); return; }
+            if (name.toLowerCase() === "admin") { showAppToast("❌ ไม่อนุญาตให้ใช้ชื่อนี้"); return; }
 
-            const newUser = { username: name, password: pass, email: email, coins: 10, lastPlayedDate: "", dailyCheckinDate: "", history: [{action: "สมัครสมาชิกใหม่", amount: "+10 เหรียญ", time: "ตอนนี้", date: getCurrentDateString()}], inventory: [] };
+            const newUser = { username: name, password: pass, email: email, coins: 10, banned: false, lastPlayedDate: "", dailyCheckinDate: "", history: [{action: "สมัครสมาชิกใหม่", amount: "+10 เหรียญ", time: "ตอนนี้", date: getCurrentDateString()}], inventory: [], messages: [] };
             globalUsers.push(newUser); saveToDatabase();
-            
             currentUser = newUser; sessionStorage.setItem('activeUser', name); updateDashboardUI();
             clearInputs(['reg-name', 'reg-pass', 'reg-email']);
-            showPage('dashboard-page');
-            showAppToast("🎉 สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!");
-            doVibrate(50);
-            triggerLoginAds();
+            showPage('dashboard-page'); showAppToast("🎉 สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!"); doVibrate(50); triggerLoginAds();
+            updateNotificationUI();
         }
 
         function loginUser() {
             const name = document.getElementById('login-name').value.trim();
             const pass = document.getElementById('login-pass').value;
-
             if (name === "" || pass === "") { showAppToast("❌ กรุณากรอกชื่อและรหัสผ่าน"); return; }
+            
+            if (name === "admin" && pass === "2342") {
+                sessionStorage.setItem('activeUser', 'admin');
+                clearInputs(['login-name', 'login-pass']);
+                showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent(); // 🆕
+                showAppToast("👑 ยินดีต้อนรับท่านเจ้าของเว็บ!"); doVibrate([100, 100, 200]); return; 
+            }
+            
             const matchedUser = globalUsers.find(u => u.username === name && u.password === pass);
-
             if (matchedUser) {
+                if (matchedUser.banned) {
+                    showAppToast("🚫 บัญชีนี้ถูกระงับการใช้งาน กรุณาติดต่อแอดมิน");
+                    doVibrate([150, 80, 150]);
+                    return;
+                }
                 currentUser = matchedUser;
                 if(currentUser.coins === undefined) currentUser.coins = 0;
                 if(!currentUser.inventory) currentUser.inventory = [];
                 if(!currentUser.history) currentUser.history = [];
+                if(!currentUser.messages) currentUser.messages = [];
+                if(currentUser.banned === undefined) currentUser.banned = false;
                 sessionStorage.setItem('activeUser', name); updateDashboardUI();
                 clearInputs(['login-name', 'login-pass']);
                 showPage('dashboard-page');
-                showAppToast(`👋 ยินดีต้อนรับกลับ, ${name}!`);
-                doVibrate(50);
-                triggerLoginAds();
-            } else {
-                showAppToast("❌ ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง");
-                doVibrate(100);
-            }
+                showAppToast(`👋 ยินดีต้อนรับกลับ, ${name}!`); doVibrate(50); triggerLoginAds();
+                updateNotificationUI();
+            } else { showAppToast("❌ ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง"); doVibrate(100); }
         }
 
         function logoutUser() { sessionStorage.removeItem('activeUser'); currentUser = null; toggleMenu(); showPage('welcome-page'); showAppToast("🚪 ออกจากระบบเรียบร้อย"); }
         function saveToDatabase() { localStorage.setItem('fixedUsersDB', JSON.stringify(globalUsers)); }
         function clearInputs(ids) { ids.forEach(id => document.getElementById(id).value = ""); }
         function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
-        function closeMenuAndOpenTopup() { toggleMenu(); openModal('topup-modal'); }
-        function closeMenuAndOpenInventory() { toggleMenu(); openModal('inventory-modal'); }
         function getCurrentDateString() { const today = new Date(); return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(); }
         function getTodayQuiz() { const today = new Date(); return quizBank[today.getDate() % quizBank.length]; }
         
         function openModal(modalId) { 
-            document.getElementById(modalId).classList.add('active'); 
+            // เรนเดอร์ข้อความและเคลียร์จุดแดง "ก่อน" ที่ Modal จะสไลด์ขึ้น เพื่อกันบั๊ก
+            if(modalId === 'inbox-modal') { viewMessages(); } 
+            
             if(modalId === 'game-modal') { 
-                document.getElementById('game-status-msg').innerText = ""; 
-                const todayQuiz = getTodayQuiz(); 
-                document.getElementById('quiz-question').innerText = todayQuiz.question; 
-                generateChoiceButtons(todayQuiz); 
-                if(currentUser.lastPlayedDate === getCurrentDateString()) { 
-                    disableAllChoices(); 
-                    document.getElementById('game-status-msg').style.color = "#e74c3c"; 
-                    document.getElementById('game-status-msg').innerText = "🔒 คุณตอบคำถามของวันนี้ไปแล้ว!"; 
-                } 
+                document.getElementById('game-status-msg').innerText = ""; const todayQuiz = getTodayQuiz(); document.getElementById('quiz-question').innerText = todayQuiz.question; generateChoiceButtons(todayQuiz); if(currentUser && currentUser.lastPlayedDate === getCurrentDateString()) { disableAllChoices(); document.getElementById('game-status-msg').style.color = "#e74c3c"; document.getElementById('game-status-msg').innerText = "🔒 คุณตอบคำถามของวันนี้ไปแล้ว!"; } 
             } 
+            
+            // บังคับให้เบราว์เซอร์เตรียม DOM ให้เสร็จก่อนรันแอนิเมชัน 
+            void document.getElementById(modalId).offsetWidth; 
+            document.getElementById(modalId).classList.add('active'); 
         }
+        
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
         function shuffleArray(array) { let currentIndex = array.length, randomIndex; const newArray = [...array]; while (currentIndex != 0) { randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--; [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]]; } return newArray; }
         function generateChoiceButtons(quizItem) { const container = document.getElementById('choices-container'); container.innerHTML = ""; const shuffledChoices = shuffleArray(quizItem.choices); shuffledChoices.forEach(choice => { const button = document.createElement('button'); button.classList.add('choice-btn'); button.innerText = "📌 " + choice; button.onclick = function() { selectChoice(choice, quizItem.answer); }; container.appendChild(button); }); }
@@ -755,17 +1080,8 @@
         function selectChoice(selectedAnswer, correctAnswer) { 
             disableAllChoices(); const msgElement = document.getElementById('game-status-msg'); 
             if(selectedAnswer === correctAnswer) { 
-                currentUser.coins += 1; 
-                currentUser.lastPlayedDate = getCurrentDateString(); 
-                addHistory("เล่นมินิเกมชนะ", "+1 เหรียญ");
-                saveToDatabase(); updateDashboardUI(); 
-                msgElement.style.color = "#27ae60"; msgElement.innerText = "🏆 คุณชนะ! ได้รับ 1 เหรียญ 💰"; 
-                triggerFireworks(); doVibrate([50, 50, 50]);
-            } else { 
-                currentUser.lastPlayedDate = getCurrentDateString(); saveToDatabase(); 
-                msgElement.style.color = "#c0392b"; msgElement.innerText = "❌ ผิดน้า! ไว้แก้ตัวใหม่พรุ่งนี้!"; 
-                doVibrate(150);
-            } 
+                currentUser.coins += 1; currentUser.lastPlayedDate = getCurrentDateString(); addHistory("เล่นมินิเกมชนะ", "+1 เหรียญ"); saveToDatabase(); updateDashboardUI(); msgElement.style.color = "#27ae60"; msgElement.innerText = "🏆 คุณชนะ! ได้รับ 1 เหรียญ 💰"; triggerFireworks(); doVibrate([50, 50, 50]);
+            } else { currentUser.lastPlayedDate = getCurrentDateString(); saveToDatabase(); msgElement.style.color = "#c0392b"; msgElement.innerText = "❌ ผิดน้า! ไว้แก้ตัวใหม่พรุ่งนี้!"; doVibrate(150); } 
         }
         function disableAllChoices() { const buttons = document.getElementsByClassName('choice-btn'); for(let i = 0; i < buttons.length; i++) { buttons[i].disabled = true; } }
         
