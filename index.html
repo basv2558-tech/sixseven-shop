@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAS SHOP - Premium Edge Flash & Hologram Toast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ================= โครงสร้างหลัก & แอนิเมชันสมูท ================= */
+        * { box-sizing: border-box; font-family: 'Prompt', sans-serif; transition: background 0.3s, color 0.3s; }
+        
+        body {
+            background-color: #E8F5E9; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; color: #333; padding: 10px; transition: background-color 0.4s ease;
+        }
+
+        /* --- Dark Mode --- */
+        body.dark-mode { background-color: #121212 !important; color: #e0e0e0 !important; }
+        body.dark-mode .container { background: #1e1e1e !important; box-shadow: 0 15px 35px rgba(0,0,0,0.5) !important; }
+        body.dark-mode .modal-content, body.dark-mode .side-menu, body.dark-mode .ads-box { background: #252525 !important; color: #fff !important; }
+        body.dark-mode .item-box { background: #2c2c2c !important; border-color: #444 !important; }
+        body.dark-mode .inventory-card, body.dark-mode .history-card { background: #333 !important; border-color: #555 !important; }
+        body.dark-mode input, body.dark-mode textarea { background-color: #2c2c2c !important; color: #fff !important; border: 1px solid #444 !important; }
+        body.dark-mode h3 { color: #81C784 !important; }
+
+        .container {
+            background: #ffffff; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(39, 174, 96, 0.12);
+            width: 100%; max-width: 420px; height: 85vh; min-height: 620px; 
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s ease;
+        }
+
+        h2 { margin-top: 0; color: #27AE60; font-size: 1.5rem; transition: color 0.3s; text-align: center; }
+        p { font-size: 0.95rem; }
+
+        /* ================= 🌈 แอนิเมชันรุ้งพรีเมียม (Hologram Rainbow) ================= */
+        @keyframes premium-rainbow-fluid { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .container.rainbow-mode {
+            background: linear-gradient(124deg, #ff3333, #ff9933, #ffff33, #33ff33, #33ffff, #3333ff, #9933ff, #ff33ff);
+            background-size: 1400% 1400%; animation: premium-rainbow-fluid 12s ease infinite; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .rainbow-mode #welcome-page, .rainbow-mode #login-page, .rainbow-mode #register-page {
+            background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 25px 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .fade-in { animation: smoothFadeUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes smoothFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ================= ⚡ เอฟเฟกต์แสงรุ้งวาบขอบจอ (Edge Flash) ⚡ ================= */
+        .edge-flash { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 9990; box-shadow: inset 0 0 0px transparent; opacity: 0; }
+        .edge-flash.active { animation: flash-screen-edge 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+        @keyframes flash-screen-edge { 0% { opacity: 0; box-shadow: inset 0 0 0px transparent; } 15% { opacity: 1; box-shadow: inset 0 0 40px 10px rgba(255, 0, 122, 0.7), inset 0 0 80px 20px rgba(0, 229, 255, 0.5), inset 0 0 120px 40px rgba(213, 0, 249, 0.3); } 100% { opacity: 0; box-shadow: inset 0 0 0px transparent; } }
+
+        /* ================= ⚡ กล่องแจ้งเตือน (Premium Toast) ⚡ ================= */
+        .custom-toast {
+            position: absolute; top: -150px; left: 50%; transform: translateX(-50%) translateY(0); width: 88%; padding: 14px 15px; border-radius: 18px; font-size: 0.95rem; font-weight: 600; text-align: center; z-index: 9999; box-shadow: 0 12px 35px rgba(0,0,0,0.15); opacity: 0; visibility: hidden; transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; flex-direction: column; align-items: center; gap: 8px; border: 3.5px solid transparent;
+            background: linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, #ff007a, #ffc400, #00e676, #00e5ff, #d500f9) border-box; background-size: 100% 100%, 300% 300%; animation: premium-rainbow-fluid 4s ease infinite; color: #333; cursor: grab; touch-action: none; 
+        }
+        .custom-toast:active { cursor: grabbing; }
+        .custom-toast.show { top: 25px; opacity: 1; visibility: visible; }
+        .drag-indicator { width: 40px; height: 5px; background: #ddd; border-radius: 10px; margin-bottom: 2px; }
+        .toast-btn { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; background: linear-gradient(135deg, #ff007a, #ffc400, #00e676, #00e5ff); background-size: 300% 300%; animation: premium-rainbow-fluid 4s ease infinite; color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-top: 4px; }
+        .toast-btn:hover { transform: scale(1.05); filter: brightness(1.1); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+
+        /* ================= 🌈 ปุ่มหน้าสมัคร & ล็อกอิน ================= */
+        .btn-rainbow { width: 100%; padding: 12px; margin: 8px 0; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: center; border-radius: 30px; color: #1E8449; border: 3px solid transparent; background: linear-gradient(rgba(46, 204, 113, 0.12), rgba(46, 204, 113, 0.12)) padding-box, linear-gradient(124deg, #ff3333, #ff9933, #ffff33, #33ff33, #33ffff, #3333ff, #9933ff, #ff33ff) border-box; background-size: 100% 100%, 400% 400%; animation: premium-rainbow-fluid 6s ease infinite; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.08); transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .btn-rainbow:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(39, 174, 96, 0.25); }
+
+        /* UI ปุ่มทั่วไป */
+        .btn { width: 100%; padding: 12px; margin: 8px 0; border: 2.5px solid #2ECC71; background-color: rgba(46, 204, 113, 0.12); color: #1E8449; border-radius: 30px; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: center; display: inline-block; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.08); transition: all 0.3s; }
+        .btn:hover { background-color: rgba(46, 204, 113, 0.28); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(39, 174, 96, 0.25); }
+        .btn-outline { background-color: transparent; border: 2.5px dashed #2ECC71; }
+        .btn-outline:hover { background-color: rgba(46, 204, 113, 0.1); }
+
+        input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0 12px 0; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem; background-color: #f9f9f9; outline: none; transition: all 0.3s; font-family: monospace; }
+        input:focus, textarea:focus { border-color: #2ECC71; background-color: #fff; box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15); }
+
+        .hidden { display: none !important; }
+        .text-muted { font-size: 0.85rem; color: #757575; margin-top: 15px; cursor: pointer; text-align: center; }
+        .text-muted:hover { color: #27AE60; text-decoration: underline; }
+
+        /* Dashboard & Header */
+        .dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px dashed #A9DFBF; padding-bottom: 12px; }
+        .user-info-box { display: flex; flex-direction: column; gap: 4px; }
+        .coin-badge { background: #E8F5E9; color: #1E8449; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; border: 1px solid #2ECC71; display: inline-block; width: fit-content; }
+        .mini-clock-box { font-size: 0.8rem; color: #1E8449; font-weight: 500; background-color: #E8F5E9; padding: 3px 10px; border-radius: 8px; border: 1px solid #A9DFBF; display: inline-block; width: fit-content; margin-top: 2px; }
+        .mini-clock-box span { font-weight: 600; color: #27AE60; }
+        .header-actions { display: flex; align-items: center; gap: 5px; }
+
+        .topup-nav-btn { background-color: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 2px solid #e74c3c; padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .topup-nav-btn:hover { background-color: rgba(231, 76, 60, 0.25); transform: translateY(-1px); }
+        .hamburger-btn { background: none; border: none; font-size: 24px; color: #27AE60; cursor: pointer; padding: 5px 10px; }
+
+        /* เมนูด้านข้าง */
+        .side-menu { position: absolute; top: 0; right: -100%; width: 65%; height: 100%; background: #fff; box-shadow: -5px 0 25px rgba(0,0,0,0.08); padding: 30px 20px; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; border-radius: 24px 0 0 24px; }
+        .side-menu.active { right: 0; }
+        .menu-item { padding: 15px 0; border-bottom: 1px solid #f0f0f0; font-weight: 600; color: #555; cursor: pointer; display: flex; align-items: center; gap: 10px;}
+        .menu-item:hover { color: #27AE60; }
+
+        /* การ์ดหมวดหมู่ */
+        .category-card { background: linear-gradient(135deg, #E8F5E9, #2ECC71); border-radius: 14px; padding: 12px 15px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; transition: all 0.3s; }
+        .category-card:hover { transform: translateY(-4px); box-shadow: 0 8px 22px rgba(39, 174, 96, 0.25); }
+        .card-icon { font-size: 20px; margin-right: 15px; background: #fff; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; }
+        .card-title { font-size: 0.95rem; font-weight: 600; color: #145A32; margin: 0; }
+        .card-desc { font-size: 0.7rem; color: #1E6F3D; margin: 2px 0 0 0; font-weight: 300; }
+
+        /* ป๊อปอัป (Modal) */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 90, 50, 0.35); z-index: 200; display: flex; justify-content: center; align-items: flex-end; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(4px); }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background: #fff; width: 100%; height: 80%; border-radius: 24px 24px 20px 20px; padding: 22px; transform: translateY(100%); transition: 0.45s cubic-bezier(0.34, 1.3, 0.64, 1); display: flex; flex-direction: column; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn { background: #f0f0f0; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; color: #555; display: flex; justify-content: center; align-items: center; }
+        .scroll-box { overflow-y: auto; margin-top: 15px; flex-grow: 1; padding-right: 5px; }
+
+        /* ร้านค้าไอเทม & กระเป๋า */
+        .item-box { border: 1px solid #e8e8e8; border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: #fff; transition: transform 0.2s; }
+        .item-box:hover { transform: translateY(-2px); border-color: #2ECC71; }
+        .item-name { font-weight: 600; font-size: 0.95rem; }
+        .item-price { color: #27AE60; font-size: 0.85rem; font-weight: 600; margin-top: 3px; }
+        .buy-btn { background: rgba(39, 174, 96, 0.1); color: #27AE60; border: 2px solid #27AE60; padding: 8px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        
+        .inventory-card { border: 1px dashed #2ECC71; background: #F4FBF7; border-radius: 14px; padding: 12px; margin-bottom: 10px; text-align: left; }
+        .history-card { border: 1px solid #ddd; background: #fafafa; border-radius: 10px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
+        .inv-details { background: #fff; padding: 8px 12px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-top: 5px; border: 1px solid #e0e0e0; color: #27AE60; word-break: break-all; }
+
+        .copy-btn { font-size: 0.75rem; background: #eee; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; color: #333; margin-left: 10px; font-family: 'Prompt'; font-weight:600;}
+        .search-input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #ddd; }
+
+        /* เกมช้อยส์ */
+        .quiz-box { background: #F4FBF7; border: 2px dashed #2ECC71; border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 15px; }
+        .hint-text { font-size: 1.15rem; color: #27AE60; font-weight: 600; }
+        .choice-btn { width: 100%; padding: 13px 20px; margin: 8px 0; background-color: #fff; border: 2px solid #A9DFBF; border-radius: 14px; font-size: 0.95rem; font-weight: 600; color: #196F3D; text-align: left; cursor: pointer; transition: 0.25s; }
+
+        /* โฆษณาตอนเข้า */
+        .ads-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 500; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(3px); }
+        .ads-overlay.active { opacity: 1; visibility: visible; }
+        .ads-box { background: #fff; width: 85%; max-width: 340px; border-radius: 18px; padding: 12px; position: relative; transform: scale(0.85); transition: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+        .ads-overlay.active .ads-box { transform: scale(1); }
+        .ads-close { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: #e74c3c; color: #fff; border: none; border-radius: 50%; font-weight: bold; cursor: pointer; }
+        .ads-banner-img { width: 100%; height: auto; border-radius: 12px; object-fit: cover; }
+        .ads-progress-bar { width: 100%; height: 5px; background-color: #f0f0f0; margin-top: 10px; border-radius: 10px; overflow: hidden; }
+        .ads-progress-fill { height: 100%; width: 100%; background-color: #2ECC71; border-radius: 10px; }
+        .ads-overlay.active .ads-progress-fill { animation: countdown 5s linear forwards; }
+        @keyframes countdown { from { width: 100%; } to { width: 0%; } }
+
+        /* Gacha Animation */
+        .gacha-box { font-size: 60px; text-align: center; margin: 20px 0; }
+        .shake { animation: shakeGacha 0.5s ease-in-out infinite; }
+        @keyframes shakeGacha { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-15deg) scale(1.1); } 50% { transform: rotate(15deg) scale(1.1); } 75% { transform: rotate(-15deg) scale(1.1); } 100% { transform: rotate(0deg) scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div id="screen-edge-flash" class="edge-flash"></div>
+
+    <div class="container" id="app-container">
+        
+        <div id="app-toast" class="custom-toast"></div>
+
+        <div id="login-ads-modal" class="ads-overlay">
+            <div class="ads-box">
+                <button class="ads-close" onclick="closeAdsImmediate()">✕</button>
+                <img id="ads-image" src="https://picsum.photos/400/250?random=8" alt="โฆษณาโปรโมชั่น" class="ads-banner-img">
+                <div class="ads-progress-bar"><div class="ads-progress-fill"></div></div>
+                <p style="margin: 5px 0 0 0; font-size: 0.75rem; text-align: center; color: #888;">ประกาศจากระบบ (จะปิดอัตโนมัติใน 5 วินาที)</p>
+            </div>
+        </div>
+
+        <div id="welcome-page">
+            <h2>ยินดีต้อนรับ</h2>
+            <p style="color: #666; margin-bottom: 30px; text-align: center;">กรุณาเลือกรูปแบบการเข้าใช้งาน</p>
+            <button class="btn" onclick="showPage('login-page')">เข้าสู่ระบบ</button>
+            <button class="btn btn-outline" onclick="showPage('register-page')">สมัครสมาชิกใหม่</button>
+        </div>
+
+        <div id="register-page" class="hidden">
+            <h2>สมัครสมาชิก</h2>
+            <input type="text" id="reg-name" placeholder="ชื่อผู้ใช้งาน (ห้ามซ้ำ)" required>
+            <input type="password" id="reg-pass" placeholder="รหัสผ่าน (อย่างน้อย 4 ตัว)" minlength="4" required>
+            <input type="email" id="reg-email" placeholder="ตัวอย่าง: abc@gmail.com" required>
+            <button class="btn-rainbow" onclick="registerUser()">ยืนยันการสมัคร</button>
+            <p class="text-muted" onclick="showPage('login-page')">มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</p>
+        </div>
+
+        <div id="login-page" class="hidden">
+            <h2>เข้าสู่ระบบ</h2>
+            <input type="text" id="login-name" placeholder="ชื่อผู้ใช้งาน" required>
+            <input type="password" id="login-pass" placeholder="รหัสผ่าน" required>
+            <button class="btn-rainbow" onclick="loginUser()">เข้าสู่ระบบ</button>
+            <p class="text-muted" onclick="showPage('register-page')">ยังไม่มีบัญชี? สมัครสมาชิก</p>
+        </div>
+
+        <div id="dashboard-page" class="hidden" style="height: 100%; flex-direction: column;">
+            <div class="dashboard-header">
+                <div class="user-info-box">
+                    <h2 id="user-greeting" style="margin: 0; font-size: 1.2rem; text-align: left;">สวัสดี!</h2>
+                    <div class="coin-badge" id="user-coins">💰 0 เหรียญ</div>
+                    <div class="mini-clock-box">เวลาไทย: <span id="realtime-clock">00:00:00</span> น.</div>
+                </div>
+                <div class="header-actions">
+                    <button class="topup-nav-btn" onclick="openModal('topup-modal')">🧧 เติมเงิน</button>
+                    <button class="hamburger-btn" onclick="toggleMenu()">☰</button>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="dailyCheckIn()">
+                <div class="card-icon">📅</div>
+                <div><p class="card-title">เช็คอินรับเหรียญ</p><p class="card-desc">กดรับเหรียญฟรีทุกวัน</p></div>
+            </div>
+
+            <div class="category-card" onclick="openModal('gacha-modal')">
+                <div class="card-icon">🎁</div>
+                <div><p class="card-title">สุ่มกาชาลุ้นแรร์ (10 เหรียญ)</p><p class="card-desc">สุ่มลุ้นไอดีธรรมดา จนถึง VIP</p></div>
+            </div>
+
+            <div class="category-card" onclick="openModal('game-modal')">
+                <div class="card-icon">🧩</div>
+                <div><p class="card-title">มินิเกมทายคำภาษาไทย</p><p class="card-desc">เลือกช้อยส์ที่ถูกต้อง รับฟรี 1 เหรียญ</p></div>
+            </div>
+
+            <div class="category-card" onclick="openModal('shop-modal')">
+                <div class="card-icon">🎮</div>
+                <div><p class="card-title">BAS SHOP ร้านค้าไอดีเกม</p><p class="card-desc">เลือกซื้อไอดีเกม & ของขวัญราคาถูก</p></div>
+            </div>
+            
+            <button class="btn btn-outline" style="margin-top: auto; font-size: 0.85rem;" onclick="testAddCoin()">🛠️ ปุ่มเทส: กดรับเงินฟรี +50 เหรียญ</button>
+        </div>
+
+        <div id="side-menu" class="side-menu">
+            <h3 style="color: #27AE60; margin-top: 0;">เมนูหลัก</h3>
+            <div class="menu-item" onclick="toggleMenu(); openModal('dashboard-page');">🏠 หน้าแรก</div>
+            <div class="menu-item" onclick="toggleMenu(); openModal('topup-modal');">🧧 เติมเงินอั่งเปา</div>
+            <div class="menu-item" onclick="toggleMenu(); openModal('inventory-modal');">📦 กระเป๋าของฉัน</div>
+            <div class="menu-item" onclick="toggleMenu(); openModal('history-modal');">📜 ประวัติการทำรายการ</div>
+            <div class="menu-item" onclick="toggleMenu(); openModal('backup
