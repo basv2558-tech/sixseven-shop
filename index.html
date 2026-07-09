@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -19,8 +20,8 @@
         body.dark-mode .container { background: #1e1e1e !important; box-shadow: 0 15px 35px rgba(0,0,0,0.5) !important; }
         body.dark-mode .modal-content, body.dark-mode .side-menu, body.dark-mode .ads-box { background: #252525 !important; color: #fff !important; }
         body.dark-mode .item-box { background: #2c2c2c !important; border-color: #444 !important; }
-        body.dark-mode .inventory-card, body.dark-mode .history-card, body.dark-mode .admin-user-card { background: #333 !important; border-color: #555 !important; }
-        body.dark-mode input, body.dark-mode textarea { background-color: #2c2c2c !important; color: #fff !important; border: 1px solid #444 !important; }
+        body.dark-mode .inventory-card, body.dark-mode .history-card, body.dark-mode .admin-user-card, body.dark-mode .order-card { background: #333 !important; border-color: #555 !important; }
+        body.dark-mode input, body.dark-mode textarea, body.dark-mode select { background-color: #2c2c2c !important; color: #fff !important; border: 1px solid #444 !important; }
         body.dark-mode h3 { color: #81C784 !important; }
         
         body.dark-mode .message-card { background: #2c2c2c !important; border-color: #444 !important; }
@@ -83,8 +84,8 @@
         .btn-outline { background-color: transparent; border: 2.5px dashed #2ECC71; }
         .btn-outline:hover { background-color: rgba(46, 204, 113, 0.1); }
 
-        input, textarea { width: 100%; padding: 12px 15px; margin: 8px 0 12px 0; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem; background-color: #f9f9f9; outline: none; transition: all 0.3s; font-family: monospace; }
-        input:focus, textarea:focus { border-color: #2ECC71; background-color: #fff; box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15); }
+        input, textarea, select { width: 100%; padding: 12px 15px; margin: 8px 0 12px 0; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 0.95rem; background-color: #f9f9f9; outline: none; transition: all 0.3s; font-family: 'Prompt', monospace; }
+        input:focus, textarea:focus, select:focus { border-color: #2ECC71; background-color: #fff; box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15); }
 
         .hidden { display: none !important; }
         .text-muted { font-size: 0.85rem; color: #757575; margin-top: 15px; cursor: pointer; text-align: center; }
@@ -123,18 +124,27 @@
         .scroll-box { overflow-y: auto; margin-top: 15px; flex-grow: 1; padding-right: 5px; }
 
         /* ร้านค้าไอเทม & กระเป๋า */
-        .item-box { border: 1px solid #e8e8e8; border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: #fff; transition: transform 0.2s; }
+        .item-box { border: 1px solid #e8e8e8; border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: #fff; transition: transform 0.2s; flex-wrap: wrap; }
         .item-box:hover { transform: translateY(-2px); border-color: #2ECC71; }
-        .item-name { font-weight: 600; font-size: 0.95rem; }
+        .item-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; margin-right: 12px; }
+        .item-name { font-weight: 600; font-size: 0.95rem; line-height: 1.2; }
         .item-price { color: #27AE60; font-size: 0.85rem; font-weight: 600; margin-top: 3px; }
-        .buy-btn { background: rgba(39, 174, 96, 0.1); color: #27AE60; border: 2px solid #27AE60; padding: 8px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .buy-btn { background: rgba(39, 174, 96, 0.1); color: #27AE60; border: 2px solid #27AE60; padding: 8px 18px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
         
-        .inventory-card { border: 1px dashed #2ECC71; background: #F4FBF7; border-radius: 14px; padding: 12px; margin-bottom: 10px; text-align: left; }
+        .inventory-card { border: 1px dashed #2ECC71; background: #F4FBF7; border-radius: 14px; padding: 12px; margin-bottom: 10px; text-align: left; position: relative;}
         .history-card { border: 1px solid #ddd; background: #fafafa; border-radius: 10px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
-        .inv-details { background: #fff; padding: 8px 12px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-top: 5px; border: 1px solid #e0e0e0; color: #27AE60; word-break: break-all; }
+        .inv-details { background: #fff; padding: 8px 12px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-top: 5px; border: 1px solid #e0e0e0; color: #27AE60; word-break: break-all; white-space: pre-wrap; }
 
-        .copy-btn { font-size: 0.75rem; background: #eee; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; color: #333; margin-left: 10px; font-family: 'Prompt'; font-weight:600;}
+        .copy-btn { font-size: 0.75rem; background: #eee; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; color: #333; margin-left: 10px; font-weight:600;}
         .search-input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #ddd; }
+        
+        /* Status Badges */
+        .status-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; font-weight: bold; position: absolute; top: 10px; right: 10px; }
+        .status-badge.inline { position: static; display: inline-block; margin-top: 4px; }
+        .status-pending { background: #fef9e7; color: #f1c40f; border: 1px solid #f1c40f; }
+        .status-processing { background: #ebf5fb; color: #3498db; border: 1px solid #3498db; }
+        .status-completed { background: #e8f8f5; color: #2ecc71; border: 1px solid #2ecc71; }
+        .status-auto { background: #f5eef8; color: #8e44ad; border: 1px solid #8e44ad; }
 
         /* เกมช้อยส์ */
         .quiz-box { background: #F4FBF7; border: 2px dashed #2ECC71; border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 15px; }
@@ -153,15 +163,8 @@
         .ads-overlay.active .ads-progress-fill { animation: countdown 5s linear forwards; }
         @keyframes countdown { from { width: 100%; } to { width: 0%; } }
 
-        /* Gacha Animation */
-        .gacha-box { font-size: 60px; text-align: center; margin: 20px 0; }
-        .shake { animation: shakeGacha 0.5s ease-in-out infinite; }
-        @keyframes shakeGacha { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-15deg) scale(1.1); } 50% { transform: rotate(15deg) scale(1.1); } 75% { transform: rotate(-15deg) scale(1.1); } 100% { transform: rotate(0deg) scale(1); } }
-        
         /* Admin Panel */
         .admin-user-card { border: 1px solid #ccc; border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fafafa; color: #333; text-align: left; }
-
-        /* ================= 🆕 กล่องปรับแต่งรูปโฆษณา (Admin) ================= */
         .ads-editor-box { border: 2px dashed #3498db; background: #eaf4fc; border-radius: 16px; padding: 14px; margin-bottom: 18px; }
         .ads-editor-box h4 { margin: 0 0 10px 0; color: #2980b9; font-size: 1rem; }
         .ads-preview-wrap { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 10px; background: #dfe9f2; min-height: 60px; display: flex; align-items: center; justify-content: center; }
@@ -169,10 +172,17 @@
         .ads-preview-empty { font-size: 0.8rem; color: #7f9bb3; padding: 20px 0; }
         .file-input-label { display: block; width: 100%; padding: 10px; text-align: center; border: 2px dashed #3498db; border-radius: 12px; color: #2980b9; font-weight: 600; font-size: 0.85rem; cursor: pointer; background: #fff; margin-bottom: 8px; }
         .file-input-label:hover { background: #eaf4fc; }
-        /* ซ่อน input file แบบที่เบราว์เซอร์ยังยอมให้เปิด file picker ได้ (ห้ามใช้ display:none เพราะบาง webview บล็อก) */
         .visually-hidden-file { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-        body.dark-mode .ads-editor-box { background: #1e2b36 !important; border-color: #2980b9 !important; }
-        body.dark-mode .file-input-label { background: #252525 !important; }
+        
+        .coin-control { display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; }
+        .coin-btn { background: #34495e; color: white; border: none; border-radius: 5px; width: 25px; height: 25px; cursor: pointer; font-weight: bold; }
+        .coin-btn:hover { background: #2c3e50; }
+        
+        /* Order Card Admin */
+        .order-card { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fff; }
+        .order-actions { display: flex; gap: 5px; margin-top: 10px; }
+        .user-order-detail-box { background: #fdf2e9; border: 1px dashed #e67e22; padding: 8px; border-radius: 8px; font-size: 0.85rem; margin-top: 8px; word-break: break-all; }
+
     </style>
 </head>
 <body>
@@ -256,7 +266,7 @@
 
             <div class="category-card" onclick="openModal('shop-modal')">
                 <div class="card-icon">🎮</div>
-                <div><p class="card-title">BAS SHOP ร้านค้าไอดีเกม</p><p class="card-desc">เลือกซื้อไอดีเกม & ของขวัญราคาถูก</p></div>
+                <div><p class="card-title">BAS SHOP ร้านค้าไอดีเกม</p><p class="card-desc">เลือกซื้อไอดีเกม & สั่งทำของขวัญ</p></div>
             </div>
         </div>
 
@@ -267,21 +277,26 @@
             </div>
 
             <div class="scroll-box" style="margin-top:0;">
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="btn" style="background:#2ecc71; color:#fff; border:none; margin:0; flex:1;" onclick="openModal('admin-products-modal')">📦 จัดการสินค้า</button>
+                    <button class="btn" style="background:#f39c12; color:#fff; border:none; margin:0; flex:1;" onclick="openModal('admin-orders-modal')">📋 ออเดอร์ลูกค้า</button>
+                </div>
 
-                <!-- 🆕 กล่องปรับแต่งรูปโฆษณา -->
+                <!-- กล่องปรับแต่งรูปโฆษณา -->
                 <div class="ads-editor-box">
                     <h4>🖼️ ปรับแต่งรูปโฆษณา (Ads Banner)</h4>
                     <div class="ads-preview-wrap" id="ads-preview-wrap">
                         <span class="ads-preview-empty" id="ads-preview-empty">ยังไม่มีรูปที่เลือก (แสดงรูปปัจจุบันของระบบ)</span>
                         <img id="ads-preview-img" src="" style="display:none;">
                     </div>
-                    <button type="button" class="file-input-label" onclick="triggerAdsFilePicker()" style="border:2px dashed #3498db;">📂 เลือกรูปภาพจากเครื่อง...</button>
-                    <input type="file" id="ads-image-upload" accept="image/*" class="visually-hidden-file" onchange="previewAdsImage(event)">
+                    <button type="button" class="file-input-label" onclick="document.getElementById('ads-image-upload').click()" style="border:2px dashed #3498db;">📂 เลือกรูปภาพจากเครื่อง...</button>
+                    <input type="file" id="ads-image-upload" accept="image/*" class="visually-hidden-file" onchange="previewAndCompressImage(event, 'ads-preview-img', 'ads-preview-empty', val => tempAdsImageData = val)">
                     <div style="display:flex; gap:10px;">
                         <button class="btn" style="background:#3498db; color:#fff; border:none; margin:0;" onclick="saveAdsImage()">💾 บันทึกใช้รูปนี้</button>
                         <button class="btn" style="border-color:#e74c3c; color:#e74c3c; background:none; margin:0;" onclick="resetAdsImage()">♻️ คืนค่าเริ่มต้น</button>
                     </div>
-                    <p style="font-size:0.7rem; color:#7f9bb3; margin:8px 0 0 0;">* รูปจะถูกบันทึกไว้ในเบราว์เซอร์นี้ และแสดงผลทันทีกับผู้ใช้ทุกคนที่ล็อกอินเข้ามา</p>
+                    <p style="font-size:0.7rem; color:#7f9bb3; margin:8px 0 0 0;">* อัปโหลดไฟล์ใหญ่ได้ ระบบจะบีบอัดอัตโนมัติ</p>
                 </div>
 
                 <button class="btn-rainbow" style="margin-bottom: 15px; background-image: linear-gradient(124deg, #e74c3c, #f39c12, #e74c3c); color:#fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);" onclick="openAdminMessageModal('ALL')">📢 ส่งข้อความหาทุกคน</button>
@@ -291,6 +306,7 @@
             </div>
         </div>
 
+        <!-- เมนูด้านข้าง -->
         <div id="side-menu" class="side-menu">
             <h3 style="color: #27AE60; margin-top: 0;">เมนูหลัก</h3>
             <div class="menu-item" onclick="toggleMenu(); openModal('dashboard-page');">🏠 หน้าแรก</div>
@@ -298,11 +314,68 @@
             <div class="menu-item" onclick="toggleMenu(); openModal('inbox-modal');">
                 ✉️ กล่องข้อความ <span class="notification-dot dot-item"></span>
             </div>
-            <div class="menu-item" onclick="toggleMenu(); openModal('inventory-modal');">📦 กระเป๋าของฉัน</div>
+            <div class="menu-item" onclick="toggleMenu(); openModal('inventory-modal');">📦 กระเป๋า & ออเดอร์</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('history-modal');">📜 ประวัติการทำรายการ</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('backup-modal');">☁️ สำรองข้อมูล (Backup)</div>
             <div class="menu-item" onclick="toggleMenu(); openModal('settings-modal');">⚙️ การตั้งค่าเว็บ</div>
             <div class="menu-item" style="color: #e74c3c; border-bottom: none; margin-top: 20px;" onclick="logoutUser()">🚪 ออกจากระบบ</div>
+        </div>
+
+        <!-- ================= MODALS ================= -->
+
+        <!-- Admin Products Modal (เพิ่มระบบ Auto/Manual) -->
+        <div id="admin-products-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #2ecc71;">📦 จัดการสินค้า (BAS SHOP)</h3>
+                    <button class="close-btn" onclick="closeModal('admin-products-modal')">✖</button>
+                </div>
+                <div class="scroll-box">
+                    <div style="background:#f9f9f9; padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid #ddd;">
+                        <h4 style="margin:0 0 10px 0; color:#333;">เพิ่ม/แก้ไข สินค้า</h4>
+                        <input type="hidden" id="prod-id">
+                        
+                        <select id="prod-type" onchange="toggleProductStockField()">
+                            <option value="auto">⚡ ระบบ: รับของทันที (Auto)</option>
+                            <option value="manual">📝 ระบบ: สั่งทำ / รอแอดมิน (Manual)</option>
+                        </select>
+
+                        <input type="text" id="prod-name" placeholder="ชื่อสินค้า..." required>
+                        <input type="number" id="prod-price" placeholder="ราคา (เหรียญ)..." required>
+                        
+                        <div id="prod-stock-container">
+                            <textarea id="prod-stock" rows="4" placeholder="ใส่ข้อมูลสินค้า/รหัส (1 บรรทัด = 1 ชิ้น) สำหรับระบบ Auto เท่านั้น"></textarea>
+                            <p style="font-size:0.75rem; color:#888; margin-top:0;">* สินค้าที่ลูกค้ารับอัตโนมัติ ให้พิมพ์รหัส 1 บรรทัดต่อ 1 ชิ้น</p>
+                        </div>
+                        
+                        <div class="ads-preview-wrap" style="min-height: 80px; margin-top:5px;" id="prod-img-wrap">
+                            <span class="ads-preview-empty" id="prod-img-empty">ยังไม่มีรูปสินค้า</span>
+                            <img id="prod-preview-img" src="" style="display:none; max-height:120px; object-fit:contain;">
+                        </div>
+                        <button type="button" class="file-input-label" onclick="document.getElementById('prod-image-upload').click()" style="padding:5px;">🖼️ เลือกรูปสินค้า...</button>
+                        <input type="file" id="prod-image-upload" accept="image/*" class="visually-hidden-file" onchange="previewAndCompressImage(event, 'prod-preview-img', 'prod-img-empty', val => tempProductImgData = val)">
+                        
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn" style="background:#2ecc71; color:#fff; border:none; margin:0;" onclick="saveProduct()">💾 บันทึกสินค้า</button>
+                            <button class="btn" style="background:#e74c3c; color:#fff; border:none; margin:0;" onclick="clearProductForm()">เคลียร์</button>
+                        </div>
+                    </div>
+                    <div id="admin-product-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Orders Modal -->
+        <div id="admin-orders-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    <h3 style="margin: 0; color: #f39c12;">📋 จัดการออเดอร์ (ระบบสั่งทำ)</h3>
+                    <button class="close-btn" onclick="closeModal('admin-orders-modal')">✖</button>
+                </div>
+                <div class="scroll-box" id="admin-order-list">
+                    <!-- Orders will be injected here -->
+                </div>
+            </div>
         </div>
 
         <div id="admin-msg-modal" class="modal-overlay" style="z-index: 300;">
@@ -327,8 +400,7 @@
                     <h3 style="margin: 0; color: #d35400;">✉️ กล่องข้อความ</h3>
                     <button class="close-btn" onclick="closeModal('inbox-modal')">✖</button>
                 </div>
-                <div id="message-list" class="scroll-box" style="padding: 10px 5px;">
-                    </div>
+                <div id="message-list" class="scroll-box" style="padding: 10px 5px;"></div>
             </div>
         </div>
 
@@ -362,19 +434,36 @@
         <div id="inventory-modal" class="modal-overlay">
             <div class="modal-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #27AE60;">📦 กระเป๋าเก็บไอดีของฉัน</h3>
+                    <h3 style="margin: 0; color: #27AE60;">📦 กระเป๋า & ออเดอร์ของฉัน</h3>
                     <button class="close-btn" onclick="closeModal('inventory-modal')">✖</button>
                 </div>
                 <div id="inventory-list" class="scroll-box"></div>
             </div>
         </div>
 
+        <!-- Confirm Modal สำหรับซื้อสินค้า (รองรับแบบใส่ข้อมูล + ระบุจำนวน) -->
         <div id="confirm-modal" class="modal-overlay" style="z-index: 300;">
             <div class="modal-content" style="height: auto; border-radius: 20px; align-items: center;">
-                <h3>ยืนยันการซื้อ?</h3>
-                <p id="confirm-msg" style="text-align: center; font-size:0.9rem;"></p>
+                <h3>ยืนยันการสั่งซื้อ?</h3>
+                <p id="confirm-msg" style="text-align: center; font-size:0.9rem; margin-bottom: 10px;"></p>
+                
+                <!-- เลือกจำนวนชิ้น -->
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; background: #f4fbf7; padding: 10px 15px; border-radius: 12px; border: 1px dashed #2ecc71;">
+                    <label style="font-weight: 600; color: #145a32;">จำนวนชิ้น:</label>
+                    <input type="number" id="purchase-quantity" min="1" value="1" style="width: 80px; padding: 8px; margin: 0; text-align: center; border-radius: 8px;" oninput="updateTotalPrice()">
+                </div>
+                
+                <!-- ราคารวม -->
+                <p id="total-price-display" style="text-align: center; font-weight: bold; color: #e74c3c; margin-top: 0; font-size: 1.1rem;"></p>
+
+                <!-- ช่องกรอกข้อมูลสำหรับออเดอร์ Manual -->
+                <div id="manual-order-input-wrap" style="width:100%; display:none; margin-bottom:15px;">
+                    <p style="font-size:0.8rem; color:#e67e22; margin:0 0 5px 0; font-weight:bold;">📝 กรุณากรอก ไอดี - รหัสผ่าน หรือข้อมูลที่จะให้แอดมินทำ:</p>
+                    <textarea id="order-user-details" rows="3" placeholder="ตัวอย่าง: ID: player1 / Pass: 1234..." style="margin:0;"></textarea>
+                </div>
+
                 <div style="width: 100%; display: flex; gap: 10px;">
-                    <button class="btn" style="background:#2ECC71; color:#fff;" onclick="processPurchase()">ตกลงซื้อ</button>
+                    <button class="btn" style="background:#2ECC71; color:#fff;" id="btn-confirm-buy" onclick="processPurchase()">ตกลงซื้อ</button>
                     <button class="btn" onclick="closeModal('confirm-modal')">ยกเลิก</button>
                 </div>
             </div>
@@ -383,19 +472,12 @@
         <div id="shop-modal" class="modal-overlay">
             <div class="modal-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #145A32;">🎮 BAS SHOP ไอดีเกม</h3>
+                    <h3 style="margin: 0; color: #145A32;">🎮 BAS SHOP ร้านค้า</h3>
                     <button class="close-btn" onclick="closeModal('shop-modal')">✖</button>
                 </div>
-                <input type="text" class="search-input" id="shop-search" placeholder="🔍 ค้นหาไอดี..." onkeyup="searchItems()">
+                <input type="text" class="search-input" id="shop-search" placeholder="🔍 ค้นหาสินค้า..." onkeyup="searchShopItems()">
                 <div class="shop-items scroll-box" id="shop-items-list">
-                    <div class="item-box" data-name="ไอดี Free Fire เซ็ตแรร์ (VIP)">
-                        <div><p class="item-name">ไอดี Free Fire เซ็ตแรร์ (VIP)</p><p class="item-price">💰 50 เหรียญ</p></div>
-                        <button class="buy-btn" onclick="confirmPurchase('ไอดี Free Fire เซ็ตแรร์ (VIP)', 50)">ซื้อ</button>
-                    </div>
-                    <div class="item-box" data-name="บัตรเติมเงินเกมในเครือ Garena">
-                        <div><p class="item-name">บัตรเติมเงินเกมในเครือ Garena</p><p class="item-price">💰 120 เหรียญ</p></div>
-                        <button class="buy-btn" onclick="confirmPurchase('บัตรเติมเงินเกมในเครือ Garena', 120)">ซื้อ</button>
-                    </div>
+                    <p style="text-align:center; color:#888;">กำลังโหลดสินค้า...</p>
                 </div>
             </div>
         </div>
@@ -456,7 +538,7 @@
 
     </div>
 
-    <!-- 🔥 Firebase SDK (compat version - ใช้งานง่ายกับโค้ดแบบ global function) -->
+    <!-- 🔥 Firebase SDK (compat version) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
@@ -476,725 +558,693 @@
 
         // ================= ตัวแปรหลัก =================
         let globalUsers = [];
-        let currentUserUnsub = null; // 🔥 ตัวยกเลิก realtime listener ของ currentUser
+        let currentUserUnsub = null; 
+        let adminOrdersUnsub = null;
         let currentUser = null; 
         let adsTimer = null; 
         let usedTopupLinks = [];
         let toastTimer = null; 
         let pendingPurchase = null;
-        let currentMessageTarget = ""; // ตัวแปรเก็บว่ากำลังจะส่งข้อความหาใคร
-        let tempAdsImageData = null; // 🆕 ข้อมูลรูปโฆษณาที่เลือกไว้ชั่วคราว (ยังไม่กดบันทึก)
+        let currentMessageTarget = ""; 
+        let tempAdsImageData = null; 
+        let tempProductImgData = null; 
+        let allProducts = [];
 
-        const DEFAULT_ADS_IMAGE = "https://picsum.photos/400/250?random=8"; // 🆕 รูปเริ่มต้นของระบบ
+        const DEFAULT_ADS_IMAGE = "https://picsum.photos/400/250?random=8"; 
 
         function doVibrate(pattern) { if ("vibrate" in navigator) { navigator.vibrate(pattern); } }
 
-        // ================= 🆕 ระบบปรับแต่งรูปโฆษณา (Admin) =================
-
-        // สั่งเปิดหน้าต่างเลือกไฟล์จากเครื่องโดยตรง (แก้ปัญหา label ไม่เด้ง file picker ในบาง webview เช่น preview ของ CodePen)
-        function triggerAdsFilePicker() {
-            const input = document.getElementById('ads-image-upload');
-            if (input) input.click();
-        }
-
-        // อ่านไฟล์รูปที่แอดมินเลือกจากเครื่อง แล้วแสดงตัวอย่างทันที (ยังไม่บันทึก)
-        function previewAdsImage(event) {
+        // ================= บีบอัดรูปภาพ (Canvas Compression) =================
+        function previewAndCompressImage(event, imgElementId, emptyElementId, callbackStore) {
             const file = event.target.files[0];
             if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                showAppToast("❌ กรุณาเลือกไฟล์รูปภาพเท่านั้น (jpg, png, gif ฯลฯ)");
-                doVibrate(100);
-                return;
-            }
-
-            // เตือนถ้าไฟล์ใหญ่มาก (Firestore จำกัดขนาดเอกสารที่ ~1MB ต่อชิ้น)
-            if (file.size > 700 * 1024) {
-                showAppToast("⚠️ ไฟล์รูปมีขนาดใหญ่ อาจบันทึกไม่สำเร็จ แนะนำให้ใช้รูปที่เล็กกว่า 700KB");
-            }
+            if (!file.type.startsWith('image/')) { showAppToast("❌ กรุณาเลือกไฟล์รูปภาพเท่านั้น"); doVibrate(100); return; }
 
             const reader = new FileReader();
-            reader.onload = function(e) {
-                tempAdsImageData = e.target.result; // base64 data URL
-                const previewImg = document.getElementById('ads-preview-img');
-                const previewEmpty = document.getElementById('ads-preview-empty');
-                previewImg.src = tempAdsImageData;
-                previewImg.style.display = 'block';
-                previewEmpty.style.display = 'none';
-            };
-            reader.onerror = function() {
-                showAppToast("❌ ไม่สามารถอ่านไฟล์รูปนี้ได้");
-            };
             reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    let width = img.width, height = img.height;
+                    if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    callbackStore(compressedDataUrl); 
+                    const previewImg = document.getElementById(imgElementId);
+                    const previewEmpty = document.getElementById(emptyElementId);
+                    previewImg.src = compressedDataUrl; previewImg.style.display = 'block'; previewEmpty.style.display = 'none';
+                }
+            };
         }
 
-        // 🔥 บันทึกรูปที่เลือกไว้ลง Firestore ให้มีผลกับทุกเครื่องทันที
+        // ================= ระบบปรับแต่งรูปโฆษณา =================
         async function saveAdsImage() {
-            if (!tempAdsImageData) {
-                showAppToast("❌ กรุณาเลือกรูปภาพจากเครื่องก่อนกดบันทึก");
-                return;
-            }
+            if (!tempAdsImageData) { showAppToast("❌ กรุณาเลือกรูปภาพก่อน"); return; }
             try {
                 await db.collection('config').doc('ads').set({ image: tempAdsImageData });
-                document.getElementById('ads-image').src = tempAdsImageData; // อัปเดตรูปโฆษณาจริงทันที
-                showAppToast("✅ บันทึกรูปโฆษณาใหม่สำเร็จ! มีผลใช้งานทันทีกับทุกเครื่อง");
-                doVibrate([50, 50, 50]);
-            } catch (e) {
-                showAppToast("❌ บันทึกไม่สำเร็จ: " + e.message + " (ไฟล์อาจใหญ่เกินไป แนะนำเล็กกว่า 700KB)");
-            }
+                document.getElementById('ads-image').src = tempAdsImageData; 
+                showAppToast("✅ บันทึกรูปโฆษณาใหม่สำเร็จ!"); doVibrate([50, 50, 50]);
+            } catch (e) { showAppToast("❌ บันทึกไม่สำเร็จ: " + e.message); }
         }
 
-        // 🔥 คืนค่ารูปโฆษณากลับเป็นค่าเริ่มต้นของระบบ (ลบออกจาก Firestore)
         async function resetAdsImage() {
             try { await db.collection('config').doc('ads').delete(); } catch (e) {}
             tempAdsImageData = null;
             document.getElementById('ads-image').src = DEFAULT_ADS_IMAGE;
             document.getElementById('ads-preview-img').style.display = 'none';
             document.getElementById('ads-preview-empty').style.display = 'block';
-            const fileInputEl = document.getElementById('ads-image-upload');
-            if (fileInputEl) fileInputEl.value = "";
+            document.getElementById('ads-image-upload').value = "";
             showAppToast("♻️ คืนค่ารูปโฆษณาเริ่มต้นเรียบร้อย");
         }
 
-        // 🔥 โหลดรูปโฆษณาที่เคยบันทึกไว้จาก Firestore (เรียกตอนเปิดเว็บ)
         async function loadCustomAdsImage() {
             const adsImgEl = document.getElementById('ads-image');
             try {
                 const docSnap = await db.collection('config').doc('ads').get();
-                if (docSnap.exists && docSnap.data().image) {
-                    adsImgEl.src = docSnap.data().image;
-                } else {
-                    adsImgEl.src = DEFAULT_ADS_IMAGE;
-                }
-            } catch (e) {
-                adsImgEl.src = DEFAULT_ADS_IMAGE;
-            }
+                if (docSnap.exists && docSnap.data().image) { adsImgEl.src = docSnap.data().image; } 
+                else { adsImgEl.src = DEFAULT_ADS_IMAGE; }
+            } catch (e) { adsImgEl.src = DEFAULT_ADS_IMAGE; }
         }
 
-        // 🔥 เติมรูป preview ในหน้า Admin ให้ตรงกับรูปที่ใช้งานอยู่จริง ณ ปัจจุบัน (จาก Firestore)
         async function syncAdsPreviewToCurrent() {
-            const previewImg = document.getElementById('ads-preview-img');
-            const previewEmpty = document.getElementById('ads-preview-empty');
+            const previewImg = document.getElementById('ads-preview-img'); const previewEmpty = document.getElementById('ads-preview-empty');
             try {
                 const docSnap = await db.collection('config').doc('ads').get();
                 if (docSnap.exists && docSnap.data().image) {
-                    tempAdsImageData = docSnap.data().image;
-                    previewImg.src = tempAdsImageData;
-                    previewImg.style.display = 'block';
-                    previewEmpty.style.display = 'none';
+                    tempAdsImageData = docSnap.data().image; previewImg.src = tempAdsImageData; previewImg.style.display = 'block'; previewEmpty.style.display = 'none';
+                } else { previewImg.style.display = 'none'; previewEmpty.style.display = 'block'; }
+            } catch (e) { previewImg.style.display = 'none'; previewEmpty.style.display = 'block'; }
+        }
+
+        // ================= ระบบจัดการสินค้า (Admin) =================
+        function toggleProductStockField() {
+            const type = document.getElementById('prod-type').value;
+            document.getElementById('prod-stock-container').style.display = type === 'auto' ? 'block' : 'none';
+        }
+
+        async function loadProducts() {
+            db.collection('products').onSnapshot(snapshot => {
+                allProducts = [];
+                snapshot.forEach(doc => { allProducts.push({ id: doc.id, ...doc.data() }); });
+                renderAdminProductList(); renderShopItems();
+            });
+        }
+
+        function renderAdminProductList() {
+            const container = document.getElementById('admin-product-list');
+            container.innerHTML = "";
+            if(allProducts.length === 0) { container.innerHTML = "<p style='text-align:center; color:#888;'>ยังไม่มีสินค้าในร้าน</p>"; return; }
+            allProducts.forEach(prod => {
+                let typeBadge = prod.type === 'auto' 
+                    ? `<span class="status-badge status-auto inline">⚡ รับของทันที (สต็อก: ${prod.stock?prod.stock.length:0} ชิ้น)</span>`
+                    : `<span class="status-badge status-pending inline">📝 สั่งทำ/พรีออเดอร์</span>`;
+
+                container.innerHTML += `
+                    <div class="item-box">
+                        <div style="display:flex; align-items:center; width:100%; margin-bottom:8px;">
+                            <img src="${prod.image || 'https://via.placeholder.com/50'}" class="item-img">
+                            <div>
+                                <div class="item-name">${prod.name}</div>
+                                <div class="item-price">💰 ${prod.price} เหรียญ</div>
+                                ${typeBadge}
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:5px; width:100%;">
+                            <button class="btn" style="padding:5px 10px; font-size:0.8rem; margin:0; flex:1; border-color:#f39c12; color:#f39c12; background:none;" onclick="editProduct('${prod.id}')">✏️ แก้ไข</button>
+                            <button class="btn" style="padding:5px 10px; font-size:0.8rem; margin:0; flex:1; border-color:#e74c3c; color:#e74c3c; background:none;" onclick="deleteProduct('${prod.id}')">🗑️ ลบ</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function saveProduct() {
+            const id = document.getElementById('prod-id').value;
+            const name = document.getElementById('prod-name').value.trim();
+            const price = parseInt(document.getElementById('prod-price').value);
+            const type = document.getElementById('prod-type').value;
+
+            if(!name || isNaN(price)) { showAppToast("❌ กรุณากรอกชื่อและราคาให้ถูกต้อง"); return; }
+            if(!tempProductImgData && !id) { showAppToast("❌ กรุณาใส่รูปภาพสินค้า"); return; }
+
+            let stock = [];
+            if(type === 'auto') {
+                const stockRaw = document.getElementById('prod-stock').value;
+                stock = stockRaw.split('\n').map(s => s.trim()).filter(s => s !== "");
+            }
+
+            const prodData = { name, price, type, stock };
+            if (tempProductImgData) prodData.image = tempProductImgData;
+
+            try {
+                if(id) { await db.collection('products').doc(id).update(prodData); } 
+                else { await db.collection('products').add(prodData); }
+                showAppToast("✅ บันทึกสินค้าเรียบร้อย"); clearProductForm();
+            } catch(e) { showAppToast("❌ ขัดข้อง: " + e.message); }
+        }
+
+        function editProduct(id) {
+            const prod = allProducts.find(p => p.id === id);
+            if(!prod) return;
+            document.getElementById('prod-id').value = prod.id;
+            document.getElementById('prod-name').value = prod.name;
+            document.getElementById('prod-price').value = prod.price;
+            document.getElementById('prod-type').value = prod.type || 'auto';
+            document.getElementById('prod-stock').value = prod.stock ? prod.stock.join('\n') : '';
+            toggleProductStockField();
+
+            tempProductImgData = prod.image;
+            const previewImg = document.getElementById('prod-preview-img'), previewEmpty = document.getElementById('prod-img-empty');
+            if(prod.image) { previewImg.src = prod.image; previewImg.style.display = 'block'; previewEmpty.style.display = 'none'; } 
+            else { previewImg.style.display = 'none'; previewEmpty.style.display = 'block'; }
+        }
+
+        function clearProductForm() {
+            document.getElementById('prod-id').value = ""; document.getElementById('prod-name').value = ""; document.getElementById('prod-price').value = "";
+            document.getElementById('prod-type').value = "auto"; document.getElementById('prod-stock').value = ""; toggleProductStockField();
+            document.getElementById('prod-image-upload').value = ""; tempProductImgData = null;
+            document.getElementById('prod-preview-img').style.display = 'none'; document.getElementById('prod-img-empty').style.display = 'block';
+        }
+
+        async function deleteProduct(id) { if(confirm("แน่ใจหรือไม่ว่าต้องการลบสินค้านี้?")) { await db.collection('products').doc(id).delete(); showAppToast("🗑️ ลบสินค้าแล้ว"); } }
+
+        // ================= ระบบออเดอร์ Manual (Admin & User) =================
+        function subscribeAdminOrders() {
+            if(adminOrdersUnsub) adminOrdersUnsub();
+            adminOrdersUnsub = db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+                const container = document.getElementById('admin-order-list'); container.innerHTML = "";
+                if(snapshot.empty) { container.innerHTML = "<p style='text-align:center;'>ยังไม่มีออเดอร์สั่งทำ</p>"; return; }
+                
+                snapshot.forEach(doc => {
+                    const order = doc.data();
+                    let statusHtml, actionsHtml = "";
+                    if(order.status === 'pending') {
+                        statusHtml = `<span class="status-badge status-pending">รอรับงาน</span>`;
+                        actionsHtml = `<button class="btn" style="background:#3498db; color:#fff; border:none; padding:5px; margin:0; flex:1;" onclick="updateOrderStatus('${doc.id}', 'processing')">🔨 กำลังทำ</button>`;
+                    } else if(order.status === 'processing') {
+                        statusHtml = `<span class="status-badge status-processing">กำลังทำ</span>`;
+                        actionsHtml = `<button class="btn" style="background:#2ecc71; color:#fff; border:none; padding:5px; margin:0; flex:1;" onclick="completeOrder('${doc.id}', '${order.userId}', '${order.productName}', ${order.quantity || 1})">✅ ส่งงาน (สำเร็จ)</button>`;
+                    } else { statusHtml = `<span class="status-badge status-completed">สำเร็จแล้ว</span>`; }
+
+                    container.innerHTML += `
+                        <div class="order-card" style="position:relative;">
+                            ${statusHtml}
+                            <div style="font-weight:bold; color:#2980b9;">👤 ผู้ซื้อ: ${order.userId}</div>
+                            <div style="font-size:0.9rem; margin-top:5px;">🛒 สินค้า: ${order.productName} <b>(x${order.quantity || 1} ชิ้น)</b></div>
+                            <div style="font-size:0.9rem; color:#e74c3c; font-weight:bold;">💰 ราคารวม: ${order.totalPrice || order.price} เหรียญ</div>
+                            <div class="user-order-detail-box">📝 ข้อมูลลูกค้า: ${order.userDetails || 'ไม่มีข้อมูล'}</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:5px;">📅 ${order.date} | ${order.time}</div>
+                            <div class="order-actions">${actionsHtml}</div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        async function updateOrderStatus(orderId, newStatus) { try { await db.collection('orders').doc(orderId).update({ status: newStatus }); showAppToast("✅ อัปเดตสถานะออเดอร์แล้ว"); } catch(e) { showAppToast("❌ ขัดข้อง: " + e.message); } }
+
+        async function completeOrder(orderId, username, productName, qty) {
+            const itemDetails = prompt(`ส่งข้อความ/ข้อมูลตอบกลับให้ ${username} สำหรับ "${productName}" (จำนวน ${qty} ชิ้น):`);
+            if(itemDetails === null || itemDetails.trim() === "") return;
+
+            try {
+                await db.collection('orders').doc(orderId).update({ status: 'completed', details: itemDetails });
+                const now = new Date();
+                const newItem = { name: `${productName} (x${qty})`, details: "ข้อความจากแอดมิน: " + itemDetails, date: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น.", isOrder: true };
+                await db.collection('users').doc(username).update({ inventory: firebase.firestore.FieldValue.arrayUnion(newItem) });
+                showAppToast(`✅ ส่งงานสำเร็จ ลูกค้าได้รับของแล้ว`);
+            } catch(e) { showAppToast("❌ ขัดข้อง: " + e.message); }
+        }
+
+        // ================= ร้านค้าแสดงผลฝั่งลูกค้า =================
+        function renderShopItems() {
+            const container = document.getElementById('shop-items-list');
+            container.innerHTML = "";
+            if(allProducts.length === 0) { container.innerHTML = "<p style='text-align:center;'>ยังไม่มีสินค้าในขณะนี้</p>"; return; }
+            allProducts.forEach(prod => {
+                let typeBadge, buyBtnLabel;
+                if (prod.type === 'auto') {
+                    let stockAmt = prod.stock ? prod.stock.length : 0;
+                    typeBadge = `<span class="status-badge status-auto inline">⚡ สินค้าพร้อมส่ง (${stockAmt} ชิ้น)</span>`;
+                    buyBtnLabel = stockAmt > 0 ? "สั่งซื้อเลย" : "สินค้าหมด";
                 } else {
-                    previewImg.style.display = 'none';
-                    previewEmpty.style.display = 'block';
+                    typeBadge = `<span class="status-badge status-pending inline">📝 สั่งทำ (ต้องรอแอดมิน)</span>`;
+                    buyBtnLabel = "สั่งทำ";
                 }
-            } catch (e) {
-                previewImg.style.display = 'none';
-                previewEmpty.style.display = 'block';
+
+                container.innerHTML += `
+                    <div class="item-box shop-item-search" data-name="${prod.name}">
+                        <div style="display:flex; align-items:center; flex: 1; width:100%; margin-bottom:8px;">
+                            <img src="${prod.image || 'https://via.placeholder.com/50'}" class="item-img">
+                            <div>
+                                <div class="item-name">${prod.name}</div>
+                                <div class="item-price">💰 ${prod.price} เหรียญ</div>
+                                ${typeBadge}
+                            </div>
+                        </div>
+                        <button class="buy-btn" style="width:100%;" onclick="confirmPurchase('${prod.id}', '${prod.name}', ${prod.price}, '${prod.type}')">${buyBtnLabel}</button>
+                    </div>
+                `;
+            });
+        }
+        function searchShopItems() {
+            const input = document.getElementById('shop-search').value.toLowerCase(); const items = document.getElementsByClassName('shop-item-search');
+            for (let i = 0; i < items.length; i++) { const name = items[i].getAttribute('data-name').toLowerCase(); items[i].style.display = name.includes(input) ? 'flex' : 'none'; }
+        }
+
+        // ================= ระบบสั่งซื้อแบบระบุจำนวน (Auto / Manual) =================
+        function confirmPurchase(id, name, price, type) {
+            const prod = allProducts.find(p => p.id === id);
+            let maxStock = 999;
+
+            if(type === 'auto') {
+                if(!prod.stock || prod.stock.length === 0) { showAppToast("❌ สินค้านี้หมดสต็อกแล้ว!"); doVibrate(100); return; }
+                maxStock = prod.stock.length;
+            }
+
+            pendingPurchase = { id, name, price, type, maxStock };
+            
+            const qtyInput = document.getElementById('purchase-quantity');
+            qtyInput.value = 1;
+            qtyInput.max = maxStock;
+            
+            if (type === 'auto') {
+                document.getElementById('confirm-msg').innerText = `สั่งซื้อ "${name}" (รับสินค้าทันที)`;
+                document.getElementById('manual-order-input-wrap').style.display = 'none';
+            } else {
+                document.getElementById('confirm-msg').innerText = `สั่งทำ "${name}" (ต้องรอแอดมินรับงาน)`;
+                document.getElementById('manual-order-input-wrap').style.display = 'block';
+                document.getElementById('order-user-details').value = ""; 
+            }
+            
+            updateTotalPrice();
+            openModal('confirm-modal'); doVibrate(50);
+        }
+
+        function updateTotalPrice() {
+            if(!pendingPurchase) return;
+            let qty = parseInt(document.getElementById('purchase-quantity').value);
+            if(isNaN(qty) || qty < 1) qty = 1;
+            
+            // เช็คว่ากรอกเกินสต็อกไหมสำหรับสินค้า Auto
+            if(pendingPurchase.type === 'auto' && qty > pendingPurchase.maxStock) {
+                qty = pendingPurchase.maxStock;
+                showAppToast(`⚠️ มีสินค้าในสต็อกเพียง ${qty} ชิ้น`);
+            }
+            
+            document.getElementById('purchase-quantity').value = qty;
+            const total = qty * pendingPurchase.price;
+            document.getElementById('total-price-display').innerText = `ราคารวม: 💰 ${total} เหรียญ`;
+        }
+
+        async function processPurchase() { 
+            const { id, name, price, type } = pendingPurchase;
+            let manualDetails = "";
+            let qty = parseInt(document.getElementById('purchase-quantity').value);
+            if(isNaN(qty) || qty < 1) qty = 1;
+            
+            let totalPrice = qty * price;
+
+            if (type === 'manual') {
+                manualDetails = document.getElementById('order-user-details').value.trim();
+                if (manualDetails === "") { showAppToast("❌ กรุณากรอกข้อมูล ไอดี-รหัสผ่าน ให้ครบถ้วน"); return; }
+            }
+
+            if(currentUser.coins < totalPrice) { showAppToast("❌ เหรียญของคุณไม่พอ!"); doVibrate(100); return; }
+            
+            document.getElementById('btn-confirm-buy').disabled = true;
+            document.getElementById('btn-confirm-buy').innerText = "กำลังประมวลผล...";
+
+            try {
+                if (type === 'auto') {
+                    const prodRef = db.collection('products').doc(id);
+                    const userRef = db.collection('users').doc(currentUser.username);
+
+                    await db.runTransaction(async (transaction) => {
+                        const prodDoc = await transaction.get(prodRef);
+                        const userDoc = await transaction.get(userRef);
+                        if (!prodDoc.exists || !userDoc.exists) throw new Error("ข้อมูลไม่ถูกต้อง");
+                        
+                        const prodData = prodDoc.data();
+                        const userData = userDoc.data();
+                        
+                        if (userData.coins < totalPrice) throw new Error("เหรียญไม่พอ!");
+                        if (!prodData.stock || prodData.stock.length < qty) throw new Error(`สต็อกคงเหลือไม่พอ (${prodData.stock?prodData.stock.length:0} ชิ้น)`);
+                        
+                        // ดึงของออกตามจำนวนที่สั่งซื้อ
+                        const itemsToSend = prodData.stock.slice(0, qty);
+                        const newStock = prodData.stock.slice(qty);
+                        
+                        transaction.update(prodRef, { stock: newStock });
+                        
+                        const now = new Date();
+                        const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+                        
+                        // จัดการยัดของลงกระเป๋าทีละชิ้น
+                        let newInvItems = [];
+                        itemsToSend.forEach((item, index) => {
+                            let itemNameStr = qty > 1 ? `${name} (ชิ้นที่ ${index+1}/${qty})` : name;
+                            newInvItems.push({ name: itemNameStr, details: item, date: timeStr + " น." });
+                        });
+
+                        const newHistory = { action: `ซื้อ ${name} (x${qty})`, amount: `-${totalPrice} เหรียญ`, time: timeStr, date: getCurrentDateString() };
+                        
+                        transaction.update(userRef, {
+                            coins: userData.coins - totalPrice,
+                            inventory: firebase.firestore.FieldValue.arrayUnion(...newInvItems),
+                            history: firebase.firestore.FieldValue.arrayUnion(newHistory)
+                        });
+                    });
+
+                    showAppToast(`🎉 สั่งซื้อสำเร็จ! สินค้าส่งเข้ากระเป๋าคุณแล้ว`);
+                } else {
+                    // ระบบสั่งทำ (Manual)
+                    currentUser.coins -= totalPrice; 
+                    addHistory(`สั่งทำ ${name} (x${qty})`, `-${totalPrice} เหรียญ`); 
+                    saveToDatabase();
+                    
+                    const now = new Date();
+                    const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+                    await db.collection('orders').add({
+                        userId: currentUser.username,
+                        productName: name,
+                        price: price,
+                        totalPrice: totalPrice,
+                        quantity: qty, // ระบุจำนวน
+                        userDetails: manualDetails,
+                        status: 'pending',
+                        date: getCurrentDateString(),
+                        time: timeStr,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showAppToast(`🎉 สั่งซื้อสำเร็จ! กรุณารอแอดมินดำเนินการ`);
+                }
+
+                closeModal('confirm-modal');
+                triggerEdgeFlash(); doVibrate([100, 50, 100]); 
+            } catch(e) { 
+                showAppToast("❌ ขัดข้อง: " + e.message); 
+            } finally {
+                document.getElementById('btn-confirm-buy').disabled = false;
+                document.getElementById('btn-confirm-buy').innerText = "ตกลงซื้อ";
+                pendingPurchase = null;
             }
         }
 
-        // ================= ระบบแจ้งเตือนข้อความ (แก้ไขบั๊ก 100%) =================
-        
+        // ================= ระบบกระเป๋า & ออเดอร์ของลูกค้า =================
+        function generateInventoryUI() {
+            const container = document.getElementById('inventory-list');
+            
+            db.collection('orders').where('userId', '==', currentUser.username).get().then(snap => {
+                let pendingHtml = "";
+                snap.forEach(doc => {
+                    const ord = doc.data();
+                    if(ord.status !== 'completed') {
+                        let statusText = ord.status === 'pending' ? 'รอแอดมินรับงาน' : 'แอดมินกำลังทำ';
+                        let color = ord.status === 'pending' ? '#f39c12' : '#3498db';
+                        pendingHtml += `
+                            <div class="inventory-card" style="border-color:${color}; background:#fff;">
+                                <span class="status-badge" style="background:${color}; color:#fff; top:5px;">⏳ ${statusText}</span>
+                                <div style="font-weight: 600; color: #333; font-size:0.9rem; margin-top:15px;">🛒 ออเดอร์: ${ord.productName} <b>(x${ord.quantity || 1})</b></div>
+                                <div style="font-size: 0.7rem; color: #888;">📅 สั่งเมื่อ: ${ord.date} ${ord.time}</div>
+                            </div>`;
+                    }
+                });
+
+                let invHtml = "";
+                if(currentUser.inventory && currentUser.inventory.length > 0) {
+                    currentUser.inventory.slice().reverse().forEach(item => {
+                        invHtml += `
+                            <div class="inventory-card">
+                                <div style="font-weight: 600; color: #145A32; font-size:0.9rem;">🎁 ${item.name}</div>
+                                <div style="font-size: 0.7rem; color: #888;">⏱️ วันที่ได้รับ: ${item.date}</div>
+                                <div class="inv-details">${item.details} <br><button class="copy-btn" style="margin:5px 0 0 0;" onclick="copyToClipboard('${item.details}')">Copy ข้อมูล</button></div>
+                            </div>`;
+                    });
+                }
+                
+                if(pendingHtml === "" && invHtml === "") {
+                    container.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">คุณยังไม่มีออเดอร์หรือสินค้าในกระเป๋า</p>`;
+                } else {
+                    container.innerHTML = (pendingHtml ? "<h4 style='margin:5px 0; color:#333;'>ออเดอร์รอดำเนินการ</h4>" + pendingHtml : "") + 
+                                          (invHtml ? "<h4 style='margin:15px 0 5px 0; color:#333;'>กระเป๋าสินค้า</h4>" + invHtml : "");
+                }
+            });
+        }
+
         function updateNotificationUI() {
             if(!currentUser) return;
-            // เช็คว่ามีข้อความไหนที่ยังไม่ได้อ่านไหม (read === false)
             let hasUnread = false;
-            if(currentUser.messages) {
-                for(let i = 0; i < currentUser.messages.length; i++) {
-                    if(currentUser.messages[i].read === false) {
-                        hasUnread = true;
-                        break;
-                    }
-                }
-            }
-            
-            const dots = document.querySelectorAll('.notification-dot');
-            dots.forEach(d => {
-                d.style.display = hasUnread ? 'block' : 'none';
-            });
+            if(currentUser.messages) { for(let i = 0; i < currentUser.messages.length; i++) { if(currentUser.messages[i].read === false) { hasUnread = true; break; } } }
+            document.querySelectorAll('.notification-dot').forEach(d => d.style.display = hasUnread ? 'block' : 'none');
         }
 
         function viewMessages() {
             if(!currentUser) return;
-
-            // 1. บังคับซ่อนจุดแดงทุกจุดทันทีที่กดดู (Force Hide)
             document.querySelectorAll('.notification-dot').forEach(d => d.style.display = 'none');
-
-            // 2. เคลียร์สถานะเป็นอ่านแล้ว
             if(!currentUser.messages) currentUser.messages = [];
             let isUpdated = false;
-            for(let i = 0; i < currentUser.messages.length; i++) {
-                if(currentUser.messages[i].read === false) {
-                    currentUser.messages[i].read = true;
-                    isUpdated = true;
-                }
-            }
+            for(let i = 0; i < currentUser.messages.length; i++) { if(currentUser.messages[i].read === false) { currentUser.messages[i].read = true; isUpdated = true; } }
             if(isUpdated) saveToDatabase();
 
-            // 3. แสดงผลข้อความ (เขียน Loop แบบดิบๆ เพื่อป้องกันบั๊กการประมวลผลบนมือถือ)
             const list = document.getElementById('message-list');
-            if(!list) return;
-
-            if(currentUser.messages.length === 0) {
-                list.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">คุณยังไม่มีข้อความ</p>`;
-                return;
-            }
+            if(currentUser.messages.length === 0) { list.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">คุณยังไม่มีข้อความ</p>`; return; }
             
             let htmlContent = "";
-            // ลูปถอยหลัง เอาข้อความใหม่สุดขึ้นบน
             for (let i = currentUser.messages.length - 1; i >= 0; i--) {
                 let m = currentUser.messages[i];
                 htmlContent += `
-                    <div class="message-card" style="border: 1px solid #ddd; background: #fafafa; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <div class="message-card" style="border: 1px solid #ddd; background: #fafafa; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
                         <div style="font-size: 0.75rem; color: #888; text-align: right; margin-bottom: 4px;">📅 ${m.date} | ⏱️ ${m.time}</div>
                         <div class="msg-sender" style="font-weight: 600; color: #d35400; font-size: 1rem; margin-bottom: 6px;">👑 ${m.sender}</div>
-                        <div class="msg-text" style="font-size: 0.95rem; color: #333; line-height: 1.4;">${m.text}</div>
-                    </div>
-                `;
+                        <div class="msg-text" style="font-size: 0.95rem; color: #333; line-height: 1.4; white-space: pre-wrap;">${m.text}</div>
+                    </div>`;
             }
             list.innerHTML = htmlContent;
         }
 
-        // ================= ระบบ Admin Panel (สร้าง Modal พรีเมียมแทน Prompt) =================
-        
+        // ================= ระบบ Admin Panel ทั่วไป =================
         function openAdminMessageModal(username) {
-            currentMessageTarget = username; // บันทึกเป้าหมาย (ALL หรือ ชื่อคน)
-            const titleEl = document.getElementById('admin-msg-title');
-            document.getElementById('admin-msg-text').value = ""; // เคลียร์ช่องพิมพ์
-            
-            if(username === 'ALL') {
-                titleEl.innerHTML = "📢 ส่งข้อความหาทุกคน";
-            } else {
-                titleEl.innerHTML = "✉️ แจ้งเตือน: " + username;
-            }
-            
+            currentMessageTarget = username; 
+            const titleEl = document.getElementById('admin-msg-title'); document.getElementById('admin-msg-text').value = ""; 
+            titleEl.innerHTML = username === 'ALL' ? "📢 ส่งข้อความหาทุกคน" : "✉️ แจ้งเตือน: " + username;
             openModal('admin-msg-modal');
         }
 
-        // 🔥 ส่งข้อความ - เขียนลง Firestore ตรงๆ ของแต่ละคน ทำให้ทุกเครื่องเห็นข้อความทันที
         async function confirmSendMessage() {
             const text = document.getElementById('admin-msg-text').value.trim();
-            if(text === "") {
-                showAppToast("❌ กรุณาพิมพ์ข้อความก่อนกดส่ง!");
-                doVibrate(100);
-                return;
-            }
-
-            const now = new Date();
-            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
-            const dateStr = getCurrentDateString();
-            const newMsgObj = { sender: 'Admin', text: text, read: false, time: timeStr, date: dateStr };
-
+            if(text === "") { showAppToast("❌ กรุณาพิมพ์ข้อความก่อนกดส่ง!"); return; }
+            const now = new Date(); const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+            const newMsgObj = { sender: 'Admin', text: text, read: false, time: timeStr, date: getCurrentDateString() };
             try {
                 if (currentMessageTarget === 'ALL') {
-                    // ส่งให้ทุกคน (ดึงรายชื่อผู้ใช้ทั้งหมดจาก Firestore แล้วอัปเดตทีละคนแบบ batch)
                     const snapshot = await db.collection('users').get();
                     const batch = db.batch();
-                    snapshot.forEach(docSnap => {
-                        if (docSnap.id !== 'admin') {
-                            batch.update(docSnap.ref, {
-                                messages: firebase.firestore.FieldValue.arrayUnion(newMsgObj)
-                            });
-                        }
-                    });
+                    snapshot.forEach(docSnap => { if (docSnap.id !== 'admin') { batch.update(docSnap.ref, { messages: firebase.firestore.FieldValue.arrayUnion(newMsgObj) }); } });
                     await batch.commit();
-                } else {
-                    // ส่งให้รายบุคคล
-                    await db.collection('users').doc(currentMessageTarget).update({
-                        messages: firebase.firestore.FieldValue.arrayUnion(newMsgObj)
-                    });
-                }
-
-                closeModal('admin-msg-modal');
-                showAppToast("✅ ส่งข้อความสำเร็จ! (ทุกเครื่องจะเห็นทันที)");
-                doVibrate([50, 50, 50]);
-            } catch (e) {
-                showAppToast("❌ ส่งข้อความไม่สำเร็จ: " + e.message);
-            }
+                } else { await db.collection('users').doc(currentMessageTarget).update({ messages: firebase.firestore.FieldValue.arrayUnion(newMsgObj) }); }
+                closeModal('admin-msg-modal'); showAppToast("✅ ส่งข้อความสำเร็จ! (แจ้งเตือนจะเด้งบนจอลูกค้าทันที)");
+            } catch (e) { showAppToast("❌ ส่งข้อความไม่สำเร็จ: " + e.message); }
         }
 
-        // สลับสถานะแบน/ปลดแบนผู้ใช้ (มีการยืนยันก่อนเสมอ)
-        function confirmToggleBan(username, isBanned) {
-            const actionText = isBanned ? "ปลดแบน" : "แบน";
-            const ok = confirm(`ต้องการ${actionText}ผู้ใช้ "${username}" ใช่หรือไม่?`);
-            if (!ok) return;
-            toggleBanUser(username);
+        async function adjustCoins(username, operation) {
+            const inputEl = document.getElementById(`coin-input-${username}`); const amount = parseInt(inputEl.value);
+            if(isNaN(amount) || amount <= 0) { showAppToast("❌ กรุณากรอกจำนวนเหรียญที่ถูกต้อง"); return; }
+            try {
+                const userRef = db.collection('users').doc(username); const docSnap = await userRef.get(); if(!docSnap.exists) return;
+                let newCoins = operation === 'add' ? (docSnap.data().coins || 0) + amount : (docSnap.data().coins || 0) - amount;
+                if(newCoins < 0) newCoins = 0;
+                const now = new Date();
+                const historyStr = operation === 'add' ? `+${amount} เหรียญ` : `-${amount} เหรียญ`;
+                const newHistory = { action: operation === 'add' ? "แอดมินเพิ่มเหรียญให้" : "แอดมินหักเหรียญ", amount: historyStr, time: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0'), date: getCurrentDateString() };
+                await userRef.update({ coins: newCoins, history: firebase.firestore.FieldValue.arrayUnion(newHistory) });
+                showAppToast(`✅ ปรับเหรียญ ${username} สำเร็จ!`); inputEl.value = ""; loadAdminData();
+            } catch(e) { showAppToast("❌ ขัดข้อง: " + e.message); }
         }
 
-        // 🔥 สลับสถานะแบนใน Firestore โดยตรง
         async function toggleBanUser(username) {
             try {
-                const userRef = db.collection('users').doc(username);
-                const docSnap = await userRef.get();
-                if (!docSnap.exists) return;
+                const userRef = db.collection('users').doc(username); const docSnap = await userRef.get(); if (!docSnap.exists) return;
                 const newBanned = !docSnap.data().banned;
-                await userRef.update({ banned: newBanned });
-                showAppToast(newBanned ? `🚫 แบนผู้ใช้ "${username}" แล้ว` : `✅ ปลดแบนผู้ใช้ "${username}" แล้ว`);
-                doVibrate(newBanned ? [150, 80, 150] : [80, 50, 80]);
-                loadAdminData();
-            } catch (e) {
-                showAppToast("❌ ดำเนินการไม่สำเร็จ: " + e.message);
-            }
+                await userRef.update({ banned: newBanned }); showAppToast(newBanned ? `🚫 แบนผู้ใช้ "${username}" แล้ว` : `✅ ปลดแบนผู้ใช้ "${username}" แล้ว`); loadAdminData();
+            } catch (e) {}
         }
+        function confirmToggleBan(username, isBanned) { if (confirm(`ต้องการ${isBanned ? "ปลดแบน" : "แบน"}ผู้ใช้ "${username}" ใช่หรือไม่?`)) toggleBanUser(username); }
 
-        // 🔥 ระบบเช็คแบนแบบเรียลไทม์ - ใช้ onSnapshot แทนการ polling ทุกวินาที (ดูฟังก์ชัน subscribeToCurrentUser ด้านล่าง)
-
-        // 🔥 ดึงรายชื่อผู้ใช้ทั้งหมดจาก Firestore มาแสดงในหน้า Admin
         async function loadAdminData() {
-            const container = document.getElementById('admin-users-list');
-            container.innerHTML = `<p style="text-align: center; color: #888;">⏳ กำลังโหลดข้อมูล...</p>`;
-
+            const container = document.getElementById('admin-users-list'); container.innerHTML = `<p style="text-align: center; color: #888;">⏳ กำลังโหลดข้อมูล...</p>`;
             try {
-                const snapshot = await db.collection('users').get();
-                globalUsers = [];
-                snapshot.forEach(docSnap => {
-                    globalUsers.push({ username: docSnap.id, ...docSnap.data() });
-                });
-            } catch (e) {
-                container.innerHTML = `<p style="text-align: center; color: #e74c3c;">❌ โหลดข้อมูลไม่สำเร็จ: ${e.message}</p>`;
-                return;
-            }
-
-            container.innerHTML = "";
-            if(globalUsers.length === 0) { container.innerHTML = `<p style="text-align: center; color: #888;">ยังไม่มีสมาชิกสมัครเข้ามาเลย</p>`; return; }
-            
-            let userCount = 0;
-            for(let i = 0; i < globalUsers.length; i++) {
-                let user = globalUsers[i];
-                if(user.username === 'admin') continue; // ข้ามแอดมิน
-                
-                userCount++;
-                let inventoryHtml = user.inventory && user.inventory.length > 0 ? user.inventory.map(item => `<li>${item.name}</li>`).join('') : "<span style='color:#aaa;'>ยังไม่เคยซื้อของ</span>";
+                const snapshot = await db.collection('users').get(); globalUsers = []; snapshot.forEach(docSnap => { globalUsers.push({ username: docSnap.id, ...docSnap.data() }); });
+            } catch (e) { container.innerHTML = `<p style="text-align: center; color: #e74c3c;">❌ ขัดข้อง: ${e.message}</p>`; return; }
+            container.innerHTML = ""; if(globalUsers.length === 0) { container.innerHTML = `<p style="text-align: center; color: #888;">ยังไม่มีสมาชิก</p>`; return; }
+            globalUsers.forEach(user => {
+                if(user.username === 'admin') return;
                 let isBanned = user.banned === true;
                 let banBadge = isBanned ? `<span style="background:#e74c3c; color:#fff; font-size:0.7rem; font-weight:600; padding:2px 8px; border-radius:8px; margin-left:6px;">🚫 ถูกแบน</span>` : "";
-                let banBtnLabel = isBanned ? "✅ ปลดแบน" : "🚫 แบน";
-                let banBtnStyle = isBanned ? "border-color:#27AE60; color:#27AE60;" : "border-color:#e74c3c; color:#e74c3c;";
-
                 container.innerHTML += `
                     <div class="admin-user-card" style="${isBanned ? 'opacity:0.7; border-color:#e74c3c;' : ''}">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div style="font-weight: 600; font-size: 1.1rem; color: #2980b9;">👤 ${userCount}: ${user.username} ${banBadge}</div>
+                        <div style="font-weight: 600; font-size: 1.1rem; color: #2980b9;">👤 ${user.username} ${banBadge}</div>
+                        <div style="font-size: 0.85rem; margin-top: 5px;">💰 เหรียญ: ${user.coins}</div>
+                        <div class="coin-control">
+                            <input type="number" id="coin-input-${user.username}" placeholder="จำนวน" style="width:70px; padding:5px; margin:0; height:25px; font-size:0.8rem;">
+                            <button class="coin-btn" style="background:#27ae60;" onclick="adjustCoins('${user.username}', 'add')">+</button>
+                            <button class="coin-btn" style="background:#e74c3c;" onclick="adjustCoins('${user.username}', 'minus')">-</button>
                         </div>
-                        <div style="font-size: 0.85rem; margin-top: 5px;">📧 อีเมล: ${user.email}</div>
-                        <div style="font-size: 0.85rem;">💰 เหรียญคงเหลือ: ${user.coins}</div>
-                        <div style="margin-top: 8px; font-size: 0.85rem; font-weight: 600;">📦 ของที่ซื้อไปแล้ว:</div>
-                        <ul style="margin: 5px 0 0 20px; padding: 0; font-size: 0.8rem; color: #e67e22;">${inventoryHtml}</ul>
                         <div style="display:flex; gap:8px; margin-top:10px;">
-                            <button class="btn" style="width:auto; padding:5px 12px; margin:0; font-size:0.8rem; border-color:#e74c3c; color:#e74c3c; background:none; flex:1;" onclick="openAdminMessageModal('${user.username}')">✉️ แจ้งเตือน</button>
-                            <button class="btn" style="width:auto; padding:5px 12px; margin:0; font-size:0.8rem; ${banBtnStyle} background:none; flex:1;" onclick="confirmToggleBan('${user.username}', ${isBanned})">${banBtnLabel}</button>
+                            <button class="btn" style="padding:5px 12px; margin:0; font-size:0.8rem; border-color:#e74c3c; color:#e74c3c; background:none; flex:1;" onclick="openAdminMessageModal('${user.username}')">✉️ แจ้งเตือน</button>
+                            <button class="btn" style="padding:5px 12px; margin:0; font-size:0.8rem; border-color:${isBanned?'#27AE60':'#e74c3c'}; color:${isBanned?'#27AE60':'#e74c3c'}; background:none; flex:1;" onclick="confirmToggleBan('${user.username}', ${isBanned})">${isBanned?"✅ ปลดแบน":"🚫 แบน"}</button>
                         </div>
-                    </div>
-                `;
-            }
+                    </div>`;
+            });
         }
 
-        // ================= ระบบอื่นๆ พื้นฐาน =================
-        function toggleDarkMode() { 
-            document.body.classList.toggle('dark-mode'); 
-            const btn = document.getElementById('dark-mode-btn');
-            btn.innerText = document.body.classList.contains('dark-mode') ? "☀️ สลับเป็นโหมดสว่าง" : "🌙 สลับเป็นโหมดมืด";
+        // ================= เริ่มระบบ =================
+        window.onload = async function() {
+            const savedLinks = localStorage.getItem('usedTopupLinks'); if (savedLinks) { usedTopupLinks = JSON.parse(savedLinks); }
+            loadCustomAdsImage(); loadProducts();
+            const sessionUser = sessionStorage.getItem('activeUser');
+            if (sessionUser) {
+                if (sessionUser === "admin") {
+                    showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent(); subscribeAdminOrders();
+                } else {
+                    try {
+                        const docSnap = await db.collection('users').doc(sessionUser).get();
+                        if (docSnap.exists) {
+                            currentUser = { username: sessionUser, ...docSnap.data() };
+                            if(currentUser.coins === undefined) currentUser.coins = 0;
+                            subscribeToCurrentUser(sessionUser); updateDashboardUI(); showPage('dashboard-page'); updateNotificationUI();
+                        } else { sessionStorage.removeItem('activeUser'); showPage('welcome-page'); }
+                    } catch (e) { showPage('welcome-page'); }
+                }
+            } else { showPage('welcome-page'); }
+            setInterval(() => { const now = new Date(); document.getElementById('realtime-clock').innerText = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0'); }, 1000);
         }
 
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); document.getElementById('dark-mode-btn').innerText = document.body.classList.contains('dark-mode') ? "☀️ สลับเป็นโหมดสว่าง" : "🌙 สลับเป็นโหมดมืด"; }
+        function triggerLoginAds() { const adsModal = document.getElementById('login-ads-modal'); adsModal.classList.add('active'); if(adsTimer) clearTimeout(adsTimer); adsTimer = setTimeout(()=>adsModal.classList.remove('active'), 5000); }
+        function closeAdsImmediate() { document.getElementById('login-ads-modal').classList.remove('active'); if(adsTimer) clearTimeout(adsTimer); }
+        
         function addHistory(actionText, amountStr) {
-            if(!currentUser.history) currentUser.history = [];
-            const now = new Date();
-            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
-            currentUser.history.unshift({ action: actionText, amount: amountStr, time: timeStr, date: getCurrentDateString() });
+            if(!currentUser.history) currentUser.history = []; const now = new Date();
+            currentUser.history.unshift({ action: actionText, amount: amountStr, time: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0'), date: getCurrentDateString() });
             if(currentUser.history.length > 30) currentUser.history.pop(); 
         }
 
         function updateHistoryUI() {
             const container = document.getElementById('history-list');
-            if(!currentUser || !currentUser.history || currentUser.history.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">ยังไม่มีประวัติการทำรายการ</p>`;
-                return;
-            }
+            if(!currentUser || !currentUser.history || currentUser.history.length === 0) { container.innerHTML = `<p style="text-align: center; color: #888;">ยังไม่มีประวัติ</p>`; return; }
             container.innerHTML = "";
             currentUser.history.forEach(h => {
                 let color = h.amount.includes('+') ? '#27AE60' : (h.amount.includes('-') ? '#e74c3c' : '#555');
-                container.innerHTML += `
-                    <div class="history-card">
-                        <div style="display:flex; justify-content:space-between; font-weight:600;">
-                            <span>${h.action}</span>
-                            <span style="color:${color};">${h.amount}</span>
-                        </div>
-                        <div style="font-size:0.7rem; color:#888; margin-top:4px;">📅 ${h.date} | ⏱️ ${h.time}</div>
-                    </div>`;
+                container.innerHTML += `<div class="history-card"><div style="display:flex; justify-content:space-between; font-weight:600;"><span>${h.action}</span><span style="color:${color};">${h.amount}</span></div><div style="font-size:0.7rem; color:#888; margin-top:4px;">📅 ${h.date} | ⏱️ ${h.time}</div></div>`;
             });
-        }
-
-        function dailyCheckIn() {
-            const today = getCurrentDateString();
-            if(!currentUser.dailyCheckinDate) currentUser.dailyCheckinDate = "";
-            if(currentUser.dailyCheckinDate === today) {
-                showAppToast("❌ วันนี้คุณรับเหรียญไปแล้ว พรุ่งนี้มาใหม่นะ!");
-            } else {
-                currentUser.coins += 5;
-                currentUser.dailyCheckinDate = today;
-                addHistory("เช็คอินรายวัน", "+5 เหรียญ");
-                saveToDatabase(); updateDashboardUI();
-                showAppToast("🎉 เช็คอินสำเร็จ! ได้รับ +5 เหรียญ");
-                triggerFireworks(); doVibrate([100, 50, 100]); 
-            }
-        }
-
-        function rollGacha() {
-            if(currentUser.coins < 10) { showAppToast("❌ เหรียญไม่พอสุ่มกาชา (ใช้ 10 เหรียญ)"); return; }
-            const btn = document.getElementById('gacha-btn');
-            const box = document.getElementById('gacha-box-icon');
-            btn.disabled = true; box.classList.add('shake'); doVibrate(50);
-            setTimeout(() => {
-                box.classList.remove('shake'); btn.disabled = false; currentUser.coins -= 10;
-                const roll = Math.floor(Math.random() * 100) + 1;
-                let resultName = "";
-                if(roll <= 5) { resultName = "👑 ไอดีระดับ VIP สุดยอดแรร์"; } 
-                else if(roll <= 30) { resultName = "💎 ไอดีระดับ Rare (หายาก)"; } 
-                else { resultName = "📦 ไอดีระดับ Normal (ทั่วไป)"; } 
-
-                const mockDetails = `GCH-${Math.floor(1000 + Math.random() * 9000)}`;
-                if(!currentUser.inventory) currentUser.inventory = [];
-                const now = new Date();
-                currentUser.inventory.push({ name: resultName, details: mockDetails, date: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น." });
-                
-                addHistory("สุ่มกาชา", "-10 เหรียญ");
-                saveToDatabase(); updateDashboardUI();
-                doVibrate([200, 100, 200]); triggerEdgeFlash();
-                showAppToast(`🎉 ยินดีด้วย! <br>ได้รับ: <b>${resultName}</b>`);
-            }, 1000); 
-        }
-
-        function exportData() {
-            const dataStr = btoa(encodeURIComponent(JSON.stringify(currentUser))); 
-            document.getElementById('backup-data').value = dataStr;
-            showAppToast("✅ สร้างรหัสสำรองข้อมูลสำเร็จ!");
-        }
-
-        // 🔥 กู้คืนข้อมูล - เขียนกลับเข้า Firestore ของบัญชีนั้นๆ
-        async function importData() {
-            const dataStr = document.getElementById('backup-data').value.trim();
-            if(dataStr === "") { showAppToast("❌ กรุณาวางรหัสสำรองข้อมูลก่อน"); return; }
-            try {
-                const importedUser = JSON.parse(decodeURIComponent(atob(dataStr)));
-                if(importedUser && importedUser.username) {
-                    await db.collection('users').doc(importedUser.username).set(importedUser, { merge: true });
-                    currentUser = importedUser;
-                    sessionStorage.setItem('activeUser', importedUser.username);
-                    subscribeToCurrentUser(importedUser.username);
-                    updateDashboardUI(); closeModal('backup-modal');
-                    showAppToast("🎉 กู้คืนข้อมูลสำเร็จ!"); doVibrate(100);
-                }
-            } catch(e) { showAppToast("❌ รหัสไม่ถูกต้อง หรือข้อมูลเสียหาย: " + e.message); }
-        }
-
-        function searchItems() {
-            const input = document.getElementById('shop-search').value.toLowerCase();
-            const items = document.getElementsByClassName('item-box');
-            for (let i = 0; i < items.length; i++) {
-                const name = items[i].getAttribute('data-name').toLowerCase();
-                items[i].style.display = name.includes(input) ? 'flex' : 'none';
-            }
-        }
-
-        function confirmPurchase(name, price) {
-            pendingPurchase = { name, price };
-            document.getElementById('confirm-msg').innerText = `คุณต้องการซื้อ "${name}" ในราคา ${price} เหรียญ ใช่หรือไม่?`;
-            openModal('confirm-modal'); doVibrate(50);
-        }
-
-        function processPurchase() { buyItem(pendingPurchase.name, pendingPurchase.price); closeModal('confirm-modal'); pendingPurchase = null; }
-        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { showAppToast("✅ คัดลอกรหัสแล้ว!"); doVibrate(30); }); }
-
-        // ================= Toast UI Drag & Drop =================
-        const toastEl = document.getElementById('app-toast');
-        let startY = 0, currentY = 0, isDragging = false;
-        function handleDragStart(clientY) { if (!toastEl.classList.contains('show')) return; startY = clientY; isDragging = true; toastEl.style.transition = 'none'; }
-        function handleDragMove(clientY) { if (!isDragging) return; currentY = clientY; const diffY = currentY - startY; if (diffY < 0) { toastEl.style.transform = `translateX(-50%) translateY(${diffY}px)`; } }
-        function handleDragEnd() { if (!isDragging) return; isDragging = false; toastEl.style.transition = 'all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)'; const diffY = currentY - startY; if (diffY < -30) { hideAppToast(); } else { toastEl.style.transform = 'translateX(-50%) translateY(0)'; } }
-        toastEl.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientY), {passive: true});
-        toastEl.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientY), {passive: true});
-        toastEl.addEventListener('touchend', handleDragEnd);
-        toastEl.addEventListener('mousedown', (e) => handleDragStart(e.clientY));
-        window.addEventListener('mousemove', (e) => handleDragMove(e.clientY));
-        window.addEventListener('mouseup', handleDragEnd);
-
-        function hideAppToast() { toastEl.classList.remove('show'); if (toastTimer) clearTimeout(toastTimer); setTimeout(() => { toastEl.style.transform = 'translateX(-50%) translateY(0)'; }, 400); }
-        function showAppToast(htmlContent) { toastEl.innerHTML = '<div class="drag-indicator"></div>' + htmlContent; toastEl.classList.add('show'); toastEl.style.transform = 'translateX(-50%) translateY(0)'; if (toastTimer) clearTimeout(toastTimer); toastTimer = setTimeout(() => { hideAppToast(); }, 5000); }
-        function triggerEdgeFlash() { const edgeFlashEl = document.getElementById('screen-edge-flash'); edgeFlashEl.classList.remove('active'); void edgeFlashEl.offsetWidth; edgeFlashEl.classList.add('active'); }
-
-        const quizBank = [
-            { question: "อะไรเอ่ย? พลิกคว่ำมีน้ำ พลิกหงายไม่มีน้ำ", answer: "ส้วม", choices: ["ส้วม", "แก้วน้ำ", "เรือ", "กะลา"] },
-            { question: "อะไรเอ่ย? เดินมาสี่ขา ก้มหน้ากินหญ้า ร้องมอๆ", answer: "วัว", choices: ["วัว", "ควาย", "ม้า", "แพะ"] },
-            { question: "อะไรเอ่ย? อยู่บนท้องฟ้า มีสีสัน 7 สี เกิดหลังฝนตก", answer: "รุ้งกินน้ำ", choices: ["รุ้งกินน้ำ", "ก้อนเมฆ", "พระอาทิตย์", "ดาวตก"] }
-        ];
-
-        // ================= เริ่มระบบ =================
-        window.onload = async function() {
-            const savedLinks = localStorage.getItem('usedTopupLinks');
-            if (savedLinks) { usedTopupLinks = JSON.parse(savedLinks); }
-
-            loadCustomAdsImage(); // 🔥 โหลดรูปโฆษณาจาก Firestore (ใช้ร่วมกันทุกเครื่อง)
-
-            const sessionUser = sessionStorage.getItem('activeUser');
-            if (sessionUser) {
-                if (sessionUser === "admin") {
-                    showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent();
-                } else {
-                    try {
-                        const docSnap = await db.collection('users').doc(sessionUser).get();
-                        if (docSnap.exists) {
-                            const data = docSnap.data();
-                            currentUser = { username: sessionUser, ...data };
-                            if(currentUser.coins === undefined) currentUser.coins = 0;
-                            if(!currentUser.history) currentUser.history = [];
-                            if(!currentUser.messages) currentUser.messages = [];
-                            if(currentUser.banned === undefined) currentUser.banned = false;
-                            const btn = document.getElementById('dark-mode-btn');
-                            if (document.body.classList.contains('dark-mode')) { btn.innerText = "☀️ สลับเป็นโหมดสว่าง"; }
-                            subscribeToCurrentUser(sessionUser);
-                            updateDashboardUI();
-                            showPage('dashboard-page');
-                            updateNotificationUI();
-                        } else {
-                            sessionStorage.removeItem('activeUser');
-                            showPage('welcome-page');
-                        }
-                    } catch (e) {
-                        showAppToast("❌ โหลดข้อมูลไม่สำเร็จ กรุณาเช็คอินเทอร์เน็ต");
-                        showPage('welcome-page');
-                    }
-                }
-            } else { showPage('welcome-page'); }
-            startClock();
-        }
-
-        function triggerLoginAds() { const adsModal = document.getElementById('login-ads-modal'); adsModal.classList.add('active'); if (adsTimer) clearTimeout(adsTimer); adsTimer = setTimeout(() => { adsModal.classList.remove('active'); }, 5000); }
-        function closeAdsImmediate() { document.getElementById('login-ads-modal').classList.remove('active'); if (adsTimer) clearTimeout(adsTimer); }
-
-        function startClock() {
-            function updateTime() {
-                const now = new Date();
-                document.getElementById('realtime-clock').innerText = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
-                // 🔥 ไม่ต้องเช็คแบนทุกวินาทีแล้ว เพราะใช้ realtime listener (subscribeToCurrentUser) แทน ประหยัดโควต้า Firestore
-            }
-            updateTime(); setInterval(updateTime, 1000);
         }
 
         function updateDashboardUI() {
-            if(currentUser) {
-                document.getElementById('user-greeting').innerText = "สวัสดี, " + currentUser.username;
-                document.getElementById('user-coins').innerText = "💰 " + currentUser.coins + " เหรียญ";
-                generateInventoryUI(); updateHistoryUI(); 
-            }
-        }
-
-        function generateInventoryUI() {
-            const container = document.getElementById('inventory-list');
-            if(!currentUser || !currentUser.inventory || currentUser.inventory.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: #888; margin-top: 30px;">คุณยังไม่มีสินค้าในกระเป๋า</p>`;
-                return;
-            }
-            container.innerHTML = "";
-            currentUser.inventory.forEach(item => {
-                const box = document.createElement('div');
-                box.classList.add('inventory-card');
-                box.innerHTML = `
-                    <div style="font-weight: 600; color: #145A32; font-size:0.9rem;">🎮 ${item.name}</div>
-                    <div style="font-size: 0.7rem; color: #888;">⏱️ วันที่: ${item.date}</div>
-                    <div class="inv-details">${item.details} <button class="copy-btn" onclick="copyToClipboard('${item.details}')">Copy</button></div>
-                `;
-                container.appendChild(box);
-            });
+            if(currentUser) { document.getElementById('user-greeting').innerText = "สวัสดี, " + currentUser.username; document.getElementById('user-coins').innerText = "💰 " + currentUser.coins + " เหรียญ"; generateInventoryUI(); updateHistoryUI(); }
         }
 
         function showPage(pageId) {
             const pages = ['welcome-page', 'register-page', 'login-page', 'dashboard-page', 'admin-page'];
-            const container = document.getElementById('app-container');
-            if (['welcome-page', 'login-page', 'register-page'].includes(pageId)) { container.classList.add('rainbow-mode'); } else { container.classList.remove('rainbow-mode'); }
+            document.getElementById('app-container').classList[pageId.includes('page')&&!pageId.includes('dashboard')&&!pageId.includes('admin')?'add':'remove']('rainbow-mode');
             pages.forEach(p => { const el = document.getElementById(p); el.classList.add('hidden'); el.classList.remove('fade-in'); });
-            const activeEl = document.getElementById(pageId);
-            activeEl.classList.remove('hidden');
-            void activeEl.offsetWidth; activeEl.classList.add('fade-in');
-            if(pageId === 'dashboard-page' || pageId === 'admin-page'){ activeEl.style.display = 'flex'; }
+            const activeEl = document.getElementById(pageId); activeEl.classList.remove('hidden'); void activeEl.offsetWidth; activeEl.classList.add('fade-in');
+            if(pageId === 'dashboard-page' || pageId === 'admin-page') activeEl.style.display = 'flex';
         }
 
-        function processTopUp() {
-            const linkInput = document.getElementById('topup-link-input').value.trim();
-            if (linkInput === "") { showAppToast("❌ กรุณากรอกลิงก์ซองอั่งเปา!"); return; }
-            const walletPattern = /^https:\/\/gift\.truemoney\.com\/campaign\/\?v=.+$/;
-            if (!walletPattern.test(linkInput)) { showAppToast("❌ ลิงก์อั่งเปาไม่ถูกต้อง!"); return; }
-            if (usedTopupLinks.includes(linkInput)) { showAppToast("❌ ลิงก์นี้ถูกใช้งานไปแล้ว!"); return; }
-            const urlParams = new URLSearchParams(linkInput.substring(linkInput.indexOf('?')));
-            const vParam = urlParams.get('v');
-            let actualAmount = parseInt(vParam.replace(/[^0-9]/g, ''), 10);
-            
-            if (isNaN(actualAmount) || actualAmount <= 0) { showAppToast("❌ ลิงก์ทดสอบต้องระบุตัวเลขยอดเงิน เช่น ?v=100"); return; }
-            currentUser.coins += actualAmount; usedTopupLinks.push(linkInput); 
-            addHistory("เติมเงินอั่งเปา", `+${actualAmount} เหรียญ`); 
-            saveToDatabase(); localStorage.setItem('usedTopupLinks', JSON.stringify(usedTopupLinks)); updateDashboardUI();
-            document.getElementById('topup-link-input').value = "";
-            doVibrate([100, 100, 100]); showAppToast(`🎉 เติมเงินสำเร็จ! ได้รับ +${actualAmount} เหรียญ 💰`);
-            closeModal('topup-modal'); triggerFireworks();
-        }
-
-        function buyItem(itemName, price) {
-            if(currentUser.coins < price) { showAppToast("❌ เหรียญของคุณไม่พอ!"); doVibrate(100); return; }
-            currentUser.coins -= price; 
-            let mockDetails = `CODE-${Math.floor(100000 + Math.random() * 900000)}`;
-            if(!currentUser.inventory) { currentUser.inventory = []; }
-            const now = new Date();
-            currentUser.inventory.push({ name: itemName, details: mockDetails, date: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น." });
-            addHistory(`ซื้อ ${itemName}`, `-${price} เหรียญ`); 
-            saveToDatabase(); updateDashboardUI(); closeModal('shop-modal');
-            triggerEdgeFlash(); doVibrate([100, 50, 100]); showAppToast(`🎉 ซื้อสำเร็จ!`);
-        }
-
-        // 🔥 สมัครสมาชิก - เช็คชื่อซ้ำและสร้างบัญชีใน Firestore โดยตรง (ใช้ username เป็น document ID)
         async function registerUser() {
-            const name = document.getElementById('reg-name').value.trim();
-            const pass = document.getElementById('reg-pass').value;
-            const email = document.getElementById('reg-email').value.trim();
-
-            if (name === "" || pass === "" || email === "") { showAppToast("❌ กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
-            if (pass.length < 4) { showAppToast("❌ รหัสผ่านต้องมีอย่างน้อย 4 ตัว"); return; }
-            if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) { showAppToast("❌ รูปแบบ Gmail ไม่ถูกต้อง!"); return; }
-            if (name.toLowerCase() === "admin") { showAppToast("❌ ไม่อนุญาตให้ใช้ชื่อนี้"); return; }
-
-            showAppToast("⏳ กำลังสมัครสมาชิก...");
-
+            const name = document.getElementById('reg-name').value.trim(), pass = document.getElementById('reg-pass').value, email = document.getElementById('reg-email').value.trim();
+            if (name === "" || pass.length < 4 || !/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) { showAppToast("❌ ข้อมูลไม่ถูกต้อง"); return; }
+            if (name.toLowerCase() === "admin") return;
             try {
-                const userRef = db.collection('users').doc(name);
-                const docSnap = await userRef.get();
-                if (docSnap.exists) { showAppToast("❌ ชื่อนี้มีคนใช้แล้ว"); return; }
-
-                const newUser = { password: pass, email: email, coins: 10, banned: false, lastPlayedDate: "", dailyCheckinDate: "", history: [{action: "สมัครสมาชิกใหม่", amount: "+10 เหรียญ", time: "ตอนนี้", date: getCurrentDateString()}], inventory: [], messages: [] };
-                await userRef.set(newUser);
-
-                currentUser = { username: name, ...newUser };
-                sessionStorage.setItem('activeUser', name);
-                subscribeToCurrentUser(name);
-                updateDashboardUI();
-                clearInputs(['reg-name', 'reg-pass', 'reg-email']);
-                showPage('dashboard-page'); showAppToast("🎉 สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!"); doVibrate(50); triggerLoginAds();
-                updateNotificationUI();
-            } catch (e) {
-                showAppToast("❌ สมัครสมาชิกไม่สำเร็จ: " + e.message);
-            }
+                const userRef = db.collection('users').doc(name); if ((await userRef.get()).exists) { showAppToast("❌ ชื่อนี้มีคนใช้แล้ว"); return; }
+                const newUser = { password: pass, email: email, coins: 10, banned: false, dailyCheckinDate: "", history: [{action: "สมัครสมาชิกใหม่", amount: "+10 เหรียญ", time: "ตอนนี้", date: getCurrentDateString()}], inventory: [], messages: [] };
+                await userRef.set(newUser); currentUser = { username: name, ...newUser }; sessionStorage.setItem('activeUser', name); subscribeToCurrentUser(name); updateDashboardUI(); clearInputs(['reg-name', 'reg-pass', 'reg-email']); showPage('dashboard-page'); triggerLoginAds();
+            } catch (e) { showAppToast("❌ ขัดข้อง"); }
         }
 
-        // 🔥 เข้าสู่ระบบ - ดึงข้อมูลจาก Firestore ตรงๆ (ใช้ได้ทุกเครื่อง เพราะข้อมูลอยู่บนคลาวด์)
         async function loginUser() {
-            const name = document.getElementById('login-name').value.trim();
-            const pass = document.getElementById('login-pass').value;
-            if (name === "" || pass === "") { showAppToast("❌ กรุณากรอกชื่อและรหัสผ่าน"); return; }
-            
-            if (name === "admin" && pass === "2342") {
-                sessionStorage.setItem('activeUser', 'admin');
-                clearInputs(['login-name', 'login-pass']);
-                showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent();
-                showAppToast("👑 ยินดีต้อนรับท่านเจ้าของเว็บ!"); doVibrate([100, 100, 200]); return; 
-            }
-
+            const name = document.getElementById('login-name').value.trim(), pass = document.getElementById('login-pass').value;
+            if (name === "admin" && pass === "2342") { sessionStorage.setItem('activeUser', 'admin'); showPage('admin-page'); loadAdminData(); syncAdsPreviewToCurrent(); subscribeAdminOrders(); return; }
             try {
                 const docSnap = await db.collection('users').doc(name).get();
-                if (!docSnap.exists || docSnap.data().password !== pass) {
-                    showAppToast("❌ ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง"); doVibrate(100);
-                    return;
-                }
-                const data = docSnap.data();
-                if (data.banned) {
-                    showAppToast("🚫 บัญชีนี้ถูกระงับการใช้งาน กรุณาติดต่อแอดมิน");
-                    doVibrate([150, 80, 150]);
-                    return;
-                }
-
-                currentUser = { username: name, ...data };
-                if(currentUser.coins === undefined) currentUser.coins = 0;
-                if(!currentUser.inventory) currentUser.inventory = [];
-                if(!currentUser.history) currentUser.history = [];
-                if(!currentUser.messages) currentUser.messages = [];
-                if(currentUser.banned === undefined) currentUser.banned = false;
-
-                sessionStorage.setItem('activeUser', name);
-                subscribeToCurrentUser(name);
-                updateDashboardUI();
-                clearInputs(['login-name', 'login-pass']);
-                showPage('dashboard-page');
-                showAppToast(`👋 ยินดีต้อนรับกลับ, ${name}!`); doVibrate(50); triggerLoginAds();
-                updateNotificationUI();
-            } catch (e) {
-                showAppToast("❌ เข้าสู่ระบบไม่สำเร็จ: " + e.message); doVibrate(100);
-            }
+                if (!docSnap.exists || docSnap.data().password !== pass) { showAppToast("❌ รหัสผิด"); return; }
+                if (docSnap.data().banned) { showAppToast("🚫 บัญชีถูกระงับ"); return; }
+                currentUser = { username: name, ...docSnap.data() }; sessionStorage.setItem('activeUser', name); subscribeToCurrentUser(name); updateDashboardUI(); clearInputs(['login-name', 'login-pass']); showPage('dashboard-page'); triggerLoginAds();
+            } catch (e) { showAppToast("❌ ขัดข้อง"); }
         }
 
-        function logoutUser() {
-            if (currentUserUnsub) { currentUserUnsub(); currentUserUnsub = null; } // 🔥 ยกเลิก realtime listener ก่อนออกจากระบบ
-            sessionStorage.removeItem('activeUser'); currentUser = null; toggleMenu(); showPage('welcome-page'); showAppToast("🚪 ออกจากระบบเรียบร้อย");
-        }
-
-        // 🔥 บันทึกข้อมูล currentUser ลง Firestore (แทนที่ localStorage เดิม) - เขียนแบบ fire-and-forget ไม่บล็อก UI
-        function saveToDatabase() {
-            if (!currentUser || !currentUser.username) return;
-            db.collection('users').doc(currentUser.username).set(currentUser, { merge: true }).catch(e => {
-                showAppToast("❌ บันทึกข้อมูลไม่สำเร็จ (เช็คอินเทอร์เน็ต): " + e.message);
-            });
-        }
-
-        // 🔥 ติดตามข้อมูลผู้ใช้แบบเรียลไทม์ - อัปเดตเหรียญ/ข้อความ/สถานะแบนทันทีที่มีการเปลี่ยนแปลงจากเครื่องอื่นหรือแอดมิน
+        function logoutUser() { if(currentUserUnsub) currentUserUnsub(); if(adminOrdersUnsub) adminOrdersUnsub(); sessionStorage.removeItem('activeUser'); currentUser = null; toggleMenu(); showPage('welcome-page'); }
+        function saveToDatabase() { if (currentUser) db.collection('users').doc(currentUser.username).set(currentUser, { merge: true }); }
+        
         function subscribeToCurrentUser(username) {
             if (currentUserUnsub) currentUserUnsub();
             currentUserUnsub = db.collection('users').doc(username).onSnapshot((docSnap) => {
                 if (!docSnap.exists) return;
                 const data = docSnap.data();
-
-                if (data.banned === true) {
-                    if (currentUserUnsub) { currentUserUnsub(); currentUserUnsub = null; }
-                    sessionStorage.removeItem('activeUser');
-                    currentUser = null;
-                    showPage('welcome-page');
-                    showAppToast("🚫 บัญชีของคุณถูกระงับการใช้งานโดยแอดมิน");
-                    doVibrate([200, 100, 200]);
-                    return;
-                }
-
-                currentUser = { username: username, ...data };
-                updateDashboardUI();
-                updateNotificationUI();
-            }, (err) => {
-                showAppToast("⚠️ การเชื่อมต่อขาดหาย: " + err.message);
+                if (data.banned) { logoutUser(); alert("🚫 บัญชีคุณถูกระงับ"); return; }
+                const newMsgCount = data.messages ? data.messages.length : 0, oldMsgCount = currentUser && currentUser.messages ? currentUser.messages.length : 0;
+                if(newMsgCount > oldMsgCount) { const latestMsg = data.messages[newMsgCount - 1]; showAppToast(`🔔 <b>ข้อความใหม่จาก ${latestMsg.sender}</b><br><span style="font-size:0.8rem">${latestMsg.text}</span>`); doVibrate([100, 50, 100]); }
+                if(currentUser && data.coins !== currentUser.coins) { let diff = data.coins - currentUser.coins; if(diff > 0) showAppToast(`💰 แอดมินเพิ่มเหรียญให้คุณ +${diff} เหรียญ`); }
+                currentUser = { username: username, ...data }; updateDashboardUI(); updateNotificationUI();
             });
         }
+        
         function clearInputs(ids) { ids.forEach(id => document.getElementById(id).value = ""); }
         function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
         function getCurrentDateString() { const today = new Date(); return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(); }
-        function getTodayQuiz() { const today = new Date(); return quizBank[today.getDate() % quizBank.length]; }
+        function openModal(id) { if(id === 'inbox-modal') viewMessages(); document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { showAppToast("✅ คัดลอกแล้ว"); }); }
         
-        function openModal(modalId) { 
-            // เรนเดอร์ข้อความและเคลียร์จุดแดง "ก่อน" ที่ Modal จะสไลด์ขึ้น เพื่อกันบั๊ก
-            if(modalId === 'inbox-modal') { viewMessages(); } 
-            
-            if(modalId === 'game-modal') { 
-                document.getElementById('game-status-msg').innerText = ""; const todayQuiz = getTodayQuiz(); document.getElementById('quiz-question').innerText = todayQuiz.question; generateChoiceButtons(todayQuiz); if(currentUser && currentUser.lastPlayedDate === getCurrentDateString()) { disableAllChoices(); document.getElementById('game-status-msg').style.color = "#e74c3c"; document.getElementById('game-status-msg').innerText = "🔒 คุณตอบคำถามของวันนี้ไปแล้ว!"; } 
-            } 
-            
-            // บังคับให้เบราว์เซอร์เตรียม DOM ให้เสร็จก่อนรันแอนิเมชัน 
-            void document.getElementById(modalId).offsetWidth; 
-            document.getElementById(modalId).classList.add('active'); 
+        // มินิเกม & กาชา
+        function dailyCheckIn() { const today = getCurrentDateString(); if(currentUser.dailyCheckinDate === today) { showAppToast("❌ วันนี้รับแล้ว!"); return; } currentUser.coins += 5; currentUser.dailyCheckinDate = today; addHistory("เช็คอินรายวัน", "+5 เหรียญ"); saveToDatabase(); updateDashboardUI(); showAppToast("🎉 เช็คอินสำเร็จ! +5 เหรียญ"); triggerFireworks(); doVibrate(100); }
+        function rollGacha() {
+            if(currentUser.coins < 10) { showAppToast("❌ เหรียญไม่พอ!"); return; }
+            const btn = document.getElementById('gacha-btn'); const box = document.getElementById('gacha-box-icon');
+            btn.disabled = true; box.classList.add('shake'); doVibrate(50);
+            setTimeout(() => {
+                box.classList.remove('shake'); btn.disabled = false; currentUser.coins -= 10;
+                const roll = Math.floor(Math.random() * 100) + 1;
+                let resultName = roll <= 5 ? "👑 ไอดีระดับ VIP" : (roll <= 30 ? "💎 ไอดีระดับ Rare" : "📦 ไอดีระดับ Normal");
+                if(!currentUser.inventory) currentUser.inventory = []; const now = new Date();
+                currentUser.inventory.push({ name: resultName, details: `GCH-${Math.floor(1000+Math.random()*9000)}`, date: String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น." });
+                addHistory("สุ่มกาชา", "-10 เหรียญ"); saveToDatabase(); updateDashboardUI(); doVibrate([200, 100, 200]); triggerEdgeFlash(); showAppToast(`🎉 ได้รับ: <b>${resultName}</b>`);
+            }, 1000); 
         }
-        
-        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
-        function shuffleArray(array) { let currentIndex = array.length, randomIndex; const newArray = [...array]; while (currentIndex != 0) { randomIndex = Math.floor(Math.random() * currentIndex); currentIndex--; [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]]; } return newArray; }
-        function generateChoiceButtons(quizItem) { const container = document.getElementById('choices-container'); container.innerHTML = ""; const shuffledChoices = shuffleArray(quizItem.choices); shuffledChoices.forEach(choice => { const button = document.createElement('button'); button.classList.add('choice-btn'); button.innerText = "📌 " + choice; button.onclick = function() { selectChoice(choice, quizItem.answer); }; container.appendChild(button); }); }
-        
-        function selectChoice(selectedAnswer, correctAnswer) { 
-            disableAllChoices(); const msgElement = document.getElementById('game-status-msg'); 
-            if(selectedAnswer === correctAnswer) { 
-                currentUser.coins += 1; currentUser.lastPlayedDate = getCurrentDateString(); addHistory("เล่นมินิเกมชนะ", "+1 เหรียญ"); saveToDatabase(); updateDashboardUI(); msgElement.style.color = "#27ae60"; msgElement.innerText = "🏆 คุณชนะ! ได้รับ 1 เหรียญ 💰"; triggerFireworks(); doVibrate([50, 50, 50]);
-            } else { currentUser.lastPlayedDate = getCurrentDateString(); saveToDatabase(); msgElement.style.color = "#c0392b"; msgElement.innerText = "❌ ผิดน้า! ไว้แก้ตัวใหม่พรุ่งนี้!"; doVibrate(150); } 
+
+        // เติมเงินอั่งเปา
+        function processTopUp() {
+            const linkInput = document.getElementById('topup-link-input').value.trim();
+            if (linkInput === "" || !/^https:\/\/gift\.truemoney\.com\/campaign\/\?v=.+$/.test(linkInput)) { showAppToast("❌ ลิงก์ซองไม่ถูกต้อง!"); return; }
+            if (usedTopupLinks.includes(linkInput)) { showAppToast("❌ ลิงก์นี้ใช้ไปแล้ว!"); return; }
+            let actualAmount = parseInt(new URLSearchParams(linkInput.substring(linkInput.indexOf('?'))).get('v').replace(/[^0-9]/g, ''), 10);
+            if (isNaN(actualAmount) || actualAmount <= 0) return;
+            currentUser.coins += actualAmount; usedTopupLinks.push(linkInput); addHistory("เติมเงินอั่งเปา", `+${actualAmount} เหรียญ`); saveToDatabase(); localStorage.setItem('usedTopupLinks', JSON.stringify(usedTopupLinks)); updateDashboardUI(); document.getElementById('topup-link-input').value = ""; doVibrate([100, 100]); showAppToast(`🎉 เติมเงินสำเร็จ! +${actualAmount} เหรียญ`); closeModal('topup-modal'); triggerFireworks();
         }
-        function disableAllChoices() { const buttons = document.getElementsByClassName('choice-btn'); for(let i = 0; i < buttons.length; i++) { buttons[i].disabled = true; } }
-        
-        function triggerFireworks() { const container = document.getElementById('app-container'); const colors = ['#2ECC71', '#27AE60', '#A9DFBF', '#F1C40F']; for (let f = 0; f < 3; f++) { setTimeout(() => { const originX = 50 + Math.random() * 300; const originY = 100 + Math.random() * 200; for (let i = 0; i < 30; i++) { const particle = document.createElement('div'); particle.classList.add('firework-particle'); const angle = Math.random() * Math.PI * 2; const distance = 30 + Math.random() * 90; const x = Math.cos(angle) * distance; const y = Math.sin(angle) * distance; particle.style.setProperty('--x', `${x}px`); particle.style.setProperty('--y', `${y}px`); particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; particle.style.left = `${originX}px`; particle.style.top = `${originY}px`; container.appendChild(particle); setTimeout(() => particle.remove(), 850); } }, f * 250); } }
-        
-        function testAddCoin() { currentUser.coins += 50; addHistory("เสกเหรียญ (ปุ่มเทส)", "+50 เหรียญ"); saveToDatabase(); updateDashboardUI(); showAppToast("🛠️ ระบบเติมเงินทดสอบสำเร็จ! +50 เหรียญ"); doVibrate(50); }
+
+        // Toast logic (Drag)
+        const toastEl = document.getElementById('app-toast'); let startY = 0, currentY = 0, isDragging = false;
+        toastEl.addEventListener('touchstart', (e) => { if (!toastEl.classList.contains('show')) return; startY = e.touches[0].clientY; isDragging = true; toastEl.style.transition = 'none'; }, {passive: true});
+        toastEl.addEventListener('touchmove', (e) => { if (!isDragging) return; currentY = e.touches[0].clientY; if (currentY - startY < 0) toastEl.style.transform = `translateX(-50%) translateY(${currentY - startY}px)`; }, {passive: true});
+        toastEl.addEventListener('touchend', () => { if (!isDragging) return; isDragging = false; toastEl.style.transition = 'all 0.45s'; if (currentY - startY < -30) hideAppToast(); else toastEl.style.transform = 'translateX(-50%) translateY(0)'; });
+        function hideAppToast() { toastEl.classList.remove('show'); if (toastTimer) clearTimeout(toastTimer); setTimeout(() => toastEl.style.transform = 'translateX(-50%) translateY(0)', 400); }
+        function showAppToast(html) { toastEl.innerHTML = '<div class="drag-indicator"></div>' + html; toastEl.classList.add('show'); toastEl.style.transform = 'translateX(-50%) translateY(0)'; if (toastTimer) clearTimeout(toastTimer); toastTimer = setTimeout(hideAppToast, 5000); }
+        function triggerEdgeFlash() { const edgeFlashEl = document.getElementById('screen-edge-flash'); edgeFlashEl.classList.remove('active'); void edgeFlashEl.offsetWidth; edgeFlashEl.classList.add('active'); }
+        function triggerFireworks() { const container = document.getElementById('app-container'); const colors = ['#2ECC71', '#27AE60', '#A9DFBF', '#F1C40F']; for (let f = 0; f < 3; f++) { setTimeout(() => { const originX = 50 + Math.random() * 300, originY = 100 + Math.random() * 200; for (let i = 0; i < 30; i++) { const particle = document.createElement('div'); particle.classList.add('firework-particle'); const angle = Math.random() * Math.PI * 2, distance = 30 + Math.random() * 90; particle.style.setProperty('--x', `${Math.cos(angle) * distance}px`); particle.style.setProperty('--y', `${Math.sin(angle) * distance}px`); particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; particle.style.left = `${originX}px`; particle.style.top = `${originY}px`; container.appendChild(particle); setTimeout(() => particle.remove(), 850); } }, f * 250); } }
+
+        function exportData() { document.getElementById('backup-data').value = btoa(encodeURIComponent(JSON.stringify(currentUser))); showAppToast("✅ สร้างรหัสสำเร็จ!"); }
+        async function importData() { const d = document.getElementById('backup-data').value.trim(); if(!d) return; try { const user = JSON.parse(decodeURIComponent(atob(d))); await db.collection('users').doc(user.username).set(user, {merge:true}); showAppToast("🎉 กู้คืนสำเร็จ"); location.reload(); } catch(e) { showAppToast("❌ ข้อมูลไม่ถูกต้อง"); } }
+
     </script>
 </body>
 </html>
+
+
+```
+
