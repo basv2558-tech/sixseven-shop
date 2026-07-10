@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BAS SHOP - Full System Pro (Ultimate Edition)</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -12,6 +12,7 @@
         body {
             background-color: #E8F5E9; display: flex; justify-content: center; align-items: center;
             min-height: 100vh; margin: 0; color: #333; padding: 10px; transition: background-color 0.4s ease;
+            overflow-x: hidden; /* ป้องกันการเลื่อนจอตอนเล่นเกม */
         }
 
         /* --- Dark Mode --- */
@@ -119,7 +120,7 @@
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-content { background: #fff; width: 100%; height: 80%; border-radius: 24px 24px 20px 20px; padding: 22px; transform: translateY(100%); transition: 0.45s cubic-bezier(0.34, 1.3, 0.64, 1); display: flex; flex-direction: column; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
-        .close-btn { background: #f0f0f0; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; color: #555; display: flex; justify-content: center; align-items: center; }
+        .close-btn { background: #f0f0f0; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; color: #555; display: flex; justify-content: center; align-items: center; z-index: 10; }
         .scroll-box { overflow-y: auto; margin-top: 15px; flex-grow: 1; padding-right: 5px; }
 
         /* ร้านค้าไอเทม & กระเป๋า */
@@ -247,6 +248,105 @@
         .rps-player-side { text-align: center; flex: 1; }
         .rps-choice-display { font-size: 3rem; margin-top: 10px; min-height: 50px; }
 
+        /* ================= 🔫 Laser Arena Game CSS ================= */
+        .laser-modal-content {
+            background: #111 !important; /* พื้นหลังเกมสีดำ */
+            border-radius: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+            padding: 0 !important;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #laser-canvas {
+            background: #0a0a0a;
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none; /* ป้องกันการเลื่อนจอเวลากดปุ่มมือถือ */
+        }
+
+        .game-hud {
+            position: absolute;
+            top: 10px; left: 10px; right: 10px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .hp-bar-container {
+            display: flex; gap: 5px;
+        }
+
+        .hp-heart {
+            font-size: 1.5rem;
+            color: #ff3366;
+            text-shadow: 0 0 10px #ff3366;
+            opacity: 0.3;
+        }
+        .hp-heart.active { opacity: 1; }
+
+        .game-btn {
+            pointer-events: auto;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Controls */
+        .mobile-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+            display: none; /* ซ่อนไว้ก่อน จะโชว์บนมือถือ */
+        }
+
+        .joystick-zone {
+            width: 120px; height: 120px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            position: relative;
+            touch-action: none;
+        }
+
+        .joystick-knob {
+            width: 50px; height: 50px;
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .joystick-zone.right { border-color: rgba(255, 0, 255, 0.3); }
+        .joystick-zone.right .joystick-knob { background: rgba(255, 0, 255, 0.5); box-shadow: 0 0 15px rgba(255, 0, 255, 0.5); }
+
+        .game-over-screen {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            color: white;
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -291,7 +391,7 @@
             <p class="text-muted" onclick="showPage('register-page')">ยังไม่มีบัญชี? สมัครสมาชิก</p>
         </div>
 
-        <!-- ================= Dashboard (แก้เพิ่มปุ่มเมนูใหม่) ================= -->
+        <!-- ================= Dashboard ================= -->
         <div id="dashboard-page" class="hidden" style="height: 100%; flex-direction: column;">
             <div class="dashboard-header">
                 <div class="user-info-box">
@@ -308,14 +408,12 @@
                 </div>
             </div>
 
-            <!-- เพิ่มแถบเมนูใหม่ด้านบนสุดให้โดดเด่น -->
             <div style="display: flex; gap: 8px; margin-bottom: 10px;">
                 <button class="btn" style="flex:1; margin:0; padding:8px; font-size:0.8rem; background: linear-gradient(135deg, #3498db, #2980b9); color:#fff; border:none;" onclick="openModal('social-modal')">💬 โลกโซเชียล</button>
                 <button class="btn" style="flex:1; margin:0; padding:8px; font-size:0.8rem; background: linear-gradient(135deg, #9b59b6, #8e44ad); color:#fff; border:none;" onclick="openModal('game-zone-modal')">🎮 โซนเกม</button>
                 <button class="btn" style="flex:1; margin:0; padding:8px; font-size:0.8rem; background: linear-gradient(135deg, #e67e22, #d35400); color:#fff; border:none;" onclick="openModal('poll-modal')">📊 โหวต</button>
             </div>
 
-            <!-- โค้ดหมวดหมู่เก่า -->
             <div class="scroll-box" style="margin-top:0; padding-right:5px;">
                 <div class="category-card" style="background: linear-gradient(135deg, #fdf2e9, #e67e22); border: 2px solid #d35400;" onclick="openModal('inbox-modal')">
                     <div class="card-icon" style="background: #fff; color: #d35400;">✉️<span class="notification-dot dot-card"></span></div>
@@ -340,7 +438,7 @@
             </div>
         </div>
 
-        <!-- ================= Admin Page (แก้เพิ่มส่วนจัดการใหม่) ================= -->
+        <!-- ================= Admin Page ================= -->
         <div id="admin-page" class="hidden" style="height: 100%; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
                 <h2 style="margin: 0; color: #e74c3c;">🛠️ ระบบจัดการ (Admin)</h2>
@@ -348,18 +446,15 @@
             </div>
 
             <div class="scroll-box" style="margin-top:0;">
-                
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                     <button class="btn" style="background:#2ecc71; color:#fff; border:none; margin:0; flex:1;" onclick="openModal('admin-products-modal')">📦 จัดการสินค้า</button>
                     <button class="btn" style="background:#f39c12; color:#fff; border:none; margin:0; flex:1;" onclick="openModal('admin-orders-modal')">📋 ออเดอร์ลูกค้า</button>
                 </div>
-                <!-- ปุ่มจัดการระบบใหม่ -->
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                     <button class="btn" style="background:#3498db; color:#fff; border:none; margin:0; flex:1;" onclick="openModal('admin-poll-modal')">📊 จัดการโหวต</button>
                     <button class="btn" style="background:#e74c3c; color:#fff; border:none; margin:0; flex:1;" onclick="openModal('social-modal')">🗑️ ลบแชท/โพสต์</button>
                 </div>
 
-                <!-- กล่องปรับแต่งรูปโฆษณา -->
                 <div class="ads-editor-box">
                     <h4>🖼️ ปรับแต่งรูปโฆษณา (Ads Banner)</h4>
                     <div class="ads-preview-wrap" id="ads-preview-wrap">
@@ -372,7 +467,6 @@
                         <button class="btn" style="background:#3498db; color:#fff; border:none; margin:0;" onclick="saveAdsImage()">💾 บันทึกใช้รูปนี้</button>
                         <button class="btn" style="border-color:#e74c3c; color:#e74c3c; background:none; margin:0;" onclick="resetAdsImage()">♻️ คืนค่าเริ่มต้น</button>
                     </div>
-                    <p style="font-size:0.7rem; color:#7f9bb3; margin:8px 0 0 0;">* อัปโหลดไฟล์ใหญ่ได้ ระบบจะบีบอัดอัตโนมัติ</p>
                 </div>
 
                 <button class="btn-rainbow" style="margin-bottom: 15px; background-image: linear-gradient(124deg, #e74c3c, #f39c12, #e74c3c); color:#fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);" onclick="openAdminMessageModal('ALL')">📢 ส่งข้อความหาทุกคน</button>
@@ -398,7 +492,6 @@
         </div>
 
         <!-- ================= MODALS เก่า (Products, Orders, Inbox, ฯลฯ) ================= -->
-        <!-- Admin Products Modal (เพิ่มระบบ Auto/Manual) -->
         <div id="admin-products-modal" class="modal-overlay">
             <div class="modal-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
@@ -409,27 +502,21 @@
                     <div style="background:#f9f9f9; padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid #ddd;">
                         <h4 style="margin:0 0 10px 0; color:#333;">เพิ่ม/แก้ไข สินค้า</h4>
                         <input type="hidden" id="prod-id">
-                        
                         <select id="prod-type" onchange="toggleProductStockField()">
                             <option value="auto">⚡ ระบบ: รับของทันที (Auto)</option>
                             <option value="manual">📝 ระบบ: สั่งทำ / รอแอดมิน (Manual)</option>
                         </select>
-
                         <input type="text" id="prod-name" placeholder="ชื่อสินค้า..." required>
                         <input type="number" id="prod-price" placeholder="ราคา (เหรียญ)..." required>
-                        
                         <div id="prod-stock-container">
                             <textarea id="prod-stock" rows="4" placeholder="ใส่ข้อมูลสินค้า/รหัส (1 บรรทัด = 1 ชิ้น) สำหรับระบบ Auto เท่านั้น"></textarea>
-                            <p style="font-size:0.75rem; color:#888; margin-top:0;">* สินค้าที่ลูกค้ารับอัตโนมัติ ให้พิมพ์รหัส 1 บรรทัดต่อ 1 ชิ้น</p>
                         </div>
-                        
                         <div class="ads-preview-wrap" style="min-height: 80px; margin-top:5px;" id="prod-img-wrap">
                             <span class="ads-preview-empty" id="prod-img-empty">ยังไม่มีรูปสินค้า</span>
                             <img id="prod-preview-img" src="" style="display:none; max-height:120px; object-fit:contain;">
                         </div>
                         <button type="button" class="file-input-label" onclick="document.getElementById('prod-image-upload').click()" style="padding:5px;">🖼️ เลือกรูปสินค้า...</button>
                         <input type="file" id="prod-image-upload" accept="image/*" class="visually-hidden-file" onchange="previewAndCompressImage(event, 'prod-preview-img', 'prod-img-empty', val => tempProductImgData = val)">
-                        
                         <div style="display:flex; gap:5px;">
                             <button class="btn" style="background:#2ecc71; color:#fff; border:none; margin:0;" onclick="saveProduct()">💾 บันทึกสินค้า</button>
                             <button class="btn" style="background:#e74c3c; color:#fff; border:none; margin:0;" onclick="clearProductForm()">เคลียร์</button>
@@ -441,78 +528,46 @@
         </div>
 
         <div id="admin-orders-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #f39c12;">📋 จัดการออเดอร์</h3>
-                    <button class="close-btn" onclick="closeModal('admin-orders-modal')">✖</button>
-                </div>
-                <div class="scroll-box" id="admin-order-list"></div>
-            </div>
+            <div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #f39c12;">📋 จัดการออเดอร์</h3><button class="close-btn" onclick="closeModal('admin-orders-modal')">✖</button></div><div class="scroll-box" id="admin-order-list"></div></div>
         </div>
 
         <div id="admin-msg-modal" class="modal-overlay" style="z-index: 300;">
-            <div class="modal-content" style="height: auto; border-radius: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 id="admin-msg-title" style="margin: 0; color: #8e44ad;">✉️ ส่งข้อความ</h3>
-                    <button class="close-btn" onclick="closeModal('admin-msg-modal')">✖</button>
-                </div>
-                <div style="margin-top: 15px;">
-                    <textarea id="admin-msg-text" rows="4" placeholder="พิมพ์ข้อความแจ้งเตือนที่ต้องการส่ง..." style="resize: none;"></textarea>
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <button class="btn" style="background:#8e44ad; color:#fff; border-color:#8e44ad;" onclick="confirmSendMessage()">🚀 ส่งข้อความ</button>
-                        <button class="btn" onclick="closeModal('admin-msg-modal')">ยกเลิก</button>
-                    </div>
-                </div>
-            </div>
+            <div class="modal-content" style="height: auto; border-radius: 20px;"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 id="admin-msg-title" style="margin: 0; color: #8e44ad;">✉️ ส่งข้อความ</h3><button class="close-btn" onclick="closeModal('admin-msg-modal')">✖</button></div><div style="margin-top: 15px;"><textarea id="admin-msg-text" rows="4" placeholder="พิมพ์ข้อความแจ้งเตือนที่ต้องการส่ง..." style="resize: none;"></textarea><div style="display: flex; gap: 10px; margin-top: 10px;"><button class="btn" style="background:#8e44ad; color:#fff; border-color:#8e44ad;" onclick="confirmSendMessage()">🚀 ส่งข้อความ</button><button class="btn" onclick="closeModal('admin-msg-modal')">ยกเลิก</button></div></div></div>
         </div>
 
-        <div id="inbox-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #d35400;">✉️ กล่องข้อความ</h3>
-                    <button class="close-btn" onclick="closeModal('inbox-modal')">✖</button>
-                </div>
-                <div id="message-list" class="scroll-box" style="padding: 10px 5px;"></div>
-            </div>
-        </div>
-
+        <div id="inbox-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #d35400;">✉️ กล่องข้อความ</h3><button class="close-btn" onclick="closeModal('inbox-modal')">✖</button></div><div id="message-list" class="scroll-box" style="padding: 10px 5px;"></div></div></div>
+        
         <div id="settings-modal" class="modal-overlay">
             <div class="modal-content">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
                     <h3 style="margin: 0;">⚙️ การตั้งค่าเว็บ</h3>
                     <button class="close-btn" onclick="closeModal('settings-modal')">✖</button>
                 </div>
-                <div class="scroll-box" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <p style="color: #666; font-size: 0.85rem; text-align: center; margin-bottom: 20px;">ปรับแต่งการแสดงผลของเว็บไซต์</p>
+                <div class="scroll-box" style="display: flex; flex-direction: column; align-items: center;">
                     <button id="dark-mode-btn" class="btn" style="border-color:#555; color:#555; background-color:#f5f5f5;" onclick="toggleDarkMode()">🌙 สลับเป็นโหมดมืด</button>
+                    
+                    <h4 style="margin-top: 20px; color:#2980b9;">ตั้งค่าเกม Laser Arena</h4>
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span>กราฟิกนีออน:</span>
+                        <select id="setting-laser-gfx" style="width:120px; margin:0;" onchange="updateLaserSettings()">
+                            <option value="high">สูง (มีแสง)</option>
+                            <option value="low">ต่ำ (ลื่นไหล)</option>
+                        </select>
+                    </div>
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span>FPS Limit:</span>
+                        <select id="setting-laser-fps" style="width:120px; margin:0;" onchange="updateLaserSettings()">
+                            <option value="60">60 FPS</option>
+                            <option value="30">30 FPS</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="topup-modal" class="modal-overlay">
-            <div class="modal-content" style="height: 65%;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #e74c3c;">🧧 เติมเงินด้วยซองอั่งเปา</h3>
-                    <button class="close-btn" onclick="closeModal('topup-modal')">✖</button>
-                </div>
-                <div class="scroll-box" style="text-align: center;">
-                    <p style="font-size: 0.85rem; color: #666; text-align: left; margin-bottom: 15px;">สร้างซองแบบ <b>"ส่งให้คนเดียว"</b> แล้ววางลิงก์ซองด้านล่างนี้</p>
-                    <input type="text" id="topup-link-input" placeholder="วางลิงก์ซองอั่งเปาตรงนี้...">
-                    <button class="btn" style="border-color:#e74c3c; color:#e74c3c; background-color:rgba(231,76,60,0.1);" onclick="processTopUp()">ยืนยันการเติมเงิน</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="inventory-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #27AE60;">📦 กระเป๋า & ออเดอร์ของฉัน</h3>
-                    <button class="close-btn" onclick="closeModal('inventory-modal')">✖</button>
-                </div>
-                <div id="inventory-list" class="scroll-box"></div>
-            </div>
-        </div>
-
+        <div id="topup-modal" class="modal-overlay"><div class="modal-content" style="height: 65%;"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #e74c3c;">🧧 เติมเงินด้วยซองอั่งเปา</h3><button class="close-btn" onclick="closeModal('topup-modal')">✖</button></div><div class="scroll-box" style="text-align: center;"><p style="font-size: 0.85rem; color: #666; text-align: left; margin-bottom: 15px;">สร้างซองแบบ <b>"ส่งให้คนเดียว"</b> แล้ววางลิงก์ซองด้านล่างนี้</p><input type="text" id="topup-link-input" placeholder="วางลิงก์ซองอั่งเปาตรงนี้..."><button class="btn" style="border-color:#e74c3c; color:#e74c3c; background-color:rgba(231,76,60,0.1);" onclick="processTopUp()">ยืนยันการเติมเงิน</button></div></div></div>
+        <div id="inventory-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #27AE60;">📦 กระเป๋า & ออเดอร์ของฉัน</h3><button class="close-btn" onclick="closeModal('inventory-modal')">✖</button></div><div id="inventory-list" class="scroll-box"></div></div></div>
+        
         <div id="confirm-modal" class="modal-overlay" style="z-index: 300;">
             <div class="modal-content" style="height: auto; border-radius: 20px; align-items: center;">
                 <h3>ยืนยันการสั่งซื้อ?</h3>
@@ -522,158 +577,24 @@
                     <input type="number" id="purchase-quantity" min="1" value="1" style="width: 80px; padding: 8px; margin: 0; text-align: center; border-radius: 8px;" oninput="updateTotalPrice()">
                 </div>
                 <p id="total-price-display" style="text-align: center; font-weight: bold; color: #e74c3c; margin-top: 0; font-size: 1.1rem;"></p>
-                <div id="manual-order-input-wrap" style="width:100%; display:none; margin-bottom:15px;">
-                    <p style="font-size:0.8rem; color:#e67e22; margin:0 0 5px 0; font-weight:bold;">📝 กรุณากรอก ไอดี - รหัสผ่าน หรือข้อมูลที่จะให้แอดมินทำ:</p>
-                    <textarea id="order-user-details" rows="3" placeholder="ตัวอย่าง: ID: player1 / Pass: 1234..." style="margin:0;"></textarea>
-                </div>
-                <div style="width: 100%; display: flex; gap: 10px;">
-                    <button class="btn" style="background:#2ECC71; color:#fff;" id="btn-confirm-buy" onclick="processPurchase()">ตกลงซื้อ</button>
-                    <button class="btn" onclick="closeModal('confirm-modal')">ยกเลิก</button>
-                </div>
+                <div id="manual-order-input-wrap" style="width:100%; display:none; margin-bottom:15px;"><p style="font-size:0.8rem; color:#e67e22; margin:0 0 5px 0; font-weight:bold;">📝 กรุณากรอก ไอดี - รหัสผ่าน หรือข้อมูลที่จะให้แอดมินทำ:</p><textarea id="order-user-details" rows="3" placeholder="ตัวอย่าง: ID: player1 / Pass: 1234..." style="margin:0;"></textarea></div>
+                <div style="width: 100%; display: flex; gap: 10px;"><button class="btn" style="background:#2ECC71; color:#fff;" id="btn-confirm-buy" onclick="processPurchase()">ตกลงซื้อ</button><button class="btn" onclick="closeModal('confirm-modal')">ยกเลิก</button></div>
             </div>
         </div>
 
-        <div id="shop-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #145A32;">🎮 BAS SHOP ร้านค้า</h3>
-                    <button class="close-btn" onclick="closeModal('shop-modal')">✖</button>
-                </div>
-                <input type="text" class="search-input" id="shop-search" placeholder="🔍 ค้นหาสินค้า..." onkeyup="searchShopItems()">
-                <div class="shop-items scroll-box" id="shop-items-list"></div>
-            </div>
-        </div>
-
-        <div id="game-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #27AE60;">🧩 เกมเลือกช้อยส์ประจำวัน</h3>
-                    <button class="close-btn" onclick="closeModal('game-modal')">✖</button>
-                </div>
-                <div class="scroll-box">
-                    <div class="quiz-box">
-                        <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #7f8c8d;">คำใบ้ปริศนาวันนี้</p>
-                        <p id="quiz-question" class="hint-text">กำลังโหลดคำถาม...</p>
-                    </div>
-                    <div id="choices-container"></div>
-                    <p id="game-status-msg" style="text-align: center; font-weight: 600; font-size: 0.95rem; margin-top: 15px; line-height: 1.4;"></p>
-                </div>
-            </div>
-        </div>
-
-        <div id="gacha-modal" class="modal-overlay">
-            <div class="modal-content" style="align-items: center; text-align: center;">
-                <div style="width:100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #e67e22;">🎁 สุ่มกาชาลุ้นแรร์</h3>
-                    <button class="close-btn" onclick="closeModal('gacha-modal')">✖</button>
-                </div>
-                <p style="font-size:0.85rem; color:#666; margin-top:15px;">ใช้ 10 เหรียญ เพื่อลุ้นรับไอดีระดับ Normal จนถึง VIP</p>
-                <div id="gacha-box-icon" class="gacha-box">📦</div>
-                <button id="gacha-btn" class="btn" style="background:#e67e22; color:#fff; border-color:#d35400;" onclick="rollGacha()">สุ่มเลย (10 เหรียญ)</button>
-            </div>
-        </div>
-
-        <div id="history-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #34495e;">📜 ประวัติการทำรายการ</h3>
-                    <button class="close-btn" onclick="closeModal('history-modal')">✖</button>
-                </div>
-                <div id="history-list" class="scroll-box"></div>
-            </div>
-        </div>
-
-        <div id="backup-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #2980b9;">☁️ Cloud Backup</h3>
-                    <button class="close-btn" onclick="closeModal('backup-modal')">✖</button>
-                </div>
-                <div class="scroll-box">
-                    <p style="font-size:0.8rem; color:#666;">คัดลอกรหัสด้านล่างเพื่อสำรองข้อมูล หรือวางรหัสเดิมเพื่อกู้คืนข้อมูล</p>
-                    <textarea id="backup-data" rows="5" placeholder="รหัสสำรองข้อมูลจะแสดงที่นี่..."></textarea>
-                    <button class="btn" style="background:#3498db; color:#fff; border:none;" onclick="exportData()">📤 สร้างรหัสสำรองข้อมูล (Export)</button>
-                    <button class="btn" style="background:#e67e22; color:#fff; border:none;" onclick="importData()">📥 กู้คืนข้อมูล (Import)</button>
-                </div>
-            </div>
-        </div>
+        <div id="shop-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #145A32;">🎮 BAS SHOP ร้านค้า</h3><button class="close-btn" onclick="closeModal('shop-modal')">✖</button></div><input type="text" class="search-input" id="shop-search" placeholder="🔍 ค้นหาสินค้า..." onkeyup="searchShopItems()"><div class="shop-items scroll-box" id="shop-items-list"></div></div></div>
+        <div id="game-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #27AE60;">🧩 เกมเลือกช้อยส์ประจำวัน</h3><button class="close-btn" onclick="closeModal('game-modal')">✖</button></div><div class="scroll-box"><div class="quiz-box"><p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #7f8c8d;">คำใบ้ปริศนาวันนี้</p><p id="quiz-question" class="hint-text">กำลังโหลดคำถาม...</p></div><div id="choices-container"></div><p id="game-status-msg" style="text-align: center; font-weight: 600; font-size: 0.95rem; margin-top: 15px; line-height: 1.4;"></p></div></div></div>
+        <div id="gacha-modal" class="modal-overlay"><div class="modal-content" style="align-items: center; text-align: center;"><div style="width:100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #e67e22;">🎁 สุ่มกาชาลุ้นแรร์</h3><button class="close-btn" onclick="closeModal('gacha-modal')">✖</button></div><p style="font-size:0.85rem; color:#666; margin-top:15px;">ใช้ 10 เหรียญ เพื่อลุ้นรับไอดีระดับ Normal จนถึง VIP</p><div id="gacha-box-icon" class="gacha-box">📦</div><button id="gacha-btn" class="btn" style="background:#e67e22; color:#fff; border-color:#d35400;" onclick="rollGacha()">สุ่มเลย (10 เหรียญ)</button></div></div>
+        <div id="history-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #34495e;">📜 ประวัติการทำรายการ</h3><button class="close-btn" onclick="closeModal('history-modal')">✖</button></div><div id="history-list" class="scroll-box"></div></div></div>
+        <div id="backup-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #2980b9;">☁️ Cloud Backup</h3><button class="close-btn" onclick="closeModal('backup-modal')">✖</button></div><div class="scroll-box"><p style="font-size:0.8rem; color:#666;">คัดลอกรหัสด้านล่างเพื่อสำรองข้อมูล หรือวางรหัสเดิมเพื่อกู้คืนข้อมูล</p><textarea id="backup-data" rows="5" placeholder="รหัสสำรองข้อมูลจะแสดงที่นี่..."></textarea><button class="btn" style="background:#3498db; color:#fff; border:none;" onclick="exportData()">📤 สร้างรหัสสำรองข้อมูล (Export)</button><button class="btn" style="background:#e67e22; color:#fff; border:none;" onclick="importData()">📥 กู้คืนข้อมูล (Import)</button></div></div></div>
 
         <!-- ================= MODALS ส่วนเสริมใหม่ (Ultimate Features) ================= -->
         
-        <!-- 1. โลกโซเชียล (Chat & Feed) -->
-        <div id="social-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom:10px;">
-                    <h3 style="margin: 0; color: #2980b9;">🌐 โลกโซเชียล</h3>
-                    <button class="close-btn" onclick="closeModal('social-modal')">✖</button>
-                </div>
-                
-                <div class="social-tabs">
-                    <div id="tab-chat" class="social-tab-btn active" onclick="switchSocialTab('chat')">💬 ห้องแชทสด</div>
-                    <div id="tab-feed" class="social-tab-btn" onclick="switchSocialTab('feed')">📸 รีวิว/อวดของ</div>
-                </div>
+        <div id="social-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom:10px;"><h3 style="margin: 0; color: #2980b9;">🌐 โลกโซเชียล</h3><button class="close-btn" onclick="closeModal('social-modal')">✖</button></div><div class="social-tabs"><div id="tab-chat" class="social-tab-btn active" onclick="switchSocialTab('chat')">💬 ห้องแชทสด</div><div id="tab-feed" class="social-tab-btn" onclick="switchSocialTab('feed')">📸 รีวิว/อวดของ</div></div><div id="social-chat-area" class="chat-container"><div class="chat-box" id="global-chat-box"></div><div class="chat-input-area"><input type="text" id="chat-input-msg" class="chat-input" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key === 'Enter') sendChatMessage()"><button class="chat-send-btn" onclick="sendChatMessage()">➤</button></div></div><div id="social-feed-area" class="feed-container"><div class="feed-post-box"><textarea id="feed-input-text" rows="2" placeholder="อวดไอดีที่ซื้อ หรือแชร์เรื่องราว..." style="margin-bottom: 5px; resize: none;"></textarea><div class="ads-preview-wrap" style="min-height: 60px; margin-bottom:5px; border-radius:8px;" id="feed-img-wrap"><span class="ads-preview-empty" id="feed-img-empty" style="padding:10px 0;">(ไม่มีรูปภาพแนบ)</span><img id="feed-preview-img" src="" style="display:none; max-height:100px; object-fit:contain;"></div><div style="display: flex; gap: 5px;"><button type="button" class="btn" style="flex: 1; padding: 8px; margin:0; background: #ecf0f1; border:none; color:#7f8c8d;" onclick="document.getElementById('feed-image-upload').click()">🖼️ แนบรูป</button><input type="file" id="feed-image-upload" accept="image/*" class="visually-hidden-file" onchange="previewAndCompressImage(event, 'feed-preview-img', 'feed-img-empty', val => tempFeedImgData = val)"><button class="btn" style="flex: 2; padding: 8px; margin:0; background: #3498db; color:#fff; border:none;" onclick="postToFeed()">🚀 โพสต์เลย</button></div></div><div id="feed-list" class="scroll-box" style="margin-top:0; padding-bottom:20px;"></div></div></div></div>
 
-                <!-- Chat Room -->
-                <div id="social-chat-area" class="chat-container">
-                    <div class="chat-box" id="global-chat-box"></div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chat-input-msg" class="chat-input" placeholder="พิมพ์ข้อความ..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
-                        <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
-                    </div>
-                </div>
-
-                <!-- Feed Room -->
-                <div id="social-feed-area" class="feed-container">
-                    <!-- กล่องโพสต์ -->
-                    <div class="feed-post-box">
-                        <textarea id="feed-input-text" rows="2" placeholder="อวดไอดีที่ซื้อ หรือแชร์เรื่องราว..." style="margin-bottom: 5px; resize: none;"></textarea>
-                        
-                        <div class="ads-preview-wrap" style="min-height: 60px; margin-bottom:5px; border-radius:8px;" id="feed-img-wrap">
-                            <span class="ads-preview-empty" id="feed-img-empty" style="padding:10px 0;">(ไม่มีรูปภาพแนบ)</span>
-                            <img id="feed-preview-img" src="" style="display:none; max-height:100px; object-fit:contain;">
-                        </div>
-                        
-                        <div style="display: flex; gap: 5px;">
-                            <button type="button" class="btn" style="flex: 1; padding: 8px; margin:0; background: #ecf0f1; border:none; color:#7f8c8d;" onclick="document.getElementById('feed-image-upload').click()">🖼️ แนบรูป</button>
-                            <input type="file" id="feed-image-upload" accept="image/*" class="visually-hidden-file" onchange="previewAndCompressImage(event, 'feed-preview-img', 'feed-img-empty', val => tempFeedImgData = val)">
-                            <button class="btn" style="flex: 2; padding: 8px; margin:0; background: #3498db; color:#fff; border:none;" onclick="postToFeed()">🚀 โพสต์เลย</button>
-                        </div>
-                    </div>
-                    <!-- รายการโพสต์ -->
-                    <div id="feed-list" class="scroll-box" style="margin-top:0; padding-bottom:20px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. ระบบโหวต (Poll & Activity) -->
-        <div id="poll-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #d35400;">📊 โหวตกิจกรรมร้าน</h3>
-                    <button class="close-btn" onclick="closeModal('poll-modal')">✖</button>
-                </div>
-                <div class="scroll-box" id="poll-container">
-                    <p style="text-align:center; color:#888;">กำลังโหลดโหวตล่าสุด...</p>
-                </div>
-            </div>
-        </div>
+        <div id="poll-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #d35400;">📊 โหวตกิจกรรมร้าน</h3><button class="close-btn" onclick="closeModal('poll-modal')">✖</button></div><div class="scroll-box" id="poll-container"><p style="text-align:center; color:#888;">กำลังโหลดโหวตล่าสุด...</p></div></div></div>
         
-        <!-- Admin Poll Editor -->
-        <div id="admin-poll-modal" class="modal-overlay">
-            <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #3498db;">📊 สร้างโหวตใหม่</h3>
-                    <button class="close-btn" onclick="closeModal('admin-poll-modal')">✖</button>
-                </div>
-                <div class="scroll-box">
-                    <input type="text" id="admin-poll-q" placeholder="คำถามโหวต เช่น สัปดาห์หน้าเอาเกมไรมาขาย?">
-                    <input type="text" id="admin-poll-opt1" placeholder="ตัวเลือกที่ 1">
-                    <input type="text" id="admin-poll-opt2" placeholder="ตัวเลือกที่ 2">
-                    <input type="text" id="admin-poll-opt3" placeholder="ตัวเลือกที่ 3 (ไม่บังคับ)">
-                    <button class="btn" style="background:#3498db; color:white; border:none;" onclick="createNewPoll()">💾 สร้างโหวต</button>
-                </div>
-            </div>
-        </div>
+        <div id="admin-poll-modal" class="modal-overlay"><div class="modal-content"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #3498db;">📊 สร้างโหวตใหม่</h3><button class="close-btn" onclick="closeModal('admin-poll-modal')">✖</button></div><div class="scroll-box"><input type="text" id="admin-poll-q" placeholder="คำถามโหวต เช่น สัปดาห์หน้าเอาเกมไรมาขาย?"><input type="text" id="admin-poll-opt1" placeholder="ตัวเลือกที่ 1"><input type="text" id="admin-poll-opt2" placeholder="ตัวเลือกที่ 2"><input type="text" id="admin-poll-opt3" placeholder="ตัวเลือกที่ 3 (ไม่บังคับ)"><button class="btn" style="background:#3498db; color:white; border:none;" onclick="createNewPoll()">💾 สร้างโหวต</button></div></div></div>
 
         <!-- 3. โซนเกมส์ - หน้า Lobby -->
         <div id="game-zone-modal" class="modal-overlay">
@@ -684,14 +605,23 @@
                 </div>
                 
                 <h4 style="margin: 0 0 10px 0; color: #555;">เลือกเกมที่ต้องการเล่น</h4>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <div class="category-card" style="flex:1; background: #e8f8f5; border: 2px solid #2ecc71; margin:0;" onclick="selectGameType('xo')">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px;">
+                    <!-- Laser Arena (ใหม่) -->
+                    <div class="category-card" style="min-width:120px; background: #000; border: 2px solid #0ff; margin:0; box-shadow: 0 0 10px rgba(0,255,255,0.5);" onclick="selectGameType('laser')">
+                        <div style="text-align: center; width: 100%;">
+                            <div style="font-size: 2rem;">🔫</div>
+                            <div style="font-weight: bold; color: #0ff; margin-top:5px; text-shadow: 0 0 5px #0ff;">Laser Arena</div>
+                        </div>
+                    </div>
+                    <!-- XO -->
+                    <div class="category-card" style="min-width:120px; background: #e8f8f5; border: 2px solid #2ecc71; margin:0;" onclick="selectGameType('xo')">
                         <div style="text-align: center; width: 100%;">
                             <div style="font-size: 2rem;">❌⭕</div>
                             <div style="font-weight: bold; color: #27ae60; margin-top:5px;">Tic-Tac-Toe</div>
                         </div>
                     </div>
-                    <div class="category-card" style="flex:1; background: #fef9e7; border: 2px solid #f1c40f; margin:0;" onclick="selectGameType('rps')">
+                    <!-- RPS -->
+                    <div class="category-card" style="min-width:120px; background: #fef9e7; border: 2px solid #f1c40f; margin:0;" onclick="selectGameType('rps')">
                         <div style="text-align: center; width: 100%;">
                             <div style="font-size: 2rem;">✌️✊✋</div>
                             <div style="font-weight: bold; color: #f39c12; margin-top:5px;">เป่ายิ้งฉุบ</div>
@@ -701,8 +631,9 @@
 
                 <div id="game-selection-info" style="display:none; text-align:center; margin-bottom:15px; color:#8e44ad; font-weight:bold;">กำลังเลือกเกม: <span id="lbl-selected-game"></span></div>
 
-                <h4 style="margin: 0 0 10px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;">รายชื่อผู้เล่น (คลิกเพื่อเชิญ) หรือเล่นกับบอท</h4>
-                <button class="btn" style="background:#34495e; color:white; border:none; margin-bottom:15px;" onclick="playWithBot()">🤖 เล่นกับบอท (Solo)</button>
+                <h4 style="margin: 0 0 10px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;">รายชื่อผู้เล่นออนไลน์ (คลิกเพื่อเชิญ)</h4>
+                <!-- ซ่อนบอทสำหรับเกมเลเซอร์ไปก่อนเพราะต้องใช้โค้ด AI ซับซ้อน -->
+                <button id="btn-play-bot" class="btn" style="background:#34495e; color:white; border:none; margin-bottom:15px;" onclick="playWithBot()">🤖 เล่นกับบอท (Solo)</button>
                 
                 <div class="scroll-box" id="online-users-list" style="margin-top:0;">
                     <p style="text-align:center; color:#888;">กำลังโหลดรายชื่อผู้เล่น...</p>
@@ -711,48 +642,57 @@
         </div>
 
         <!-- 4. เกม XO Board -->
-        <div id="xo-game-modal" class="modal-overlay" style="z-index: 300;">
-            <div class="modal-content" style="height: auto; border-radius: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #27ae60;">❌⭕ Tic-Tac-Toe</h3>
-                    <button class="close-btn" onclick="quitGame('xo-game-modal')">✖</button>
-                </div>
-                <div style="text-align:center; margin-top:10px;">
-                    <p id="xo-status" style="font-weight:bold; font-size:1.1rem; color:#2980b9;">กำลังเริ่มเกม...</p>
-                    <div class="xo-board" id="xo-board">
-                        <!-- Generate by JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="xo-game-modal" class="modal-overlay" style="z-index: 300;"><div class="modal-content" style="height: auto; border-radius: 20px;"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #27ae60;">❌⭕ Tic-Tac-Toe</h3><button class="close-btn" onclick="quitGame('xo-game-modal')">✖</button></div><div style="text-align:center; margin-top:10px;"><p id="xo-status" style="font-weight:bold; font-size:1.1rem; color:#2980b9;">กำลังเริ่มเกม...</p><div class="xo-board" id="xo-board"></div></div></div></div>
 
         <!-- 5. เกม เป่ายิ้งฉุบ (RPS) -->
-        <div id="rps-game-modal" class="modal-overlay" style="z-index: 300;">
-            <div class="modal-content" style="height: auto; border-radius: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                    <h3 style="margin: 0; color: #f39c12;">✌️✊✋ เป่ายิ้งฉุบ</h3>
-                    <button class="close-btn" onclick="quitGame('rps-game-modal')">✖</button>
-                </div>
+        <div id="rps-game-modal" class="modal-overlay" style="z-index: 300;"><div class="modal-content" style="height: auto; border-radius: 20px;"><div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px;"><h3 style="margin: 0; color: #f39c12;">✌️✊✋ เป่ายิ้งฉุบ</h3><button class="close-btn" onclick="quitGame('rps-game-modal')">✖</button></div><div class="rps-arena"><div class="rps-player-side"><div style="font-weight:bold; font-size:0.9rem;" id="rps-p1-name">คุณ</div><div class="rps-choice-display" id="rps-p1-choice">❓</div></div><div style="font-weight:bold; color:#e74c3c;">VS</div><div class="rps-player-side"><div style="font-weight:bold; font-size:0.9rem;" id="rps-p2-name">คู่ต่อสู้</div><div class="rps-choice-display" id="rps-p2-choice">❓</div></div></div><p id="rps-status" style="text-align:center; font-weight:bold; font-size:1.1rem; color:#2980b9;">เลือกอาวุธของคุณ!</p><div class="rps-options" id="rps-options-box"><div class="rps-btn" onclick="selectRpsChoice('rock')">✊</div><div class="rps-btn" onclick="selectRpsChoice('paper')">✋</div><div class="rps-btn" onclick="selectRpsChoice('scissors')">✌️</div></div></div></div>
+
+        <!-- 6. เกม Laser Arena (ใหม่) -->
+        <div id="laser-game-modal" class="modal-overlay" style="z-index: 400; align-items: center;">
+            <div class="modal-content laser-modal-content">
                 
-                <div class="rps-arena">
-                    <div class="rps-player-side">
-                        <div style="font-weight:bold; font-size:0.9rem;" id="rps-p1-name">คุณ</div>
-                        <div class="rps-choice-display" id="rps-p1-choice">❓</div>
+                <div class="game-hud">
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <span id="laser-p1-name" style="color:#0ff; text-shadow: 0 0 5px #0ff; font-weight:bold;">Player 1 (คุณ)</span>
+                        <div class="hp-bar-container" id="laser-p1-hp">
+                            <span class="hp-heart active">❤️</span><span class="hp-heart active">❤️</span><span class="hp-heart active">❤️</span>
+                        </div>
                     </div>
-                    <div style="font-weight:bold; color:#e74c3c;">VS</div>
-                    <div class="rps-player-side">
-                        <div style="font-weight:bold; font-size:0.9rem;" id="rps-p2-name">คู่ต่อสู้</div>
-                        <div class="rps-choice-display" id="rps-p2-choice">❓</div>
+                    <div style="display:flex; gap: 10px;">
+                        <button class="game-btn" onclick="openModal('settings-modal')">⚙️</button>
+                        <button class="game-btn" style="color:#ff3366; border-color:#ff3366;" onclick="quitLaserGame()">ออกเกม</button>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:5px; text-align:right;">
+                        <span id="laser-p2-name" style="color:#f0f; text-shadow: 0 0 5px #f0f; font-weight:bold;">Player 2</span>
+                        <div class="hp-bar-container" id="laser-p2-hp" style="justify-content:flex-end;">
+                            <span class="hp-heart active">❤️</span><span class="hp-heart active">❤️</span><span class="hp-heart active">❤️</span>
+                        </div>
                     </div>
                 </div>
 
-                <p id="rps-status" style="text-align:center; font-weight:bold; font-size:1.1rem; color:#2980b9;">เลือกอาวุธของคุณ!</p>
-                
-                <div class="rps-options" id="rps-options-box">
-                    <div class="rps-btn" onclick="selectRpsChoice('rock')">✊</div>
-                    <div class="rps-btn" onclick="selectRpsChoice('paper')">✋</div>
-                    <div class="rps-btn" onclick="selectRpsChoice('scissors')">✌️</div>
+                <!-- Canvas เกมหลัก -->
+                <canvas id="laser-canvas"></canvas>
+
+                <!-- ปุ่มบังคับมือถือ -->
+                <div class="mobile-controls" id="laser-mobile-controls">
+                    <!-- จอยเดิน -->
+                    <div class="joystick-zone" id="joystick-move">
+                        <div class="joystick-knob" id="knob-move"></div>
+                    </div>
+                    <!-- ปุ่มยิง / หันหน้า -->
+                    <div class="joystick-zone right" id="joystick-aim">
+                        <div class="joystick-knob" id="knob-aim"></div>
+                        <span style="position:absolute; top:-25px; left:50%; transform:translateX(-50%); color:#f0f; font-size:0.7rem; font-weight:bold; white-space:nowrap;">ลากยิง / กดรัว</span>
+                    </div>
                 </div>
+
+                <!-- หน้าจอจบเกม -->
+                <div class="game-over-screen" id="laser-game-over">
+                    <h1 id="laser-winner-text" style="color:#0ff; text-shadow: 0 0 20px #0ff; margin-bottom: 10px;">YOU WIN!</h1>
+                    <p style="margin-bottom: 20px; color:#aaa;">กำลังกลับไปหน้าล็อบบี้ใน <span id="laser-countdown">5</span>...</p>
+                    <button class="btn" style="background:#0ff; color:#000; border:none; width:auto; padding: 10px 30px;" onclick="quitLaserGame()">ออกเดี๋ยวนี้</button>
+                </div>
+
             </div>
         </div>
 
@@ -761,12 +701,14 @@
     <!-- 🔥 Firebase SDK (compat version) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script> <!-- เพิ่ม Realtime Database สำหรับเกมเลเซอร์ -->
 
     <script>
-        // ================= 🔥 Firebase Config & Init (โค้ดเก่า) =================
+        // ================= 🔥 Firebase Config & Init =================
         const firebaseConfig = {
             apiKey: "AIzaSyBVEkHBL91dWgyg4PKfVj4EzehFpwJ7mVc",
             authDomain: "scip-a8e02.firebaseapp.com",
+            databaseURL: "https://scip-a8e02-default-rtdb.asia-southeast1.firebasedatabase.app/", // เพิ่ม URL RTDB ตามที่ขอ
             projectId: "scip-a8e02",
             storageBucket: "scip-a8e02.firebasestorage.app",
             messagingSenderId: "475489289357",
@@ -775,6 +717,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const rtdb = firebase.database(); // ใช้งาน RTDB
 
         // ================= ตัวแปรหลัก (โค้ดเก่า) =================
         let globalUsers = [];
@@ -795,7 +738,6 @@
         function doVibrate(pattern) { if ("vibrate" in navigator) { navigator.vibrate(pattern); } }
 
         // ================= ฟังก์ชันภาพรวมเก่า (บีบอัดรูป, สินค้า, ออเดอร์, จัดการแอดมิน, ฯลฯ) =================
-        // [โค้ดส่วนนี้ถูกคงไว้เหมือนเดิมเป๊ะๆ ตามที่คุณระบุ]
         function previewAndCompressImage(event, imgElementId, emptyElementId, callbackStore) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1268,7 +1210,7 @@
                 const docSnap = await db.collection('users').doc(name).get();
                 if (!docSnap.exists || docSnap.data().password !== pass) { showAppToast("❌ รหัสผิด"); return; }
                 if (docSnap.data().banned) { showAppToast("🚫 บัญชีถูกระงับ"); return; }
-                await db.collection('users').doc(name).update({ isOnline: true }); // ตั้งออนไลน์
+                await db.collection('users').doc(name).update({ isOnline: true }); 
                 currentUser = { username: name, ...docSnap.data() }; sessionStorage.setItem('activeUser', name); subscribeToCurrentUser(name); updateDashboardUI(); clearInputs(['login-name', 'login-pass']); showPage('dashboard-page'); triggerLoginAds(); initUltimateFeatures();
             } catch (e) { showAppToast("❌ ขัดข้อง"); }
         }
@@ -1343,12 +1285,11 @@
         let activeGameUnsub = null;
         
         let tempFeedImgData = null;
-        let selectedGameType = 'xo'; // default game
+        let selectedGameType = 'laser'; // Default ให้เป็นเกมใหม่
         let currentGameId = null;
         let gameRole = null; // 'p1' or 'p2'
         const isAdmin = () => sessionStorage.getItem('activeUser') === 'admin';
 
-        // ระบบ Badge
         function getUserBadge(username) {
             if (username === 'admin') return `<span class="user-badge badge-admin">[Admin]</span>`;
             const user = globalUsers.find(u => u.username === username);
@@ -1356,267 +1297,134 @@
             return `<span class="user-badge badge-member">[Member]</span>`;
         }
 
-        // ================= Initialize Hooks =================
         function initUltimateFeatures() {
-            subscribeGlobalChat();
-            subscribeCommunityFeed();
-            subscribePoll();
-            subscribeOnlineUsers();
-            subscribeGameInvites();
+            subscribeGlobalChat(); subscribeCommunityFeed(); subscribePoll(); subscribeOnlineUsers(); subscribeGameInvites();
         }
 
         function initUltimateFeaturesAdmin() {
-            subscribeGlobalChat();
-            subscribeCommunityFeed();
-            subscribePoll();
+            subscribeGlobalChat(); subscribeCommunityFeed(); subscribePoll();
         }
 
         function unsubscribeUltimateFeatures() {
-            if(chatUnsub) chatUnsub();
-            if(feedUnsub) feedUnsub();
-            if(pollUnsub) pollUnsub();
-            if(usersOnlineUnsub) usersOnlineUnsub();
-            if(inviteUnsub) inviteUnsub();
-            if(activeGameUnsub) activeGameUnsub();
+            if(chatUnsub) chatUnsub(); if(feedUnsub) feedUnsub(); if(pollUnsub) pollUnsub();
+            if(usersOnlineUnsub) usersOnlineUnsub(); if(inviteUnsub) inviteUnsub(); if(activeGameUnsub) activeGameUnsub();
+            quitLaserGame(); // เผื่อค้าง
         }
 
-        // ================= 1. Social Tabs (Chat/Feed) =================
         function switchSocialTab(tab) {
-            document.getElementById('tab-chat').classList.remove('active');
-            document.getElementById('tab-feed').classList.remove('active');
-            document.getElementById('social-chat-area').style.display = 'none';
-            document.getElementById('social-feed-area').style.display = 'none';
-
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            document.getElementById(`social-${tab}-area`).style.display = 'flex';
+            document.getElementById('tab-chat').classList.remove('active'); document.getElementById('tab-feed').classList.remove('active');
+            document.getElementById('social-chat-area').style.display = 'none'; document.getElementById('social-feed-area').style.display = 'none';
+            document.getElementById(`tab-${tab}`).classList.add('active'); document.getElementById(`social-${tab}-area`).style.display = 'flex';
         }
 
-        // --- Live Chat ---
         function subscribeGlobalChat() {
             if (chatUnsub) chatUnsub();
             chatUnsub = db.collection('global_chat').orderBy('timestamp', 'asc').limitToLast(50).onSnapshot(snapshot => {
-                const box = document.getElementById('global-chat-box');
-                box.innerHTML = '';
+                const box = document.getElementById('global-chat-box'); box.innerHTML = '';
                 snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    const isMe = currentUser && msg.sender === currentUser.username;
-                    const badge = getUserBadge(msg.sender);
+                    const msg = doc.data(); const isMe = currentUser && msg.sender === currentUser.username; const badge = getUserBadge(msg.sender);
                     const delBtn = isAdmin() ? `<span style="color:red; cursor:pointer; font-size:0.7rem; margin-left:5px;" onclick="deleteChatMessage('${doc.id}')">🗑️ ลบ</span>` : '';
-                    
-                    if (isMe) {
-                        box.innerHTML += `<div class="chat-bubble me"><b>ฉัน:</b> ${msg.text}</div>`;
-                    } else {
-                        box.innerHTML += `<div class="chat-bubble other">${badge} <b>${msg.sender}:</b> ${msg.text} ${delBtn}</div>`;
-                    }
+                    if (isMe) box.innerHTML += `<div class="chat-bubble me"><b>ฉัน:</b> ${msg.text}</div>`;
+                    else box.innerHTML += `<div class="chat-bubble other">${badge} <b>${msg.sender}:</b> ${msg.text} ${delBtn}</div>`;
                 });
                 box.scrollTop = box.scrollHeight;
             });
         }
 
         async function sendChatMessage() {
-            const input = document.getElementById('chat-input-msg');
-            const text = input.value.trim();
+            const input = document.getElementById('chat-input-msg'); const text = input.value.trim();
             if (!text || (!currentUser && !isAdmin())) return;
-            
             const sender = isAdmin() ? 'admin' : currentUser.username;
-            try {
-                await db.collection('global_chat').add({
-                    sender: sender,
-                    text: text,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                input.value = '';
-            } catch(e) { console.error("Chat Error", e); }
+            try { await db.collection('global_chat').add({ sender: sender, text: text, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); input.value = ''; } catch(e) {}
         }
-
         async function deleteChatMessage(id) { if(confirm('ลบข้อความนี้?')) await db.collection('global_chat').doc(id).delete(); }
 
-        // --- Community Feed ---
         function subscribeCommunityFeed() {
             if (feedUnsub) feedUnsub();
             feedUnsub = db.collection('community_feed').orderBy('timestamp', 'desc').limit(20).onSnapshot(snapshot => {
-                const list = document.getElementById('feed-list');
-                list.innerHTML = '';
+                const list = document.getElementById('feed-list'); list.innerHTML = '';
                 if(snapshot.empty) { list.innerHTML = '<p style="text-align:center; color:#888;">ยังไม่มีโพสต์</p>'; return; }
-                
                 snapshot.forEach(doc => {
-                    const post = doc.data();
-                    const likesCount = post.likes ? post.likes.length : 0;
-                    const isLiked = currentUser && post.likes && post.likes.includes(currentUser.username);
-                    const badge = getUserBadge(post.author);
+                    const post = doc.data(); const likesCount = post.likes ? post.likes.length : 0;
+                    const isLiked = currentUser && post.likes && post.likes.includes(currentUser.username); const badge = getUserBadge(post.author);
                     const delBtn = isAdmin() ? `<button class="btn" style="padding:2px 5px; font-size:0.7rem; margin:0; background:none; color:red; border:1px solid red;" onclick="deleteFeedPost('${doc.id}')">🗑️ ลบโพสต์</button>` : '';
-
                     let imgHtml = post.image ? `<img src="${post.image}" class="feed-image">` : '';
-                    let likeStyle = isLiked ? 'liked' : '';
-                    let likeText = isLiked ? '❤️ ชอบจัง' : '🤍 กดไลก์';
-
-                    list.innerHTML += `
-                        <div class="feed-card">
-                            <div class="feed-header">
-                                <div>${badge} <span class="feed-author">${post.author}</span></div>
-                                <div class="feed-time">${post.timeStr || 'เมื่อสักครู่'}</div>
-                            </div>
-                            <div class="feed-text">${post.text}</div>
-                            ${imgHtml}
-                            <div class="feed-actions">
-                                <button class="like-btn ${likeStyle}" onclick="toggleLike('${doc.id}', ${isLiked})">${likeText} (${likesCount})</button>
-                                ${delBtn}
-                            </div>
-                        </div>
-                    `;
+                    let likeStyle = isLiked ? 'liked' : ''; let likeText = isLiked ? '❤️ ชอบจัง' : '🤍 กดไลก์';
+                    list.innerHTML += `<div class="feed-card"><div class="feed-header"><div>${badge} <span class="feed-author">${post.author}</span></div><div class="feed-time">${post.timeStr || 'เมื่อสักครู่'}</div></div><div class="feed-text">${post.text}</div>${imgHtml}<div class="feed-actions"><button class="like-btn ${likeStyle}" onclick="toggleLike('${doc.id}', ${isLiked})">${likeText} (${likesCount})</button>${delBtn}</div></div>`;
                 });
             });
         }
 
         async function postToFeed() {
-            if(!currentUser) return;
-            const text = document.getElementById('feed-input-text').value.trim();
+            if(!currentUser) return; const text = document.getElementById('feed-input-text').value.trim();
             if (!text && !tempFeedImgData) { showAppToast("❌ ต้องพิมพ์ข้อความหรือใส่รูป"); return; }
-            
-            const now = new Date();
-            const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น.";
-            
+            const now = new Date(); const timeStr = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0') + " น.";
             try {
-                await db.collection('community_feed').add({
-                    author: currentUser.username,
-                    text: text,
-                    image: tempFeedImgData || null,
-                    likes: [],
-                    timeStr: timeStr,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                document.getElementById('feed-input-text').value = '';
-                document.getElementById('feed-image-upload').value = '';
-                document.getElementById('feed-preview-img').style.display = 'none';
-                document.getElementById('feed-img-empty').style.display = 'block';
-                tempFeedImgData = null;
-                showAppToast("✅ โพสต์สำเร็จ!");
-            } catch(e) { showAppToast("❌ โพสต์ไม่สำเร็จ"); }
+                await db.collection('community_feed').add({ author: currentUser.username, text: text, image: tempFeedImgData || null, likes: [], timeStr: timeStr, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                document.getElementById('feed-input-text').value = ''; document.getElementById('feed-image-upload').value = ''; document.getElementById('feed-preview-img').style.display = 'none'; document.getElementById('feed-img-empty').style.display = 'block'; tempFeedImgData = null; showAppToast("✅ โพสต์สำเร็จ!");
+            } catch(e) {}
         }
-
         async function toggleLike(postId, isLiked) {
-            if(!currentUser) return;
-            const docRef = db.collection('community_feed').doc(postId);
-            try {
-                if(isLiked) {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(currentUser.username) });
-                } else {
-                    await docRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(currentUser.username) });
-                }
-            } catch(e) { console.error(e); }
+            if(!currentUser) return; const docRef = db.collection('community_feed').doc(postId);
+            try { if(isLiked) await docRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(currentUser.username) }); else await docRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(currentUser.username) }); } catch(e) {}
         }
-
         async function deleteFeedPost(id) { if(confirm('ลบโพสต์นี้?')) await db.collection('community_feed').doc(id).delete(); }
 
-
-        // ================= 2. ระบบโหวต (Poll) =================
         function subscribePoll() {
             if (pollUnsub) pollUnsub();
             pollUnsub = db.collection('config').doc('current_poll').onSnapshot(doc => {
                 const container = document.getElementById('poll-container');
                 if(!doc.exists) { container.innerHTML = '<p style="text-align:center;">ยังไม่มีกิจกรรมโหวตขณะนี้</p>'; return; }
-                
-                const pollData = doc.data();
-                let totalVotes = 0;
-                pollData.options.forEach(opt => totalVotes += opt.votes);
-                
-                let hasVoted = false;
-                if(currentUser && pollData.votedBy && pollData.votedBy.includes(currentUser.username)) hasVoted = true;
-
+                const pollData = doc.data(); let totalVotes = 0; pollData.options.forEach(opt => totalVotes += opt.votes);
+                let hasVoted = false; if(currentUser && pollData.votedBy && pollData.votedBy.includes(currentUser.username)) hasVoted = true;
                 let html = `<div class="poll-card"><h4 class="poll-question">❓ ${pollData.question}</h4>`;
-                
                 pollData.options.forEach((opt, index) => {
                     const percent = totalVotes === 0 ? 0 : Math.round((opt.votes / totalVotes) * 100);
-                    const clickAction = (!hasVoted && !isAdmin()) ? `onclick="votePoll(${index})"` : '';
-                    const pointer = (!hasVoted && !isAdmin()) ? 'cursor:pointer;' : 'cursor:default;';
-                    
-                    html += `
-                        <div class="poll-option" style="${pointer}" ${clickAction}>
-                            <div class="poll-bar" style="width: ${percent}%;"></div>
-                            <div class="poll-text">
-                                <span>${opt.text}</span>
-                                <span>${percent}% (${opt.votes} โหวต)</span>
-                            </div>
-                        </div>
-                    `;
+                    const clickAction = (!hasVoted && !isAdmin()) ? `onclick="votePoll(${index})"` : ''; const pointer = (!hasVoted && !isAdmin()) ? 'cursor:pointer;' : 'cursor:default;';
+                    html += `<div class="poll-option" style="${pointer}" ${clickAction}><div class="poll-bar" style="width: ${percent}%;"></div><div class="poll-text"><span>${opt.text}</span><span>${percent}% (${opt.votes} โหวต)</span></div></div>`;
                 });
-                
-                html += `</div>`;
-                if(hasVoted) html += `<p style="text-align:center; color:#27ae60; font-size:0.8rem;">✅ คุณโหวตแล้ว</p>`;
-                
-                container.innerHTML = html;
+                html += `</div>`; if(hasVoted) html += `<p style="text-align:center; color:#27ae60; font-size:0.8rem;">✅ คุณโหวตแล้ว</p>`; container.innerHTML = html;
             });
         }
 
         async function votePoll(optIndex) {
-            if(!currentUser) return;
-            const docRef = db.collection('config').doc('current_poll');
+            if(!currentUser) return; const docRef = db.collection('config').doc('current_poll');
             try {
                 await db.runTransaction(async (t) => {
-                    const doc = await t.get(docRef);
-                    if(!doc.exists) return;
-                    let data = doc.data();
-                    if(data.votedBy && data.votedBy.includes(currentUser.username)) return; // กันโหวตซ้ำ
-                    
-                    data.options[optIndex].votes += 1;
-                    data.votedBy = data.votedBy || [];
-                    data.votedBy.push(currentUser.username);
-                    t.update(docRef, data);
-                });
-                showAppToast("✅ โหวตสำเร็จ ขอบคุณที่ร่วมสนุก!");
-            } catch(e) { console.error(e); }
+                    const doc = await t.get(docRef); if(!doc.exists) return; let data = doc.data();
+                    if(data.votedBy && data.votedBy.includes(currentUser.username)) return; 
+                    data.options[optIndex].votes += 1; data.votedBy = data.votedBy || []; data.votedBy.push(currentUser.username); t.update(docRef, data);
+                }); showAppToast("✅ โหวตสำเร็จ ขอบคุณที่ร่วมสนุก!");
+            } catch(e) {}
         }
-
         async function createNewPoll() {
-            const q = document.getElementById('admin-poll-q').value.trim();
-            const o1 = document.getElementById('admin-poll-opt1').value.trim();
-            const o2 = document.getElementById('admin-poll-opt2').value.trim();
-            const o3 = document.getElementById('admin-poll-opt3').value.trim();
-            
+            const q = document.getElementById('admin-poll-q').value.trim(), o1 = document.getElementById('admin-poll-opt1').value.trim(), o2 = document.getElementById('admin-poll-opt2').value.trim(), o3 = document.getElementById('admin-poll-opt3').value.trim();
             if(!q || !o1 || !o2) { showAppToast("❌ ใส่ข้อมูลไม่ครบ"); return; }
-            
-            let options = [ {text: o1, votes: 0}, {text: o2, votes: 0} ];
-            if(o3) options.push({text: o3, votes: 0});
-
-            try {
-                await db.collection('config').doc('current_poll').set({
-                    question: q,
-                    options: options,
-                    votedBy: []
-                });
-                showAppToast("✅ สร้างโหวตใหม่สำเร็จ!");
-                clearInputs(['admin-poll-q', 'admin-poll-opt1', 'admin-poll-opt2', 'admin-poll-opt3']);
-                closeModal('admin-poll-modal');
-            } catch(e) { showAppToast("❌ สร้างไม่สำเร็จ"); }
+            let options = [ {text: o1, votes: 0}, {text: o2, votes: 0} ]; if(o3) options.push({text: o3, votes: 0});
+            try { await db.collection('config').doc('current_poll').set({ question: q, options: options, votedBy: [] }); showAppToast("✅ สร้างโหวตใหม่สำเร็จ!"); clearInputs(['admin-poll-q', 'admin-poll-opt1', 'admin-poll-opt2', 'admin-poll-opt3']); closeModal('admin-poll-modal'); } catch(e) {}
         }
 
-
-        // ================= 3. โซนเกมส์ (Online Presence & Invites) =================
+        // ================= Game Zone / Matchmaking =================
         function selectGameType(type) {
             selectedGameType = type;
-            const name = type === 'xo' ? 'Tic-Tac-Toe' : 'เป่ายิ้งฉุบ';
+            let name = type === 'xo' ? 'Tic-Tac-Toe' : (type === 'rps' ? 'เป่ายิ้งฉุบ' : 'Laser Arena');
             document.getElementById('lbl-selected-game').innerText = name;
             document.getElementById('game-selection-info').style.display = 'block';
+            
+            // ซ่อนปุ่มเล่นกับบอทถ้าเป็นเลเซอร์ เพราะทำแค่ Multiplayer ตามที่โจทย์เน้น
+            if (type === 'laser') document.getElementById('btn-play-bot').style.display = 'none';
+            else document.getElementById('btn-play-bot').style.display = 'inline-block';
         }
 
         function subscribeOnlineUsers() {
             if(usersOnlineUnsub) usersOnlineUnsub();
             usersOnlineUnsub = db.collection('users').where('isOnline', '==', true).onSnapshot(snapshot => {
-                const list = document.getElementById('online-users-list');
-                list.innerHTML = '';
-                let found = false;
+                const list = document.getElementById('online-users-list'); list.innerHTML = ''; let found = false;
                 snapshot.forEach(doc => {
-                    const u = doc.data();
                     const uname = doc.id;
                     if(currentUser && uname !== currentUser.username && uname !== 'admin') {
                         found = true;
-                        list.innerHTML += `
-                            <div class="online-user-item">
-                                <div><span style="color:#2ecc71;">🟢</span> <b>${uname}</b></div>
-                                <button class="invite-btn" onclick="sendGameInvite('${uname}')">เชิญเล่น</button>
-                            </div>
-                        `;
+                        list.innerHTML += `<div class="online-user-item"><div><span style="color:#2ecc71;">🟢</span> <b>${uname}</b></div><button class="invite-btn" onclick="sendGameInvite('${uname}')">เชิญเล่น</button></div>`;
                     }
                 });
                 if(!found) list.innerHTML = '<p style="text-align:center; color:#888;">ไม่มีผู้เล่นออนไลน์</p>';
@@ -1625,314 +1433,581 @@
 
         async function sendGameInvite(toUsername) {
             if(!currentUser) return;
+            if(!selectedGameType) { showAppToast("เลือกเกมก่อนครับ!"); return; }
             try {
-                const inviteRef = await db.collection('game_invites').add({
-                    from: currentUser.username,
-                    to: toUsername,
-                    game: selectedGameType,
-                    status: 'pending',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                const inviteRef = await db.collection('game_invites').add({ from: currentUser.username, to: toUsername, game: selectedGameType, status: 'pending', timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                 showAppToast(`✅ ส่งคำเชิญให้ ${toUsername} แล้ว รอการตอบรับ...`);
                 
-                // ฟังคำตอบรับ
                 const unsub = db.collection('game_invites').doc(inviteRef.id).onSnapshot(doc => {
                     const data = doc.data();
                     if(data && data.status === 'accepted' && data.gameId) {
-                        unsub();
-                        startGameSession(data.gameId, 'p1', data.game);
-                    } else if (data && data.status === 'declined') {
-                        unsub();
-                        showAppToast(`❌ ${toUsername} ปฏิเสธคำเชิญ`);
-                    }
+                        unsub(); startGameSession(data.gameId, 'p1', data.game, toUsername);
+                    } else if (data && data.status === 'declined') { unsub(); showAppToast(`❌ ${toUsername} ปฏิเสธคำเชิญ`); }
                 });
-            } catch(e) { showAppToast("❌ ส่งคำเชิญไม่สำเร็จ"); }
+            } catch(e) {}
         }
 
         function subscribeGameInvites() {
             if(!currentUser) return;
             if(inviteUnsub) inviteUnsub();
-            inviteUnsub = db.collection('game_invites')
-                .where('to', '==', currentUser.username)
-                .where('status', '==', 'pending')
-                .onSnapshot(snapshot => {
-                    snapshot.docChanges().forEach(change => {
-                        if (change.type === "added") {
-                            const inv = change.doc.data();
-                            const gName = inv.game === 'xo' ? 'Tic-Tac-Toe' : 'เป่ายิ้งฉุบ';
-                            const toastHtml = `
-                                🎮 <b>คำเชิญท้าดวล!</b><br>
-                                ${inv.from} ชวนคุณเล่น ${gName}<br>
-                                <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
-                                    <button class="btn" style="margin:0; padding:5px 15px; background:#2ecc71; color:white; border:none;" onclick="acceptGameInvite('${change.doc.id}')">ตอบรับ</button>
-                                    <button class="btn" style="margin:0; padding:5px 15px; background:#e74c3c; color:white; border:none;" onclick="declineGameInvite('${change.doc.id}')">ปฏิเสธ</button>
-                                </div>
-                            `;
-                            showAppToast(toastHtml);
-                            doVibrate([100, 50, 100, 50, 100]);
-                        }
-                    });
+            inviteUnsub = db.collection('game_invites').where('to', '==', currentUser.username).where('status', '==', 'pending').onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === "added") {
+                        const inv = change.doc.data();
+                        const gName = inv.game === 'xo' ? 'Tic-Tac-Toe' : (inv.game === 'rps' ? 'เป่ายิ้งฉุบ' : 'Laser Arena');
+                        const toastHtml = `🎮 <b>คำเชิญท้าดวล!</b><br>${inv.from} ชวนเล่น ${gName}<br><div style="margin-top:10px; display:flex; gap:10px; justify-content:center;"><button class="btn" style="margin:0; padding:5px 15px; background:#2ecc71; color:white; border:none;" onclick="acceptGameInvite('${change.doc.id}')">ตอบรับ</button><button class="btn" style="margin:0; padding:5px 15px; background:#e74c3c; color:white; border:none;" onclick="declineGameInvite('${change.doc.id}')">ปฏิเสธ</button></div>`;
+                        showAppToast(toastHtml); doVibrate([100, 50, 100, 50, 100]);
+                    }
                 });
+            });
         }
 
         async function acceptGameInvite(inviteId) {
-            const docRef = db.collection('game_invites').doc(inviteId);
-            const docSnap = await docRef.get();
-            if(!docSnap.exists) return;
-            const inv = docSnap.data();
-
-            // สร้าง Game Session
-            const gameRef = await db.collection('active_games').add({
-                gameType: inv.game,
-                p1: inv.from,
-                p2: inv.to,
-                state: inv.game === 'xo' ? ['', '', '', '', '', '', '', '', ''] : null,
-                turn: 'p1',
-                winner: null,
-                p1Choice: null, // For RPS
-                p2Choice: null  // For RPS
-            });
-
-            await docRef.update({ status: 'accepted', gameId: gameRef.id });
-            hideAppToast();
-            closeModal('game-zone-modal');
-            startGameSession(gameRef.id, 'p2', inv.game);
-        }
-
-        async function declineGameInvite(inviteId) {
-            await db.collection('game_invites').doc(inviteId).update({ status: 'declined' });
-            hideAppToast();
-        }
-
-        // ================= 4. เกม Logic (Tic-Tac-Toe & RPS) =================
-
-        let isBotMatch = false;
-
-        function playWithBot() {
-            isBotMatch = true;
-            gameRole = 'p1';
-            if(selectedGameType === 'xo') {
-                initXOBoard(true);
-                document.getElementById('xo-status').innerText = "คุณ (X) VS บอท (O)";
-                openModal('xo-game-modal');
+            const docRef = db.collection('game_invites').doc(inviteId); const docSnap = await docRef.get(); if(!docSnap.exists) return; const inv = docSnap.data();
+            
+            let gameId = "";
+            if (inv.game === 'laser') {
+                // สร้างห้องใน RTDB แทน Firestore สำหรับเกม Laser
+                const roomRef = rtdb.ref('laser_rooms').push();
+                gameId = roomRef.key;
+                await roomRef.set({
+                    status: 'waiting',
+                    p1: inv.from,
+                    p2: inv.to,
+                    players: {
+                        [inv.from]: { x: 50, y: 50, angle: 0, hp: 3 },
+                        [inv.to]: { x: 500, y: 300, angle: Math.PI, hp: 3 }
+                    }
+                });
             } else {
-                initRPSBoard(true);
-                document.getElementById('rps-status').innerText = "คุณ VS บอท";
-                document.getElementById('rps-p2-name').innerText = "บอท";
-                openModal('rps-game-modal');
+                // สำหรับ XO, RPS ใช้ Firestore เหมือนเดิม
+                const gameRef = await db.collection('active_games').add({ gameType: inv.game, p1: inv.from, p2: inv.to, state: inv.game === 'xo' ? ['', '', '', '', '', '', '', '', ''] : null, turn: 'p1', winner: null, p1Choice: null, p2Choice: null });
+                gameId = gameRef.id;
             }
+
+            await docRef.update({ status: 'accepted', gameId: gameId });
+            hideAppToast(); closeModal('game-zone-modal');
+            startGameSession(gameId, 'p2', inv.game, inv.from);
         }
 
-        function startGameSession(gameId, role, gameType) {
-            isBotMatch = false;
-            currentGameId = gameId;
-            gameRole = role; // 'p1' or 'p2'
+        async function declineGameInvite(inviteId) { await db.collection('game_invites').doc(inviteId).update({ status: 'declined' }); hideAppToast(); }
+
+        // ================= Game Starters =================
+        let isBotMatch = false;
+        function playWithBot() {
+            isBotMatch = true; gameRole = 'p1';
+            if(selectedGameType === 'xo') { initXOBoard(true); document.getElementById('xo-status').innerText = "คุณ (X) VS บอท (O)"; openModal('xo-game-modal'); } 
+            else if(selectedGameType === 'rps') { initRPSBoard(true); document.getElementById('rps-status').innerText = "คุณ VS บอท"; document.getElementById('rps-p2-name').innerText = "บอท"; openModal('rps-game-modal'); }
+        }
+
+        function startGameSession(gameId, role, gameType, opponentName) {
+            isBotMatch = false; currentGameId = gameId; gameRole = role;
 
             if(activeGameUnsub) activeGameUnsub();
 
             if (gameType === 'xo') {
-                initXOBoard(false);
-                document.getElementById('xo-status').innerText = "กำลังเชื่อมต่อ...";
-                openModal('xo-game-modal');
-                
-                activeGameUnsub = db.collection('active_games').doc(gameId).onSnapshot(doc => {
-                    if(!doc.exists) return quitGame('xo-game-modal');
-                    updateXOUI(doc.data());
-                });
+                initXOBoard(false); document.getElementById('xo-status').innerText = "กำลังเชื่อมต่อ..."; openModal('xo-game-modal');
+                activeGameUnsub = db.collection('active_games').doc(gameId).onSnapshot(doc => { if(!doc.exists) return quitGame('xo-game-modal'); updateXOUI(doc.data()); });
             } else if (gameType === 'rps') {
-                initRPSBoard(false);
-                document.getElementById('rps-p2-name').innerText = "คู่ต่อสู้";
-                openModal('rps-game-modal');
-                
-                activeGameUnsub = db.collection('active_games').doc(gameId).onSnapshot(doc => {
-                    if(!doc.exists) return quitGame('rps-game-modal');
-                    updateRPSUI(doc.data());
-                });
+                initRPSBoard(false); document.getElementById('rps-p2-name').innerText = opponentName; openModal('rps-game-modal');
+                activeGameUnsub = db.collection('active_games').doc(gameId).onSnapshot(doc => { if(!doc.exists) return quitGame('rps-game-modal'); updateRPSUI(doc.data()); });
+            } else if (gameType === 'laser') {
+                // เข้าเกมเลเซอร์
+                openModal('laser-game-modal');
+                document.getElementById('laser-p1-name').innerText = currentUser.username;
+                document.getElementById('laser-p2-name').innerText = opponentName;
+                startLaserGame(gameId, role);
             }
         }
 
         function quitGame(modalId) {
             if(activeGameUnsub) activeGameUnsub();
-            if(currentGameId && !isBotMatch) {
-                // แจ้งอีกฝ่ายโดยลบห้องทิ้งเลย
-                db.collection('active_games').doc(currentGameId).delete().catch(e=>{});
-            }
-            currentGameId = null;
-            closeModal(modalId);
+            if(currentGameId && !isBotMatch && selectedGameType !== 'laser') db.collection('active_games').doc(currentGameId).delete().catch(e=>{});
+            currentGameId = null; closeModal(modalId);
         }
 
-        // --- XO Logic ---
+        // ================= XO / RPS Logic (โค้ดเก่าแบบย่อ) =================
         let localXOState = ['', '', '', '', '', '', '', '', ''];
-        function initXOBoard(isBot) {
-            const board = document.getElementById('xo-board');
-            board.innerHTML = '';
-            localXOState = ['', '', '', '', '', '', '', '', ''];
-            for(let i=0; i<9; i++) {
-                board.innerHTML += `<div class="xo-cell" id="xo-cell-${i}" onclick="clickXOCell(${i})"></div>`;
-            }
-        }
-
+        function initXOBoard(isBot) { const board = document.getElementById('xo-board'); board.innerHTML = ''; localXOState = ['', '', '', '', '', '', '', '', '']; for(let i=0; i<9; i++) { board.innerHTML += `<div class="xo-cell" id="xo-cell-${i}" onclick="clickXOCell(${i})"></div>`; } }
         async function clickXOCell(index) {
             if(isBotMatch) {
-                if(localXOState[index] !== '') return;
-                localXOState[index] = 'X';
-                renderLocalXO();
-                if(checkXOWinner(localXOState)) return;
-                
-                setTimeout(() => {
-                    let emptyIdx = [];
-                    localXOState.forEach((val, i) => { if(val === '') emptyIdx.push(i); });
-                    if(emptyIdx.length > 0) {
-                        const botMove = emptyIdx[Math.floor(Math.random() * emptyIdx.length)];
-                        localXOState[botMove] = 'O';
-                        renderLocalXO();
-                        checkXOWinner(localXOState);
-                    }
-                }, 500);
+                if(localXOState[index] !== '') return; localXOState[index] = 'X'; renderLocalXO(); if(checkXOWinner(localXOState)) return;
+                setTimeout(() => { let emptyIdx = []; localXOState.forEach((val, i) => { if(val === '') emptyIdx.push(i); }); if(emptyIdx.length > 0) { localXOState[emptyIdx[Math.floor(Math.random() * emptyIdx.length)]] = 'O'; renderLocalXO(); checkXOWinner(localXOState); } }, 500);
             } else {
-                // Multiplayer Logic
-                if(!currentGameId) return;
-                const docRef = db.collection('active_games').doc(currentGameId);
-                const doc = await docRef.get();
-                const data = doc.data();
-                
-                if(data.winner) return; // จบแล้ว
-                if(data.turn !== gameRole) { showAppToast("⚠️ รอก่อน ยังไม่ใช่ตาของคุณ"); return; }
-                if(data.state[index] !== '') return;
-
-                const symbol = gameRole === 'p1' ? 'X' : 'O';
-                const nextTurn = gameRole === 'p1' ? 'p2' : 'p1';
-                data.state[index] = symbol;
-                
-                const winnerSymbol = checkWinnerLogic(data.state);
-                let updateData = { state: data.state, turn: nextTurn };
-                
-                if(winnerSymbol) {
-                    updateData.winner = winnerSymbol; // 'X', 'O', 'Draw'
-                }
-                await docRef.update(updateData);
+                if(!currentGameId) return; const docRef = db.collection('active_games').doc(currentGameId); const data = (await docRef.get()).data();
+                if(data.winner || data.turn !== gameRole || data.state[index] !== '') return;
+                const symbol = gameRole === 'p1' ? 'X' : 'O'; data.state[index] = symbol; const winnerSymbol = checkWinnerLogic(data.state);
+                let updateData = { state: data.state, turn: gameRole === 'p1' ? 'p2' : 'p1' }; if(winnerSymbol) updateData.winner = winnerSymbol; await docRef.update(updateData);
             }
         }
-
-        function renderLocalXO() {
-            localXOState.forEach((val, i) => {
-                const cell = document.getElementById(`xo-cell-${i}`);
-                cell.innerText = val;
-                cell.className = `xo-cell ${val.toLowerCase()}`;
-            });
-        }
-
-        function checkXOWinner(state) {
-            const win = checkWinnerLogic(state);
-            if(win) {
-                if(win === 'Draw') document.getElementById('xo-status').innerText = "เสมอ!";
-                else if(win === 'X') { document.getElementById('xo-status').innerText = "🎉 คุณชนะ!"; doVibrate([100,50,100]); }
-                else document.getElementById('xo-status').innerText = "😭 บอทชนะ!";
-                return true;
-            }
-            return false;
-        }
-
+        function renderLocalXO() { localXOState.forEach((val, i) => { const cell = document.getElementById(`xo-cell-${i}`); cell.innerText = val; cell.className = `xo-cell ${val.toLowerCase()}`; }); }
+        function checkXOWinner(state) { const win = checkWinnerLogic(state); if(win) { document.getElementById('xo-status').innerText = win === 'Draw' ? "เสมอ!" : (win === 'X' ? "🎉 คุณชนะ!" : "😭 บอทชนะ!"); return true; } return false; }
         function updateXOUI(data) {
-            data.state.forEach((val, i) => {
-                const cell = document.getElementById(`xo-cell-${i}`);
-                cell.innerText = val;
-                cell.className = `xo-cell ${val.toLowerCase()}`;
-            });
-
-            if(data.winner) {
-                if(data.winner === 'Draw') document.getElementById('xo-status').innerText = "เกมจบ: เสมอกัน!";
-                else {
-                    const iWon = (gameRole === 'p1' && data.winner === 'X') || (gameRole === 'p2' && data.winner === 'O');
-                    if(iWon) { document.getElementById('xo-status').innerText = "🎉 ยินดีด้วย คุณชนะ!"; triggerFireworks(); doVibrate([100,50,100]); }
-                    else document.getElementById('xo-status').innerText = "😭 เสียใจด้วย คุณแพ้!";
-                }
-            } else {
-                if(data.turn === gameRole) document.getElementById('xo-status').innerText = "✅ ตาของคุณแล้ว!";
-                else document.getElementById('xo-status').innerText = "⏳ รอคู่ต่อสู้...";
-            }
+            data.state.forEach((val, i) => { const cell = document.getElementById(`xo-cell-${i}`); cell.innerText = val; cell.className = `xo-cell ${val.toLowerCase()}`; });
+            if(data.winner) { if(data.winner === 'Draw') document.getElementById('xo-status').innerText = "เกมจบ: เสมอกัน!"; else { if((gameRole === 'p1' && data.winner === 'X') || (gameRole === 'p2' && data.winner === 'O')) { document.getElementById('xo-status').innerText = "🎉 ยินดีด้วย คุณชนะ!"; triggerFireworks(); } else document.getElementById('xo-status').innerText = "😭 เสียใจด้วย คุณแพ้!"; } } 
+            else document.getElementById('xo-status').innerText = data.turn === gameRole ? "✅ ตาของคุณแล้ว!" : "⏳ รอคู่ต่อสู้...";
         }
-
         function checkWinnerLogic(board) {
             const lines = [ [0,1,2],[3,4,5],[6,7,8], [0,3,6],[1,4,7],[2,5,8], [0,4,8],[2,4,6] ];
-            for (let i = 0; i < lines.length; i++) {
-                const [a, b, c] = lines[i];
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
-            }
-            if(!board.includes('')) return 'Draw';
-            return null;
-        }
-
-        // --- RPS (เป่ายิ้งฉุบ) Logic ---
-        function initRPSBoard() {
-            document.getElementById('rps-p1-choice').innerText = '❓';
-            document.getElementById('rps-p2-choice').innerText = '❓';
-            document.getElementById('rps-status').innerText = 'เลือกอาวุธของคุณ!';
-            document.querySelectorAll('.rps-btn').forEach(b => b.classList.remove('selected'));
+            for (let i = 0; i < lines.length; i++) { const [a, b, c] = lines[i]; if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a]; }
+            if(!board.includes('')) return 'Draw'; return null;
         }
 
         const rpsEmojis = { rock: '✊', paper: '✋', scissors: '✌️' };
-
+        function initRPSBoard() { document.getElementById('rps-p1-choice').innerText = '❓'; document.getElementById('rps-p2-choice').innerText = '❓'; document.getElementById('rps-status').innerText = 'เลือกอาวุธของคุณ!'; document.querySelectorAll('.rps-btn').forEach(b => b.classList.remove('selected')); }
         async function selectRpsChoice(choice) {
-            document.querySelectorAll('.rps-btn').forEach(b => b.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            document.getElementById('rps-p1-choice').innerText = rpsEmojis[choice];
-            
+            document.querySelectorAll('.rps-btn').forEach(b => b.classList.remove('selected')); event.currentTarget.classList.add('selected'); document.getElementById('rps-p1-choice').innerText = rpsEmojis[choice];
             if(isBotMatch) {
-                const opts = ['rock', 'paper', 'scissors'];
-                const botChoice = opts[Math.floor(Math.random() * opts.length)];
-                document.getElementById('rps-p2-choice').innerText = rpsEmojis[botChoice];
-                
-                const result = getRPSResult(choice, botChoice);
-                if(result === 'win') { document.getElementById('rps-status').innerText = "🎉 คุณชนะ!"; triggerFireworks(); doVibrate([100,50,100]);}
-                else if(result === 'lose') document.getElementById('rps-status').innerText = "😭 บอทชนะ!";
-                else document.getElementById('rps-status').innerText = "🤝 เสมอกัน!";
+                const botChoice = ['rock', 'paper', 'scissors'][Math.floor(Math.random() * 3)]; document.getElementById('rps-p2-choice').innerText = rpsEmojis[botChoice]; const result = getRPSResult(choice, botChoice);
+                if(result === 'win') { document.getElementById('rps-status').innerText = "🎉 คุณชนะ!"; triggerFireworks(); } else if(result === 'lose') document.getElementById('rps-status').innerText = "😭 บอทชนะ!"; else document.getElementById('rps-status').innerText = "🤝 เสมอกัน!";
             } else {
-                // Multiplayer
-                if(!currentGameId) return;
-                document.getElementById('rps-status').innerText = "รอคู่ต่อสู้เลือก...";
-                const updateKey = gameRole === 'p1' ? 'p1Choice' : 'p2Choice';
-                await db.collection('active_games').doc(currentGameId).update({ [updateKey]: choice });
+                if(!currentGameId) return; document.getElementById('rps-status').innerText = "รอคู่ต่อสู้เลือก..."; await db.collection('active_games').doc(currentGameId).update({ [gameRole === 'p1' ? 'p1Choice' : 'p2Choice']: choice });
             }
         }
-
         function updateRPSUI(data) {
-            if(!data) return;
-            const myChoice = gameRole === 'p1' ? data.p1Choice : data.p2Choice;
-            const oppChoice = gameRole === 'p1' ? data.p2Choice : data.p1Choice;
-
+            if(!data) return; const myChoice = gameRole === 'p1' ? data.p1Choice : data.p2Choice; const oppChoice = gameRole === 'p1' ? data.p2Choice : data.p1Choice;
             if(myChoice) document.getElementById('rps-p1-choice').innerText = rpsEmojis[myChoice];
-            if(oppChoice) {
-                // ซ่อนไว้ก่อนถ้าเรายังไม่เลือก
-                if(!myChoice) document.getElementById('rps-p2-choice').innerText = '🔒 (เลือกแล้ว)';
-                else document.getElementById('rps-p2-choice').innerText = rpsEmojis[oppChoice];
-            }
-
-            // ถ้าเลือกครบทั้งคู่ คำนวณผล
+            if(oppChoice) document.getElementById('rps-p2-choice').innerText = !myChoice ? '🔒 (เลือกแล้ว)' : rpsEmojis[oppChoice];
             if(data.p1Choice && data.p2Choice && !data.winner) {
-                const p1Res = getRPSResult(data.p1Choice, data.p2Choice);
-                let winnerStr = p1Res === 'win' ? 'p1' : (p1Res === 'lose' ? 'p2' : 'draw');
-                
-                // คนอัปเดตคือ p1 เพื่อกัน update ซ้อน
-                if(gameRole === 'p1') {
-                    db.collection('active_games').doc(currentGameId).update({ winner: winnerStr });
-                }
+                const p1Res = getRPSResult(data.p1Choice, data.p2Choice); let winnerStr = p1Res === 'win' ? 'p1' : (p1Res === 'lose' ? 'p2' : 'draw');
+                if(gameRole === 'p1') db.collection('active_games').doc(currentGameId).update({ winner: winnerStr });
             }
-
             if(data.winner) {
-                document.getElementById('rps-p2-choice').innerText = rpsEmojis[oppChoice]; // เผยไพ่
+                document.getElementById('rps-p2-choice').innerText = rpsEmojis[oppChoice];
                 if(data.winner === 'draw') document.getElementById('rps-status').innerText = "🤝 เสมอกัน!";
-                else if(data.winner === gameRole) { document.getElementById('rps-status').innerText = "🎉 คุณชนะ!"; triggerFireworks(); doVibrate([100,50,100]); }
+                else if(data.winner === gameRole) { document.getElementById('rps-status').innerText = "🎉 คุณชนะ!"; triggerFireworks(); }
                 else document.getElementById('rps-status').innerText = "😭 คู่ต่อสู้ชนะ!";
             }
         }
+        function getRPSResult(c1, c2) { if(c1 === c2) return 'draw'; if((c1 === 'rock' && c2 === 'scissors') || (c1 === 'paper' && c2 === 'rock') || (c1 === 'scissors' && c2 === 'paper')) return 'win'; return 'lose'; }
 
-        function getRPSResult(c1, c2) {
-            if(c1 === c2) return 'draw';
-            if((c1 === 'rock' && c2 === 'scissors') || (c1 === 'paper' && c2 === 'rock') || (c1 === 'scissors' && c2 === 'paper')) return 'win';
-            return 'lose';
+        /* ========================================================================================= */
+        /* ============================ 🔫 ระบบเกม Laser Arena ===================================== */
+        /* ========================================================================================= */
+
+        const canvas = document.getElementById('laser-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // การตั้งค่า
+        let laserSettings = { fps: 60, gfx: 'high' };
+        let lastRenderTime = 0;
+        let animationFrameId = null;
+        let laserRoomRef = null;
+        let isGameRunning = false;
+        
+        function updateLaserSettings() {
+            laserSettings.fps = parseInt(document.getElementById('setting-laser-fps').value);
+            laserSettings.gfx = document.getElementById('setting-laser-gfx').value;
+        }
+
+        // สถานะเกม
+        const GAME_W = 800;
+        const GAME_H = 600;
+        let players = {}; // { 'uid': {x, y, angle, hp, color} }
+        let bullets = {}; // { 'bullet_id': {x, y, vx, vy, owner} }
+        let walls = [
+            { x: 150, y: 150, w: 100, h: 20 },
+            { x: 550, y: 430, w: 100, h: 20 },
+            { x: 390, y: 200, w: 20, h: 200 },
+            { x: 100, y: 350, w: 20, h: 100 },
+            { x: 680, y: 150, w: 20, h: 100 }
+        ];
+
+        // ระบบควบคุม
+        let keys = { w:false, a:false, s:false, d:false };
+        let mousePos = { x: 0, y: 0 };
+        let mousePressed = false;
+        
+        let jMove = { active: false, vecX: 0, vecY: 0 };
+        let jAim = { active: false, angle: 0, isShooting: false };
+        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        // ฟังชั่นเริ่มเกม
+        function startLaserGame(roomId, role) {
+            laserRoomRef = rtdb.ref('laser_rooms/' + roomId);
+            isGameRunning = true;
+            document.getElementById('laser-game-over').style.display = 'none';
+            
+            // ตั้งค่าจอ
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            if (isMobile) {
+                document.getElementById('laser-mobile-controls').style.display = 'flex';
+                setupMobileControls();
+            } else {
+                window.addEventListener('keydown', handleKeyDown);
+                window.addEventListener('keyup', handleKeyUp);
+                canvas.addEventListener('mousemove', handleMouseMove);
+                canvas.addEventListener('mousedown', handleMouseDown);
+                canvas.addEventListener('mouseup', handleMouseUp);
+            }
+
+            // ตั้งค่าผู้เล่นฝั่งนี้
+            let myColor = role === 'p1' ? '#00ffff' : '#ff00ff';
+            let spawnX = role === 'p1' ? 100 : GAME_W - 100;
+            let spawnY = role === 'p1' ? Math.random()*200+100 : Math.random()*200+300;
+            
+            players[currentUser.username] = { x: spawnX, y: spawnY, angle: 0, hp: 3, color: myColor };
+
+            // ฟังข้อมูลจาก RTDB
+            laserRoomRef.on('value', (snap) => {
+                const data = snap.val();
+                if(!data) return;
+
+                // อัปเดตข้อมูลคู่ต่อสู้
+                for (let uid in data.players) {
+                    if (uid !== currentUser.username) {
+                        if (!players[uid]) players[uid] = { ...data.players[uid], color: role === 'p1' ? '#ff00ff' : '#00ffff' };
+                        // ทำ Lerp เคลื่อนที่แบบสมูท
+                        players[uid].targetX = data.players[uid].x;
+                        players[uid].targetY = data.players[uid].y;
+                        players[uid].angle = data.players[uid].angle;
+                        players[uid].hp = data.players[uid].hp;
+                    } else {
+                        // อัปเดตเลือดตัวเองกรณีโดนยิง
+                        players[uid].hp = data.players[uid].hp;
+                    }
+                }
+
+                // ซิงค์กระสุน (เพิ่ม/ลบ)
+                if (data.bullets) {
+                    for (let id in data.bullets) {
+                        if (!bullets[id]) bullets[id] = data.bullets[id]; // เพิ่ม
+                    }
+                    for (let id in bullets) {
+                        if (!data.bullets[id]) delete bullets[id]; // ลบ
+                    }
+                } else {
+                    bullets = {};
+                }
+
+                // อัปเดต UI เลือด
+                updateHPUI(data.players);
+
+                // เช็คเกมโอเวอร์
+                if (data.status === 'gameover') {
+                    showLaserGameOver(data.winner);
+                }
+            });
+
+            // ส่งข้อมูลตัวเองไป Server ทุกๆ 50ms
+            this.syncInterval = setInterval(() => {
+                if (isGameRunning && players[currentUser.username]) {
+                    laserRoomRef.child(`players/${currentUser.username}`).update({
+                        x: players[currentUser.username].x,
+                        y: players[currentUser.username].y,
+                        angle: players[currentUser.username].angle
+                    });
+                }
+            }, 50);
+
+            // เริ่ม Loop
+            requestAnimationFrame(laserGameLoop);
+        }
+
+        function quitLaserGame() {
+            isGameRunning = false;
+            cancelAnimationFrame(animationFrameId);
+            clearInterval(this.syncInterval);
+            if (laserRoomRef) {
+                laserRoomRef.off();
+                // ถ้าออกเกมให้ถือว่าแพ้/ปิดห้องไปเลย
+                laserRoomRef.update({ status: 'gameover', winner: 'Opponent' });
+            }
+            
+            // ล้าง Event
+            window.removeEventListener('resize', resizeCanvas);
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
+            canvas.removeEventListener('mousemove', handleMouseMove);
+            canvas.removeEventListener('mousedown', handleMouseDown);
+            canvas.removeEventListener('mouseup', handleMouseUp);
+            document.getElementById('laser-mobile-controls').style.display = 'none';
+
+            closeModal('laser-game-modal');
+        }
+
+        // ================= Game Loop & Physics =================
+        function laserGameLoop(timestamp) {
+            if (!isGameRunning) return;
+            animationFrameId = requestAnimationFrame(laserGameLoop);
+
+            // FPS Control
+            const elapsed = timestamp - lastRenderTime;
+            const fpsInterval = 1000 / laserSettings.fps;
+            if (elapsed < fpsInterval) return;
+            lastRenderTime = timestamp - (elapsed % fpsInterval);
+
+            update();
+            draw();
+        }
+
+        let lastShootTime = 0;
+        function update() {
+            let myPlayer = players[currentUser.username];
+            if (!myPlayer || myPlayer.hp <= 0) return;
+
+            // 1. เคลื่อนที่
+            let speed = 4;
+            let vx = 0, vy = 0;
+            
+            if (isMobile && jMove.active) {
+                vx = jMove.vecX * speed; vy = jMove.vecY * speed;
+            } else {
+                if(keys.w) vy -= speed; if(keys.s) vy += speed;
+                if(keys.a) vx -= speed; if(keys.d) vx += speed;
+            }
+            
+            let newX = myPlayer.x + vx;
+            let newY = myPlayer.y + vy;
+
+            // ชนขอบจอ
+            if (newX < 15) newX = 15; if (newX > GAME_W - 15) newX = GAME_W - 15;
+            if (newY < 15) newY = 15; if (newY > GAME_H - 15) newY = GAME_H - 15;
+
+            // ชนกำแพง (AABB อย่างง่าย)
+            let collide = false;
+            for (let w of walls) {
+                if (newX+10 > w.x && newX-10 < w.x+w.w && newY+10 > w.y && newY-10 < w.y+w.h) { collide = true; break; }
+            }
+            if (!collide) { myPlayer.x = newX; myPlayer.y = newY; }
+
+            // 2. หันหน้า
+            if (isMobile && jAim.active) {
+                myPlayer.angle = jAim.angle;
+            } else if (!isMobile) {
+                // แปลงพิกัดเมาส์จอ เป็นพิกัดเกม
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                let worldMouseX = (mousePos.x - rect.left) * scaleX;
+                let worldMouseY = (mousePos.y - rect.top) * scaleY;
+                myPlayer.angle = Math.atan2(worldMouseY - myPlayer.y, worldMouseX - myPlayer.x);
+            }
+
+            // 3. ยิง (Cooldown 300ms)
+            let isShooting = (isMobile && jAim.isShooting) || (!isMobile && mousePressed);
+            if (isShooting && Date.now() - lastShootTime > 300) {
+                lastShootTime = Date.now();
+                shootBullet(myPlayer);
+            }
+
+            // 4. อัปเดตกระสุน และเช็คชน
+            for (let id in bullets) {
+                let b = bullets[id];
+                b.x += b.vx; b.y += b.vy;
+
+                // ชนขอบ
+                if (b.x < 0 || b.x > GAME_W || b.y < 0 || b.y > GAME_H) {
+                    if (b.owner === currentUser.username) laserRoomRef.child(`bullets/${id}`).remove();
+                    continue;
+                }
+
+                // ชนกำแพง
+                let hitWall = false;
+                for (let w of walls) {
+                    if (b.x > w.x && b.x < w.x+w.w && b.y > w.y && b.y < w.y+w.h) { hitWall = true; break; }
+                }
+                if (hitWall) {
+                    if (b.owner === currentUser.username) laserRoomRef.child(`bullets/${id}`).remove();
+                    continue;
+                }
+
+                // ชนตัวเราเอง (ถ้าไม่ใช่กระสุนเรา)
+                if (b.owner !== currentUser.username) {
+                    let dx = b.x - myPlayer.x; let dy = b.y - myPlayer.y;
+                    if (dx*dx + dy*dy < 20*20) {
+                        // โดนยิง!
+                        laserRoomRef.child(`bullets/${id}`).remove(); // ลบกระสุน
+                        let newHp = myPlayer.hp - 1;
+                        laserRoomRef.child(`players/${currentUser.username}/hp`).set(newHp);
+                        doVibrate(100);
+                        
+                        if (newHp <= 0) {
+                            laserRoomRef.update({ status: 'gameover', winner: b.owner });
+                        }
+                    }
+                }
+            }
+
+            // 5. Lerp ผู้เล่นคนอื่นให้สมูท
+            for (let uid in players) {
+                if (uid !== currentUser.username && players[uid].targetX) {
+                    players[uid].x += (players[uid].targetX - players[uid].x) * 0.3;
+                    players[uid].y += (players[uid].targetY - players[uid].y) * 0.3;
+                }
+            }
+        }
+
+        function shootBullet(player) {
+            let speed = 12;
+            let bulletRef = laserRoomRef.child('bullets').push();
+            bulletRef.set({
+                x: player.x + Math.cos(player.angle)*15,
+                y: player.y + Math.sin(player.angle)*15,
+                vx: Math.cos(player.angle) * speed,
+                vy: Math.sin(player.angle) * speed,
+                owner: currentUser.username
+            });
+        }
+
+        // ================= Rendering =================
+        function draw() {
+            // ล้างจอ
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, GAME_W, GAME_H);
+
+            // วาด Grid
+            ctx.strokeStyle = '#111';
+            ctx.lineWidth = 1;
+            for(let i=0; i<GAME_W; i+=50) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,GAME_H); ctx.stroke(); }
+            for(let i=0; i<GAME_H; i+=50) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(GAME_W,i); ctx.stroke(); }
+
+            // ตั้งค่าแสง
+            if (laserSettings.gfx === 'high') {
+                ctx.shadowBlur = 15;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+
+            // วาดกำแพง
+            ctx.shadowColor = '#00ffcc'; ctx.fillStyle = 'rgba(0, 255, 204, 0.2)'; ctx.strokeStyle = '#00ffcc';
+            for (let w of walls) {
+                ctx.fillRect(w.x, w.y, w.w, w.h);
+                ctx.strokeRect(w.x, w.y, w.w, w.h);
+            }
+
+            // วาดกระสุน
+            for (let id in bullets) {
+                let b = bullets[id];
+                ctx.shadowColor = (b.owner === currentUser.username) ? '#00ffff' : '#ff00ff';
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, 4, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            // วาดผู้เล่น
+            for (let uid in players) {
+                let p = players[uid];
+                if (p.hp <= 0) continue;
+
+                ctx.shadowColor = p.color;
+                ctx.fillStyle = p.color;
+                
+                // ตัว
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 15, 0, Math.PI*2);
+                ctx.fill();
+                
+                // ปืน
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x + Math.cos(p.angle)*25, p.y + Math.sin(p.angle)*25);
+                ctx.stroke();
+            }
+            
+            ctx.shadowBlur = 0; // เคลียร์แสง
+        }
+
+        // ================= UI & Input Handling =================
+        function updateHPUI(playersData) {
+            let myUid = currentUser.username;
+            let oppUid = Object.keys(playersData).find(u => u !== myUid);
+            
+            if (playersData[myUid]) {
+                const myHearts = document.getElementById('laser-p1-hp').children;
+                for(let i=0; i<3; i++) myHearts[i].classList[i < playersData[myUid].hp ? 'add' : 'remove']('active');
+            }
+            if (oppUid && playersData[oppUid]) {
+                const oppHearts = document.getElementById('laser-p2-hp').children;
+                for(let i=0; i<3; i++) oppHearts[i].classList[i < playersData[oppUid].hp ? 'add' : 'remove']('active');
+            }
+        }
+
+        function showLaserGameOver(winnerName) {
+            isGameRunning = false;
+            const goScreen = document.getElementById('laser-game-over');
+            const txt = document.getElementById('laser-winner-text');
+            goScreen.style.display = 'flex';
+            
+            if (winnerName === currentUser.username) {
+                txt.innerText = "🎉 คุณชนะ!"; txt.style.color = "#0ff"; txt.style.textShadow = "0 0 20px #0ff";
+            } else {
+                txt.innerText = "😭 คุณแพ้!"; txt.style.color = "#f0f"; txt.style.textShadow = "0 0 20px #f0f";
+            }
+            
+            let count = 5;
+            let iv = setInterval(() => {
+                count--;
+                document.getElementById('laser-countdown').innerText = count;
+                if (count <= 0) { clearInterval(iv); quitLaserGame(); }
+            }, 1000);
+        }
+
+        function resizeCanvas() {
+            // Fix resolution 800x600 ให้เต็มกรอบ Modal
+            canvas.width = GAME_W;
+            canvas.height = GAME_H;
+        }
+
+        function handleKeyDown(e) { 
+            let k = e.key.toLowerCase(); if (keys.hasOwnProperty(k)) keys[k] = true; 
+        }
+        function handleKeyUp(e) { 
+            let k = e.key.toLowerCase(); if (keys.hasOwnProperty(k)) keys[k] = false; 
+        }
+        function handleMouseMove(e) { mousePos = { x: e.clientX, y: e.clientY }; }
+        function handleMouseDown() { mousePressed = true; }
+        function handleMouseUp() { mousePressed = false; }
+
+        // --- Custom Virtual Joystick Manager ---
+        function setupMobileControls() {
+            const zMove = document.getElementById('joystick-move'); const kMove = document.getElementById('knob-move');
+            const zAim = document.getElementById('joystick-aim'); const kAim = document.getElementById('knob-aim');
+            
+            // Move JS
+            zMove.addEventListener('touchstart', e => { jMove.active = true; handleJoyMove(e, zMove, kMove, jMove); }, {passive:false});
+            zMove.addEventListener('touchmove', e => { if(jMove.active){ e.preventDefault(); handleJoyMove(e, zMove, kMove, jMove); } }, {passive:false});
+            zMove.addEventListener('touchend', e => { jMove.active = false; kMove.style.transform = `translate(-50%, -50%)`; jMove.vecX = 0; jMove.vecY = 0; });
+            
+            // Aim JS
+            zAim.addEventListener('touchstart', e => { jAim.active = true; handleJoyMove(e, zAim, kAim, jAim, true); }, {passive:false});
+            zAim.addEventListener('touchmove', e => { if(jAim.active){ e.preventDefault(); handleJoyMove(e, zAim, kAim, jAim, true); } }, {passive:false});
+            zAim.addEventListener('touchend', e => { jAim.active = false; kAim.style.transform = `translate(-50%, -50%)`; jAim.isShooting = false; });
+        }
+
+        function handleJoyMove(e, zone, knob, outObj, isAim = false) {
+            let touch = e.targetTouches[0];
+            let rect = zone.getBoundingClientRect();
+            let centerX = rect.left + rect.width/2;
+            let centerY = rect.top + rect.height/2;
+            
+            let dx = touch.clientX - centerX;
+            let dy = touch.clientY - centerY;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            let maxDist = rect.width/2;
+            
+            if (dist > maxDist) { dx = (dx/dist)*maxDist; dy = (dy/dist)*maxDist; }
+            
+            knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+            
+            if (!isAim) {
+                // Move: Normalize (-1 to 1)
+                outObj.vecX = dx / maxDist;
+                outObj.vecY = dy / maxDist;
+            } else {
+                // Aim: Set Angle and enable shooting if dragged far enough
+                outObj.angle = Math.atan2(dy, dx);
+                outObj.isShooting = (dist > maxDist * 0.3); // ลากเกิน 30% ของจอยให้ยิง
+            }
         }
 
     </script>
 </body>
 </html>
+
+
