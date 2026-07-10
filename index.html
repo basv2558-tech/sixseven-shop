@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -347,6 +348,17 @@
             display: none;
         }
 
+        /* ================= 🕵️‍♂️ Impostor Game CSS ================= */
+        .impostor-room-card { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .impostor-room-card:hover { border-color: #e74c3c; background: #fdf2e9; }
+        .impostor-chat-box { flex-grow: 1; overflow-y: auto; background: #f9f9f9; border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .impostor-word-display { font-size: 1.4rem; font-weight: bold; color: #c0392b; text-align: center; margin: 10px 0; background: #fdf2e9; padding: 10px; border-radius: 15px; border: 2px dashed #e74c3c; }
+        .impostor-player-vote { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 8px; }
+        .impostor-player-vote.voted { border-color: #3498db; background: #eaf4fc; }
+        .impostor-result-box { background: #111; color: #fff; padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; border: 3px solid #e74c3c; box-shadow: 0 0 20px rgba(231,76,60,0.5); }
+        .impostor-badge { background: #e74c3c; color: white; padding: 2px 6px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; margin-left: 5px; }
+        .impostor-host-badge { background: #f1c40f; color: #333; padding: 2px 6px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; margin-left: 5px; }
+
     </style>
 </head>
 <body>
@@ -627,6 +639,13 @@
                             <div style="font-weight: bold; color: #f39c12; margin-top:5px;">เป่ายิ้งฉุบ</div>
                         </div>
                     </div>
+                    <!-- Impostor (ใหม่) -->
+                    <div class="category-card" style="min-width:120px; background: #fdf2e9; border: 2px solid #e74c3c; margin:0;" onclick="openImpostorLobby()">
+                        <div style="text-align: center; width: 100%;">
+                            <div style="font-size: 2rem;">🕵️‍♂️</div>
+                            <div style="font-weight: bold; color: #e74c3c; margin-top:5px;">จับโกหก</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="game-selection-info" style="display:none; text-align:center; margin-bottom:15px; color:#8e44ad; font-weight:bold;">กำลังเลือกเกม: <span id="lbl-selected-game"></span></div>
@@ -693,6 +712,64 @@
                     <button class="btn" style="background:#0ff; color:#000; border:none; width:auto; padding: 10px 30px;" onclick="quitLaserGame()">ออกเดี๋ยวนี้</button>
                 </div>
 
+            </div>
+        </div>
+        
+        <!-- 7. เกม จับโกหกคำศัพท์ (Impostor) Lobby -->
+        <div id="impostor-lobby-modal" class="modal-overlay" style="z-index: 300;">
+            <div class="modal-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom:10px;">
+                    <h3 style="margin: 0; color: #e74c3c;">🕵️‍♂️ ล็อบบี้ จับโกหกคำศัพท์</h3>
+                    <button class="close-btn" onclick="closeImpostorLobby()">✖</button>
+                </div>
+                <button class="btn-rainbow" style="margin-bottom:15px;" onclick="createImpostorRoom()">➕ สร้างห้องใหม่</button>
+                <h4 style="margin: 0 0 10px 0; color: #555;">รายชื่อห้องที่รอผู้เล่น</h4>
+                <div class="scroll-box" id="impostor-room-list" style="margin-top:0;">
+                    <p style="text-align:center; color:#888;">กำลังโหลดข้อมูล...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. เกม จับโกหกคำศัพท์ Room -->
+        <div id="impostor-room-modal" class="modal-overlay" style="z-index: 350;">
+            <div class="modal-content" style="display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom:10px;">
+                    <h3 style="margin: 0; color: #c0392b;" id="impostor-room-title">🕵️‍♂️ ห้องของ: -</h3>
+                    <button class="close-btn" onclick="leaveImpostorRoom()">✖</button>
+                </div>
+                
+                <div id="impostor-game-status-text" style="text-align:center; font-weight:bold; color:#888; margin-bottom:10px;">สถานะ: รอผู้เล่น...</div>
+                
+                <!-- ซ่อนคำศัพท์ตอนยังไม่เริ่ม -->
+                <div id="impostor-word-section" class="impostor-word-display" style="display:none;">
+                    คำศัพท์ของคุณ: <span id="impostor-my-word">????</span>
+                </div>
+
+                <!-- กล่องแชทใบ้คำ -->
+                <div id="impostor-chat-section" class="impostor-chat-box"></div>
+                <div id="impostor-chat-input-area" class="chat-input-area" style="display:none; margin-bottom:10px;">
+                    <input type="text" id="impostor-chat-input" class="chat-input" placeholder="พิมพ์คำใบ้ของคุณ..." onkeypress="if(event.key === 'Enter') sendImpostorChat()">
+                    <button class="chat-send-btn" style="background:#e74c3c;" onclick="sendImpostorChat()">➤</button>
+                </div>
+
+                <!-- รายชื่อผู้เล่น & ระบบโหวต -->
+                <h4 style="margin: 0 0 10px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;">ผู้เล่น (<span id="impostor-player-count">0</span>/10)</h4>
+                <div class="scroll-box" id="impostor-players-list" style="margin-top:0; flex-grow:0; max-height:200px;">
+                    <!-- แทรก UI รายชื่อ/โหวต -->
+                </div>
+
+                <!-- หน้าจบเกม -->
+                <div id="impostor-result-section" class="impostor-result-box" style="display:none;">
+                    <h3 id="impostor-result-title" style="margin:0 0 10px 0;">จบเกม!</h3>
+                    <p id="impostor-result-desc" style="font-size:0.9rem; margin:0;"></p>
+                </div>
+
+                <!-- ปุ่ม Host -->
+                <div id="impostor-host-controls" style="margin-top:auto; padding-top:10px; display:none;">
+                    <button class="btn" id="btn-impostor-start" style="background:#2ecc71; color:white; border:none;" onclick="startImpostorGame()">🚀 เริ่มเกม</button>
+                    <button class="btn" id="btn-impostor-vote" style="background:#e67e22; color:white; border:none; display:none;" onclick="triggerImpostorVote()">⚖️ เปิดโหวตหาคนร้าย</button>
+                    <button class="btn" id="btn-impostor-replay" style="background:#3498db; color:white; border:none; display:none;" onclick="resetImpostorRoom()">🔄 เล่นอีกรอบ</button>
+                </div>
             </div>
         </div>
 
@@ -2004,6 +2081,351 @@
                 outObj.angle = Math.atan2(dy, dx);
                 outObj.isShooting = (dist > maxDist * 0.3); // ลากเกิน 30% ของจอยให้ยิง
             }
+        }
+
+        /* ========================================================================================= */
+        /* ============================ 🕵️‍♂️ ระบบเกม Who is the Impostor? ============================ */
+        /* ========================================================================================= */
+
+        let impostorRoomId = null;
+        let impostorRoomRef = null;
+        let isImpostorHost = false;
+
+        const impostorWordPairs = [
+            { real: "แอปเปิ้ล", fake: "มะเขือเทศ" },
+            { real: "โรงพยาบาล", fake: "คลินิก" },
+            { real: "ทะเล", fake: "แม่น้ำ" },
+            { real: "นักฟุตบอล", fake: "นักบาสเกตบอล" },
+            { real: "สุนัข", fake: "หมาป่า" },
+            { real: "เครื่องบิน", fake: "จรวด" },
+            { real: "คอมพิวเตอร์", fake: "โทรทัศน์" },
+            { real: "พระอาทิตย์", fake: "หลอดไฟ" },
+            { real: "หนังสือ", fake: "สมุด" },
+            { real: "ภูเขา", fake: "เนินเขา" },
+            { real: "รถยนต์", fake: "รถบรรทุก" },
+            { real: "พิซซ่า", fake: "แฮมเบอร์เกอร์" }
+        ];
+
+        function openImpostorLobby() {
+            if(!currentUser) return;
+            closeModal('game-zone-modal');
+            openModal('impostor-lobby-modal');
+            
+            rtdb.ref('impostor_rooms').on('value', snap => {
+                // ถ้าปิด Modal ไปแล้วก็ไม่ต้องรันต่อ
+                if(!document.getElementById('impostor-lobby-modal').classList.contains('active')) {
+                    rtdb.ref('impostor_rooms').off();
+                    return;
+                }
+                const list = document.getElementById('impostor-room-list');
+                list.innerHTML = '';
+                const rooms = snap.val();
+                let found = false;
+
+                if (rooms) {
+                    for (let rId in rooms) {
+                        const room = rooms[rId];
+                        if (room.status === 'waiting') {
+                            found = true;
+                            const pCount = room.players ? Object.keys(room.players).length : 0;
+                            list.innerHTML += `
+                                <div class="impostor-room-card">
+                                    <div>
+                                        <div style="font-weight:bold; color:#e74c3c; font-size:1.1rem;">ห้องของ: ${room.host}</div>
+                                        <div style="font-size:0.8rem; color:#888;">ผู้เล่น: ${pCount}/10 คน</div>
+                                    </div>
+                                    <button class="btn" style="margin:0; width:auto; padding:8px 20px; background:#e74c3c; color:white; border:none;" onclick="joinImpostorRoom('${rId}')">เข้าร่วม</button>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+                if (!found) list.innerHTML = '<p style="text-align:center; color:#888;">ยังไม่มีห้องที่กำลังรอผู้เล่น</p>';
+            });
+        }
+
+        function closeImpostorLobby() {
+            rtdb.ref('impostor_rooms').off();
+            closeModal('impostor-lobby-modal');
+            openModal('game-zone-modal');
+        }
+
+        function createImpostorRoom() {
+            impostorRoomId = rtdb.ref('impostor_rooms').push().key;
+            isImpostorHost = true;
+            rtdb.ref('impostor_rooms/' + impostorRoomId).set({
+                host: currentUser.username,
+                status: 'waiting',
+                players: {
+                    [currentUser.username]: { name: currentUser.username, isHost: true }
+                }
+            });
+            enterImpostorRoomUI(impostorRoomId);
+        }
+
+        function joinImpostorRoom(roomId) {
+            impostorRoomId = roomId;
+            isImpostorHost = false;
+            rtdb.ref('impostor_rooms/' + roomId + '/players/' + currentUser.username).set({
+                name: currentUser.username, isHost: false
+            });
+            enterImpostorRoomUI(roomId);
+        }
+
+        function enterImpostorRoomUI(roomId) {
+            closeModal('impostor-lobby-modal');
+            openModal('impostor-room-modal');
+            rtdb.ref('impostor_rooms').off(); // Stop lobby listener
+            
+            impostorRoomRef = rtdb.ref('impostor_rooms/' + roomId);
+            impostorRoomRef.on('value', snap => {
+                const data = snap.val();
+                if (!data) {
+                    // ห้องถูกลบ
+                    showAppToast("❌ ห้องถูกปิดไปแล้ว");
+                    leaveImpostorRoom();
+                    return;
+                }
+                renderImpostorRoom(data);
+            });
+        }
+
+        function leaveImpostorRoom() {
+            if (impostorRoomRef && currentUser) {
+                impostorRoomRef.off();
+                // ถ้าเป็น Host ลบห้องทิ้งเลย
+                if (isImpostorHost) {
+                    impostorRoomRef.remove();
+                } else {
+                    impostorRoomRef.child('players/' + currentUser.username).remove();
+                }
+            }
+            impostorRoomId = null;
+            isImpostorHost = false;
+            closeModal('impostor-room-modal');
+            openImpostorLobby();
+        }
+
+        function renderImpostorRoom(data) {
+            document.getElementById('impostor-room-title').innerText = `🕵️‍♂️ ห้องของ: ${data.host}`;
+            const pCount = data.players ? Object.keys(data.players).length : 0;
+            document.getElementById('impostor-player-count').innerText = pCount;
+            
+            const statusTxt = document.getElementById('impostor-game-status-text');
+            const wordSec = document.getElementById('impostor-word-section');
+            const chatSec = document.getElementById('impostor-chat-section');
+            const chatInput = document.getElementById('impostor-chat-input-area');
+            const listSec = document.getElementById('impostor-players-list');
+            const resultSec = document.getElementById('impostor-result-section');
+            const hostControls = document.getElementById('impostor-host-controls');
+            
+            const btnStart = document.getElementById('btn-impostor-start');
+            const btnVote = document.getElementById('btn-impostor-vote');
+            const btnReplay = document.getElementById('btn-impostor-replay');
+
+            // รีเซ็ต UI ก่อนจัดแสดง
+            hostControls.style.display = isImpostorHost ? 'flex' : 'none';
+            btnStart.style.display = 'none';
+            btnVote.style.display = 'none';
+            btnReplay.style.display = 'none';
+            wordSec.style.display = 'none';
+            chatInput.style.display = 'none';
+            resultSec.style.display = 'none';
+            
+            // แสดงผู้เล่น
+            let playersHtml = '';
+            for (let uid in data.players) {
+                let badge = data.players[uid].isHost ? `<span class="impostor-host-badge">HOST</span>` : '';
+                let voteUI = '';
+                
+                // ถ้าระบบโหวตทำงาน ให้แสดงปุ่มโหวต และสถานะโหวต
+                if (data.status === 'voting' && uid !== currentUser.username) {
+                    let hasVoted = data.players[currentUser.username]?.votedFor === uid;
+                    let amIVoted = data.players[currentUser.username]?.votedFor ? true : false;
+                    
+                    if (hasVoted) {
+                        voteUI = `<button class="btn" style="margin:0; width:auto; padding:5px 15px; background:#3498db; color:white; border:none;" disabled>โหวตแล้ว</button>`;
+                    } else if (!amIVoted) {
+                        voteUI = `<button class="btn" style="margin:0; width:auto; padding:5px 15px; background:#e74c3c; color:white; border:none;" onclick="castImpostorVote('${uid}')">โหวตคนนี้</button>`;
+                    } else {
+                        voteUI = `<button class="btn" style="margin:0; width:auto; padding:5px 15px; background:#ccc; color:white; border:none;" disabled>โหวตคนอื่น</button>`;
+                    }
+                }
+                
+                let cardClass = data.players[uid].votedFor ? "impostor-player-vote voted" : "impostor-player-vote";
+                playersHtml += `<div class="${cardClass}"><div>👤 <b>${uid}</b> ${badge}</div><div>${voteUI}</div></div>`;
+            }
+            listSec.innerHTML = playersHtml;
+
+            // จัดการตามสถานะเกม
+            if (data.status === 'waiting') {
+                statusTxt.innerText = "สถานะ: กำลังรอผู้เล่น...";
+                statusTxt.style.color = "#888";
+                chatSec.innerHTML = '<p style="text-align:center; color:#ccc;">แชทจะเปิดเมื่อเริ่มเกม</p>';
+                if (isImpostorHost) {
+                    btnStart.style.display = 'block';
+                    if (pCount < 3) btnStart.disabled = true; else btnStart.disabled = false;
+                    btnStart.innerText = pCount < 3 ? "ต้องการ 3 คนขึ้นไป" : "🚀 เริ่มเกม";
+                }
+            } 
+            else if (data.status === 'playing') {
+                statusTxt.innerText = "สถานะ: พิมพ์คำใบ้ในช่องแชท (อย่าให้โจ่งแจ้งเกินไป!)";
+                statusTxt.style.color = "#27ae60";
+                wordSec.style.display = 'block';
+                document.getElementById('impostor-my-word').innerText = data.players[currentUser.username]?.word || "เกิดข้อผิดพลาด";
+                chatInput.style.display = 'flex';
+                if (isImpostorHost) btnVote.style.display = 'block';
+                renderImpostorChat(data.chat);
+            }
+            else if (data.status === 'voting') {
+                statusTxt.innerText = "สถานะ: หมดเวลาคำใบ้! โหวตหาคนร้าย!";
+                statusTxt.style.color = "#e67e22";
+                wordSec.style.display = 'block';
+                renderImpostorChat(data.chat);
+                
+                // ตรวจสอบว่าโหวตครบหรือยัง (ทำโดยคนใดคนหนึ่ง แต่โฮสต์เป็นคนสั่งจบก็พอเพื่อไม่ให้ชนกัน)
+                if (isImpostorHost) {
+                    let totalVotes = 0;
+                    for (let uid in data.players) if (data.players[uid].votedFor) totalVotes++;
+                    if (totalVotes === pCount) checkImpostorResult(data);
+                }
+            }
+            else if (data.status === 'ended') {
+                statusTxt.innerText = "สถานะ: เกมจบลงแล้ว";
+                statusTxt.style.color = "#e74c3c";
+                resultSec.style.display = 'block';
+                renderImpostorChat(data.chat);
+                if (isImpostorHost) btnReplay.style.display = 'block';
+                
+                document.getElementById('impostor-result-desc').innerHTML = `
+                    สายลับ (Impostor) คือ: <b style="color:#e74c3c; font-size:1.2rem;">${data.impostor}</b><br>
+                    คำศัพท์จริง: <b style="color:#2ecc71;">${data.realWord}</b><br>
+                    คำศัพท์สายลับ: <b style="color:#f1c40f;">${data.fakeWord}</b><br>
+                    <br><span style="font-size:1.3rem;">ผู้ชนะ: <b>${data.winner === 'crew' ? '👨‍🚀 ฝั่งคนดี' : '🕵️‍♂️ ฝั่งสายลับ'}</b></span>
+                `;
+            }
+        }
+
+        function renderImpostorChat(chatObj) {
+            const chatSec = document.getElementById('impostor-chat-section');
+            if (!chatObj) {
+                chatSec.innerHTML = '<p style="text-align:center; color:#ccc;">ยังไม่มีข้อความ</p>';
+                return;
+            }
+            chatSec.innerHTML = '';
+            for (let id in chatObj) {
+                const msg = chatObj[id];
+                const isMe = msg.sender === currentUser.username;
+                if (isMe) chatSec.innerHTML += `<div class="chat-bubble me"><b>ฉัน:</b> ${msg.text}</div>`;
+                else chatSec.innerHTML += `<div class="chat-bubble other"><b>${msg.sender}:</b> ${msg.text}</div>`;
+            }
+            chatSec.scrollTop = chatSec.scrollHeight;
+        }
+
+        function startImpostorGame() {
+            impostorRoomRef.once('value', snap => {
+                const data = snap.val();
+                const uids = Object.keys(data.players);
+                if (uids.length < 3) return;
+                
+                // สุ่มคู่คำศัพท์
+                const wordPair = impostorWordPairs[Math.floor(Math.random() * impostorWordPairs.length)];
+                
+                // สุ่มคนเป็น Impostor
+                const impostorUid = uids[Math.floor(Math.random() * uids.length)];
+                
+                let updates = {
+                    status: 'playing',
+                    impostor: impostorUid,
+                    realWord: wordPair.real,
+                    fakeWord: wordPair.fake,
+                    chat: null
+                };
+                
+                uids.forEach(uid => {
+                    let isImp = uid === impostorUid;
+                    updates[`players/${uid}/isImpostor`] = isImp;
+                    updates[`players/${uid}/word`] = isImp ? wordPair.fake : wordPair.real;
+                    updates[`players/${uid}/votedFor`] = null; // ล้างโหวต
+                });
+                
+                impostorRoomRef.update(updates);
+            });
+        }
+
+        function sendImpostorChat() {
+            const input = document.getElementById('impostor-chat-input');
+            const text = input.value.trim();
+            if (!text || !impostorRoomId) return;
+            impostorRoomRef.child('chat').push({ sender: currentUser.username, text: text });
+            input.value = '';
+        }
+
+        function triggerImpostorVote() {
+            impostorRoomRef.update({ status: 'voting' });
+            impostorRoomRef.child('chat').push({ sender: 'System', text: '🔔 เริ่มการโหวต! ค้นหาว่าใครคือ Impostor!' });
+        }
+
+        function castImpostorVote(targetUid) {
+            impostorRoomRef.child('players/' + currentUser.username).update({ votedFor: targetUid });
+        }
+
+        function checkImpostorResult(data) {
+            // นับคะแนนโหวต
+            let voteCounts = {};
+            for (let uid in data.players) {
+                let voteTarget = data.players[uid].votedFor;
+                if (voteTarget) {
+                    voteCounts[voteTarget] = (voteCounts[voteTarget] || 0) + 1;
+                }
+            }
+            
+            // หาคนโดนโหวตเยอะสุด
+            let maxVotes = 0;
+            let topVotedUid = null;
+            let isTie = false;
+            
+            for (let uid in voteCounts) {
+                if (voteCounts[uid] > maxVotes) {
+                    maxVotes = voteCounts[uid];
+                    topVotedUid = uid;
+                    isTie = false;
+                } else if (voteCounts[uid] === maxVotes) {
+                    isTie = true;
+                }
+            }
+            
+            // สรุปผล
+            let winner = 'impostor'; // ชนะเริ่มต้นถ้าโหวตผิดหรือเสมอ
+            if (!isTie && topVotedUid === data.impostor) {
+                winner = 'crew'; // ฝั่งคนดีชนะจับได้
+            }
+
+            impostorRoomRef.update({
+                status: 'ended',
+                winner: winner
+            });
+        }
+
+        function resetImpostorRoom() {
+            impostorRoomRef.update({
+                status: 'waiting',
+                winner: null,
+                impostor: null,
+                realWord: null,
+                fakeWord: null,
+                chat: null
+            });
+            // รีเซ็ตข้อมูลผู้เล่น
+            impostorRoomRef.once('value', snap => {
+                let updates = {};
+                for (let uid in snap.val().players) {
+                    updates[`players/${uid}/votedFor`] = null;
+                    updates[`players/${uid}/word`] = null;
+                    updates[`players/${uid}/isImpostor`] = null;
+                }
+                impostorRoomRef.update(updates);
+            });
         }
 
     </script>
